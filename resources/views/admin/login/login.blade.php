@@ -6,13 +6,10 @@
     <title>Login Form</title>
     <link
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
+      rel="stylesheet"/>
   </head>
   <body class="bg-indigo-900">
-    <div
-      class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8"
-    >
+    <div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <img class="mx-auto h-24 w-auto" src="{{ asset('img/logo.png') }}" alt="Logo" />
         <h2 class="mt-6 text-center text-3xl font-extrabold text-white">
@@ -69,35 +66,23 @@
 
             <div class="flex items-center justify-between">
               <div class="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                />
+                <input id="remember-me" name="remember-me" type="checkbox"
+                  class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"/>
                 <label
-                  for="remember-me"
-                  class="ml-2 block text-sm text-gray-900"
-                >
+                  for="remember-me" class="ml-2 block text-sm text-gray-900">
                   Remember me
                 </label>
-              </div>
-
-              <div class="text-sm">
-                <a
-                  href="#"
-                  class="font-medium text-indigo-600 hover:text-indigo-500"
-                >
-                  Forgot your password?
-                </a>
-              </div>
             </div>
 
-            <div>
-              <button
-                type="submit"
-                class="mx-auto block w-auto bg-indigo-600 text-white py-2 px-4 mt-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-indigo-200"
-              >
+             <div class="text-sm">
+                <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
+                  Forgot your password?
+                </a>
+            </div>
+          </div>
+
+          <div>
+              <button type="submit" class="mx-auto block w-auto bg-indigo-600 text-white py-2 px-4 mt-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-indigo-200">
                 Login
               </button>
             </div>

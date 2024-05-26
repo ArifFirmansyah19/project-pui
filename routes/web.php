@@ -29,9 +29,16 @@ Route::get('/dashboard', [DashboardController::class, 'index']);
 Route::get('/peta', [PetaPersebaranUmkmController::class, 'index']);
 
 
-Route::get('/sejarah', [ProfilController::class, 'sejarah']);
-Route::get('/visimisi', [ProfilController::class, 'visimisi']);
-Route::get('/tim', [ProfilController::class, 'timGemar']);
+Route::get('/sejarah', [ProfilController::class, 'sejarah'])->name('profil.sejarah');
+Route::get('/visimisi', [ProfilController::class, 'visimisi'])->name('profil.visimisi');
+Route::get('/struktur-organisasi', [ProfilController::class, 'StrukturOrganisasi'])->name('profil.struktur-organisasi');
+Route::get('/tim', [ProfilController::class, 'timGemar'])->name('profil.tim');
+
+
+
+// Route::get('/', [ProfilController::class, 'timGemar']);
+
+
 
 
 

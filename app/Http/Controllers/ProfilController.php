@@ -7,14 +7,18 @@ use Illuminate\Http\Request;
 class ProfilController extends Controller
 {
     public function sejarah(){
-        return view('profil.sejarah');
+        return view('user/profil.sejarah');
     }
     
     public function timGemar(){
-        return view('profil.team');
+        return view('user/profil.team');
+    }
+
+    public function StrukturOrganisasi(){
+        return view('user/profil.strukturorganisasi');
     }
 
     public function visimisi(){
-        return view('profil.visi_misi');
+        return view('user/profil.visi_misi');
     }
 }
