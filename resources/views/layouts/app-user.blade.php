@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     {{-- <title>Website PUI GEMAR</title> --}}
     <title> @yield('title') </title>
-    @include('layouts.style')
+    @include('layouts.style-user')
   </head>
   <body class="font-roboto">
 

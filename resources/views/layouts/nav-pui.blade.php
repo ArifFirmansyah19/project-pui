@@ -40,20 +40,20 @@
         <div
           class="submenu absolute left-0 mt-2 w-48 bg-indigo-900 shadow-lg rounded-lg py-2 hidden"
         >
-          <a href="#" class="block px-4 py-2 text-white hover:bg-gray-700"
+          <a href="{{ route('sumberdaya.artikel') }}" class="block px-4 py-2 text-white hover:bg-gray-700"
             >Artikel</a
           >
-          <a href="#" class="block px-4 py-2 text-white hover:bg-gray-700"
+          <a href="{{ route('sumberdaya.kegiatan') }}" class="block px-4 py-2 text-white hover:bg-gray-700"
             >Kegiatan</a
           >
-          <a href="/peta" class="block px-4 py-2 text-white hover:bg-gray-700"
+          <a href="{{ route('sumberdaya.petapersebaran') }}" class="block px-4 py-2 text-white hover:bg-gray-700"
             >Persebaran UMKM</a
           >
         </div>
       </div>
       <!-- Menu 4 -->
       <a
-        href="#"
+        href="{{ route('kontak.kontak') }}"
         class="menu-item text-white hover:text-gray-300 font-medium"
       >
         Kontak

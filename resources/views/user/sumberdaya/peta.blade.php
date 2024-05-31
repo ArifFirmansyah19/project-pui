@@ -7,11 +7,15 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
       #map {
-        height: 400px;
+        height: 800px;
+        width: auto;
       }
     </style>
+    @include('layouts.style')
   </head>
   <body>
+    @include('layouts.nav-pui')
+    <div class="container" style="padding:200px 100px 100px 100px";>
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -38,5 +42,8 @@
           .bindPopup(`<b>${umkm.name}</b><br>Lokasi UMKM`);
       });
     </script>
+@include('layouts.script')
+</div>
+@include('layouts.footer')
   </body>
 </html>

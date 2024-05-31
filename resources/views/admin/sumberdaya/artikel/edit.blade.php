@@ -4,9 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>kelola profil PUI</title>
+  <title>Kelola Artikel</title>
+  @include('layouts.style')
 </head>
 <body>
-  <p>ini halaman kelola profil PUI</p>
+  <h1>Halaman Tambah Artikel</h1>
+  
+  @include('layouts.script');
 </body>
 </html>
