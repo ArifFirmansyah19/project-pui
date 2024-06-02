@@ -25,11 +25,11 @@
               <label
                 for="email"
                 class="block text-sm font-medium text-gray-700"
-                @error('email')
+                {{-- @error('email')
                 <div class="invalid-feedback">
                   {{ $message }}
                 </div>
-                @enderror>
+                @enderror> --}}
                 Email address
               </label>
               <div class="mt-1">
@@ -38,11 +38,17 @@
                   name="email"
                   type="email"
                   autocomplete="email"
-                  required autofocus value="{{ old('email') }}" @error('email')
+                  required autofocus value="{{ old('email') }}"
+                  {{-- @error('email')
                       is-invalid
-                  @enderror
+                  @enderror --}}
                   class="appearance-none block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
+                @error('email')
+                <p class="text-red-500 text-xs italic mt-4">
+                    {{ $message }}
+                </p>
+                @enderror
               </div>
             </div>
 
@@ -61,6 +67,13 @@
                   required
                   class="appearance-none block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
+
+                @error('password')
+                <p class="text-red-500 text-xs italic mt-4">
+                    {{ $message }}
+                </p>
+                @enderror
+
               </div>
             </div>
 
@@ -75,7 +88,7 @@
             </div>
 
              <div class="text-sm">
-                <a href="{{ route('login.forgotPw') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
+                <a href="{{ route('forgot-password') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
                   Forgot your password?
                 </a>
             </div>

@@ -9,23 +9,18 @@ use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\SumberDayaController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+
+
 
 Route::get('/', function () {return view('index');})->middleware('guest');
 
-Route::get('/login', [LoginController::class, 'index']) -> middleware('guest');
+Route::get('/login', [LoginController::class, 'index']) ->name('login')-> middleware('guest');
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login');
+Route::get('/forgot-password', [LoginController::class, 'forgot_password']) ->name('forgot-password')-> middleware('guest');
+Route::post('/forgot-password-act', [LoginController::class, 'forgot_password_act']) ->name('forgot-password-act')-> middleware('guest');
 
-Route::get('/forgotpw', [LoginController::class, 'forgotPw']) ->name('login.forgotPw')-> middleware('guest');
+Route::get('/validasi-forgot-password/{token}', [LoginController::class, 'validasi_forgot_password']) ->name('validasi-forgot-password')-> middleware('guest');
+Route::post('/validasi-forgot-password-act', [LoginController::class, 'validasi_forgot_password_act']) ->name('validasi-forgot-password-act')-> middleware('guest');
 
 Route::post('/logout', [LoginController::class, 'logout']);
 

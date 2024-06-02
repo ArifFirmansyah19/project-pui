@@ -11,7 +11,7 @@
         width: auto;
       }
     </style>
-    @include('layouts.style')
+    @include('layouts.style-user')
   </head>
   <body>
     @include('layouts.nav-pui')
