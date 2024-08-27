@@ -1,288 +1,115 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Visi Misi</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-  </head>
-  <body class="bg-gray-100">
-    <div class="flex h-screen overflow-hidden">
-      <!-- Sidebar -->
-      <div
-        id="sidebar"
-        class="fixed inset-y-0 left-0 z-30 w-64 bg-indigo-900 shadow-lg transform -translate-x-full transition-transform duration-100 ease-in-out"
-      >
-        <div class="flex items-center justify-center px-4 py-4">
-          <img
-            src="../../img/logo.png"
-            alt="Logo"
-            class="h-16 w-auto object-contain mt-4"
-          />
-        </div>
-        <nav class="mt-5 ml-2">
-          <a
-            href="../homeadmin.html"
-            class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-            >Dashboard</a
-          >
-          <div class="relative">
-            <a
-              href="#"
-              id="profilSubMenuToggle"
-              class="block px-4 py-2 text-sm text-white hover:bg-gray-600 flex items-center"
-            >
-              Profil <i class="fas fa-caret-down ml-2"></i>
-            </a>
-            <div id="profilSubMenu" class="ml-4 hidden">
-              <a
-                href="sejarahadmin.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Sejarah</a
-              >
-              <a
-                href="visimisiadm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Visi Misi</a
-              >
-              <a
-                href="strukturoradmin.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Struktur Organisasi</a
-              >
-              <a
-                href="timadm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Tim</a
-              >
-            </div>
-          </div>
-          <div class="relative">
-            <a
-              href="#"
-              id="sumberdayaSubMenuToggle"
-              class="block px-4 py-2 text-sm text-white hover:bg-gray-600 flex items-center"
-            >
-              Sumber Daya <i class="fas fa-caret-down ml-2"></i>
-            </a>
-            <div id="sumberdayaSubMenu" class="ml-4 hidden">
-              <a
-                href="../sdadmin/artikeladm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Artikel</a
-              >
-              <a
-                href="sdadmin/persebaranumkm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Kegiatan</a
-              >
-              <a
-                href="../sdadmin/persebaranumkm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Persebaran UMKM</a
-              >
-            </div>
-          </div>
-          <div class="relative">
-            <a
-              href="#"
-              id="kontakSubMenuToggle"
-              class="block px-4 py-2 text-sm text-white hover:bg-gray-600 flex items-center"
-            >
-              Kontak <i class="fas fa-caret-down ml-2"></i>
-            </a>
-            <div id="kontakSubMenu" class="ml-4 hidden">
-              <a
-                href="../editkontak.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Edit Kontak</a
-              >
-            </div>
-          </div>
-        </nav>
-      </div>
+@extends('layouts.app-admin')
+@section('title', 'halaman create Visi Misi admin')
+@section('content-admin')
 
-      <!-- Main content -->
-      <div
-        id="main-content"
-        class="flex-1 flex flex-col overflow-hidden transition-transform duration-100 ease-in-out"
-      >
-        <!-- Header -->
-        <nav class="bg-indigo-900 border-b border-gray-200">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-              <div class="flex items-center">
-                <button
-                  id="menu-button"
-                  class="text-white hover:text-gray-400 focus:outline-none"
-                  aria-label="Toggle Sidebar"
-                >
-                  <i class="fas fa-bars fa-lg"></i>
-                  <span class="sr-only">Toggle Sidebar</span>
-                </button>
-              </div>
-              <div class="flex items-center ml-3">
-                <div class="relative">
-                  <!-- Profile Button -->
-                  <button
-                    id="profile-menu-button"
-                    class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-transparent hover:text-gray-400"
-                  >
-                    <i
-                      class="fas fa-user-circle fa-lg text-white hover:text-gray-400"
-                    ></i>
-                  </button>
-                  <!-- Profile Menu -->
-                  <div
-                    id="profile-menu"
-                    class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-gray-700 ring-1 ring-black ring-opacity-5 hidden"
-                    role="menu"
-                    aria-orientation="vertical"
-                    aria-labelledby="profile-menu-button"
-                  >
-                    <a
-                      href="#"
-                      class="block px-4 py-2 text-sm text-white hover:bg-gray-400"
-                      role="menuitem"
-                      >Edit</a
-                    >
-                    <a
-                      href="#"
-                      class="block px-4 py-2 text-sm text-white hover:bg-gray-400"
-                      role="menuitem"
-                      >Logout</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </nav>
-        <!-- Content -->
-        <main class="flex-1 bg-gray-100 p-4 sm:p-6 overflow-y-auto">
-          <div
-            id="content"
-            class="transition-transform duration-500 ease-in-out"
-          >
+    {{-- allert berhasil simpan data artikel, update --}}
+    @if (session('success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    icon: 'success'
+                });
+            });
+        </script>
+    @endif
+
+    <!-- Content -->
+    <main class="flex-1 bg-gray-100 p-4 sm:p-6 overflow-y-auto">
+        <div id="content" class="transition-transform duration-500 ease-in-out">
             <div class="text-left mb-4 mr-16">
-              <!-- Tambahkan tombol edit disini -->
-              <h1 class="text-3xl font-bold mb-4">Edit Konten Sejarah</h1>
+                <!-- Tambahkan tombol edit disini -->
+                <h1 class="text-3xl font-bold mb-4">Edit Visi Misi PUI GEMAR</h1>
+                <form id="updateForm" action="{{ route('admin.update-visimisi', $visionMission->id) }}" method="POST">
+                    @csrf
+                    <!-- Edit Visi PUI GEMAR -->
+                    <div>
+                        <label for="vision" class="block text-sm font-medium text-gray-700">Visi</label>
+                        <textarea name="vision" id="summernote">{!! $visionMission->vision !!}</textarea>
+                    </div>
 
-              <!-- Form Edit Konten Sejarah -->
-              <form id="editForm" class="max-w-4xl mx-auto">
-                <div class="mb-4">
-                  <label
-                    for="title"
-                    class="block text-gray-700 text-sm font-bold mb-2"
-                    >Judul</label
-                  >
-                  <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    placeholder="Masukkan judul konten"
-                    required
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  />
-                </div>
-                <div class="mb-4">
-                  <label
-                    for="image"
-                    class="block text-gray-700 text-sm font-bold mb-2"
-                    >Gambar Utama</label
-                  >
-                  <input
-                    type="file"
-                    id="image"
-                    name="image"
-                    accept="image/*"
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  />
-                  <p class="text-gray-600 text-sm mt-1">
-                    *Gambar utama tidak wajib diunggah.
-                  </p>
-                </div>
-                <div class="mb-4">
-                  <label
-                    for="content"
-                    class="block text-gray-700 text-sm font-bold mb-2"
-                    >Konten Sejarah</label
-                  >
-                  <!-- Toolbar for Editor -->
-
-                  <div class="editor-toolbar mb-2 flex space-x-2">
-                    <button
-                      type="button"
-                      id="boldBtn"
-                      class="p-2 border rounded bg-white hover:bg-gray-200"
-                      title="Bold"
-                    >
-                      <strong>B</strong>
-                    </button>
-                    <button
-                      type="button"
-                      id="italicBtn"
-                      class="p-2 border rounded bg-white hover:bg-gray-200"
-                      title="Italic"
-                    >
-                      <em>I</em>
-                    </button>
-
-                    <button
-                      type="button"
-                      id="imageBtn"
-                      class="p-2 border rounded bg-white hover:bg-gray-200"
-                      title="Insert Image"
-                      onclick="document.getElementById('fileInput').click();"
-                    >
-                      <i class="fas fa-image"></i>
-                      <input
-                        type="file"
-                        id="fileInput"
-                        accept="image/*"
-                        class="hidden"
-                        onchange="handleImageUpload(event)"
-                      />
-                    </button>
-                    <button
-                      id="headingBtn"
-                      class="p-2 border rounded bg-white hover:bg-gray-200 mr-2"
-                      title="Heading"
-                      onclick="formatText('heading')"
-                    >
-                      Heading
-                    </button>
-                  </div>
-                  <!-- Content Area -->
-                  <div
-                    id="contentEditable"
-                    contenteditable="true"
-                    class="border border-gray-300 rounded p-4 text-gray-700 leading-normal focus:outline-none focus:shadow-outline"
-                    style="min-height: 200px"
-                  ></div>
-                </div>
-                <div class="flex justify-end">
-                  <button
-                    type="submit"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  >
-                    Simpan
-                  </button>
-                </div>
-              </form>
+                    <div class="mt-5">
+                        <label for="missions" class="block text-sm font-medium text-gray-700">Misi</label>
+                        @foreach ($visionMission->missions as $index => $mission)
+                            <div id="missions">
+                                <div class="mission-item mt-1 flex" id="mission_{{ $index }}">
+                                    <input type="text" name="missions[]" id="mission_{{ $index }}"
+                                        value="{{ old('missions.' . $index, $mission) }}" required
+                                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
+                                    <button type="button" onclick="removeMissionField(this)"
+                                        class="ml-2 bg-red-500 text-white px-3 py-2 rounded-md">
+                                        <i class="fa-solid fa-trash text-white-600 hover:text-grey-900"></i>
+                                    </button>
+                                </div>
+                        @endforeach
+                    </div>
             </div>
-          </div>
-        </main>
-      </div>
-    </div>
+        </div>
 
-    <script src="../js/jsadmin.js"></script>
-  </body>
-</html>
+        {{-- Tombol untuk tambah misi / simpan --}}
+        <div class="button">
+            <div class="flex justify-end m-5 pt-2">
+                <button type="button" onclick="addMissionField()"
+                    class="fixed bottom-4 center bg-green-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700"
+                    style="margin-left: 20px; ">
+                    Tambah
+                </button>
+                {{-- <button type="submit" id="updateButton" --}}
+                <button type="submit" id="updateButton"
+                    class="fixed bottom-4 right-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Simpan
+                </button>
+            </div>
+        </div>
+        </form>
+
+        {{-- Tombol untuk kembali ke halaman awal visi Misi --}}
+        <a href="{{ route('admin.visimisi') }}">
+            <button type="button"
+                class="fixed bottom-4 left-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                aria-label="Kembali">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+        </a>
+
+    </main>
+    <br>
+
+    <script>
+        document.getElementById('updateButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: 'Pastikan data yang diinput sudah benar!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yakin!',
+                cancelButtonText: 'Batalkan',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('updateForm').submit(); // Submit the form
+                }
+            });
+        });
+
+        function addMissionField() {
+            const missionsDiv = document.getElementById('missions');
+            const newField = document.createElement('div');
+            newField.className = 'mt-1 flex';
+            newField.innerHTML = `
+            <input type="text" name="missions[]" required class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
+            <button type="button" onclick="removeMissionField(this)" class="ml-2 bg-red-500 text-white px-3 py-2 rounded-md">-</button>
+        `;
+            // missionsDiv.appendChild(newField);
+            missionsDiv.insertBefore(newField, missionsDiv.LastElementChild);
+        }
+
+        function removeMissionField(button) {
+            button.parentElement.remove();
+        }
+    </script>
+
+@endsection

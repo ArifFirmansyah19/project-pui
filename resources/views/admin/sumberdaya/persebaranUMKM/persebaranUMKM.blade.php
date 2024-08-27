@@ -1,346 +1,290 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Responsive Navbar with Sidebar</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  </head>
+@extends('layouts.app-admin')
+@section('title', 'halaman Persebaran UMKM admin')
+@section('content-admin')
 
-  <body class="bg-gray-100">
-    <div class="flex h-screen overflow-hidden">
-      <!-- Sidebar -->
-      <div
-        id="sidebar"
-        class="fixed inset-y-0 left-0 z-30 w-64 bg-indigo-900 shadow-lg transform -translate-x-full transition-transform duration-100 ease-in-out"
-      >
-        <div class="flex items-center justify-center px-4 py-4">
-          <img
-            src="../../img/logo.png"
-            alt="Logo"
-            class="h-16 w-auto object-contain mt-4"
-          />
-        </div>
-        <nav class="mt-5 ml-2">
-          <a
-            href="#"
-            class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-            >Dashboard</a
-          >
-          <div class="relative">
-            <a
-              href="#"
-              id="profilSubMenuToggle"
-              class="block px-4 py-2 text-sm text-white hover:bg-gray-600 flex items-center"
-            >
-              Profil <i class="fas fa-caret-down ml-2"></i>
-            </a>
-            <div id="profilSubMenu" class="ml-4 hidden">
-              <a
-                href="../profiladmin/sejarahadmin.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Sejarah</a
-              >
-              <a
-                href="../profiladmin/visimisiadm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Visi Misi</a
-              >
-              <a
-                href="../profiladmin/strukturoradmin.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Struktur Organisasi</a
-              >
-              <a
-                href="../profiladmin/timadm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Tim</a
-              >
-            </div>
-          </div>
-          <div class="relative">
-            <a
-              href="#"
-              id="sumberdayaSubMenuToggle"
-              class="block px-4 py-2 text-sm text-white hover:bg-gray-600 flex items-center"
-            >
-              Sumber Daya <i class="fas fa-caret-down ml-2"></i>
-            </a>
-            <div id="sumberdayaSubMenu" class="ml-4 hidden">
-              <a
-                href="artikeladm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Artikel</a
-              >
-              <a
-                href="kegiatan.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Kegiatan</a
-              >
-              <a
-                href="persebaranumkm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Persebaran UMKM</a
-              >
-            </div>
-          </div>
-          <div class="relative">
-            <a
-              href="#"
-              id="kontakSubMenuToggle"
-              class="block px-4 py-2 text-sm text-white hover:bg-gray-600 flex items-center"
-            >
-              Kontak <i class="fas fa-caret-down ml-2"></i>
-            </a>
-            <div id="kontakSubMenu" class="ml-4 hidden">
-              <a
-                href="../editkontak.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Edit Kontak</a
-              >
-            </div>
-          </div>
-        </nav>
-      </div>
-      <!-- Main content -->
-      <div
-        id="main-content"
-        class="flex-1 flex flex-col overflow-y-auto transition-transform duration-100 ease-in-out"
-      >
-        <!-- Header -->
-        <nav class="bg-indigo-900 border-b border-gray-200">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-              <div class="flex items-center">
-                <button
-                  id="menu-button"
-                  class="text-white hover:text-gray-400 focus:outline-none"
-                  aria-label="Toggle Sidebar"
-                >
-                  <i class="fas fa-bars fa-lg"></i>
-                  <span class="sr-only">Toggle Sidebar</span>
-                </button>
-              </div>
-              <div class="flex items-center ml-3">
-                <div class="relative">
-                  <!-- Profile Button -->
-                  <button
-                    id="profile-menu-button"
-                    class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-transparent hover:text-gray-400"
-                  >
-                    <i
-                      class="fas fa-user-circle fa-lg text-white hover:text-gray-400"
-                    ></i>
-                  </button>
-                  <!-- Profile Menu -->
-                  <div
-                    id="profile-menu"
-                    class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-gray-700 ring-1 ring-black ring-opacity-5 hidden"
-                    role="menu"
-                    aria-orientation="vertical"
-                    aria-labelledby="profile-menu-button"
-                  >
-                    <a
-                      href="#"
-                      class="block px-4 py-2 text-sm text-white hover:bg-gray-400"
-                      role="menuitem"
-                      >Edit</a
-                    >
-                    <a
-                      href="#"
-                      class="block px-4 py-2 text-sm text-white hover:bg-gray-400"
-                      role="menuitem"
-                      >Logout</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </nav>
-        <!-- Content -->
-        <main class="flex-1 bg-gray-100 p-4 sm:p-6">
-          <div
-            id="content"
-            class="transition-transform duration-500 ease-in-out"
-          >
-            <h3
-              class="text-3xl font-bold text-center font-poppins text-indigo-900 mt-14 mb-8 p-4"
-            >
-              Peta Persebaran Sumber Daya
+    {{-- allert berhasil simpan data artikel, update --}}
+    @if (session('success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    icon: 'success'
+                });
+                //  Menghapus session 'success' agar tidak muncul lagi ketika menekan tombol kembali
+                window.history.replaceState({}, document.title, window.location.pathname);
+            });
+        </script>
+    @endif
+
+    <!-- Content -->
+    <main class="flex-1 bg-gray-100 p-4 sm:p-6">
+        <div id="content" class="transition-transform duration-500 ease-in-out">
+            <h3 class="text-3xl font-bold text-center font-poppins text-indigo-900 mt-2 mb-8 p-4">
+                Peta Persebaran Sumber Daya
             </h3>
             <div class="bg-gray-100 p-2">
-              <div id="map" class="h-96 p-2"></div>
-              <div class="flex">
-                <a href="#" class="text-green-500 mx-1 hover:text-green-700">
-                  <i class="fas fa-plus"></i>Tambah Marker
-                </a>
-              </div>
+                <div id="map" class="h-50 p-2"></div>
             </div>
-          </div>
-          <div class="bg-gray-200 p-4 mt-10">
-            <div
-              class="flex items-center justify-between mb-4 cursor-pointer"
-              onclick="toggleDropdown('list1')"
-            >
-              <h2 class="text-lg font-semibold">Potensi Alam</h2>
-              <i class="fas fa-chevron-down text-gray-600"></i>
-            </div>
-            <ul class="ml-4" id="list1" style="display: none">
-              <li>
-                <a href="#" class="text-blue-500 hover:text-blue-700"
-                  >potensi alama 1</a
-                >
-                <div class="flex">
-                  <a href="#" class="text-green-500 mx-1 hover:text-green-700">
-                    <i class="fas fa-edit"></i>
-                  </a>
-                  <a href="#" class="text-red-500 mx-1 hover:text-red-700">
-                    <i class="fas fa-trash-alt"></i>
-                  </a>
-                </div>
-              </li>
-              <li>
-                <a href="#" class="text-blue-500 hover:text-blue-700"
-                  >potensi alam 2</a
-                >
-                <div class="flex">
-                  <a href="#" class="text-green-500 mx-1 hover:text-green-700">
-                    <i class="fas fa-edit"></i>
-                  </a>
-                  <a href="#" class="text-red-500 mx-1 hover:text-red-700">
-                    <i class="fas fa-trash-alt"></i>
-                  </a>
-                </div>
-              </li>
-              <li>
-                <a href="#" class="text-blue-500 hover:text-blue-700"
-                  >potensi alam 3</a
-                >
-                <div class="flex">
-                  <a href="#" class="text-green-500 mx-1 hover:text-green-700">
-                    <i class="fas fa-edit"></i>
-                  </a>
-                  <a
-                    href="#"
-                    class="text-red-500 mx-1 hover:text-red-700 justify-center"
-                  >
-                    <i class="fas fa-trash-alt"></i>
-                  </a>
-                </div>
-              </li>
-              <li class="flex justify-end">
-                <a href="#" class="text-green-500 mx-1 hover:text-green-700">
-                  <i class="fas fa-plus"></i>
-                </a>
-              </li>
-            </ul>
+        </div>
 
-            <div
-              class="flex items-center justify-between mb-4 cursor-pointer"
-              onclick="toggleDropdown('list2')"
-            >
-              <h2 class="text-lg font-semibold font-poppins">UMKM</h2>
-              <i class="fas fa-chevron-down text-gray-600"></i>
+        {{-- Kontainer list --}}
+        <div class="bg-gray-200 p-4 mt-10">
+            {{-- Bagian Judul Konten List --}}
+            <div class="flex items-center justify-between mb-4 cursor-pointer" onclick="toggleDropdown('list2')">
+                <h4 class="font-semibold font-poppins">Persebaran Potensi Desa & UMKM</h4>
+                <i class="fas fa-chevron-down text-gray-600"></i>
             </div>
+
+            {{-- List 1 --}}
             <ul class="ml-4" id="list2" style="display: none">
-              <li>
-                <a
-                  href="detailpersebaranumkmadm.html"
-                  class="text-blue-500 hover:text-blue-700"
-                  >UMKM 1</a
-                >
-                <div class="flex">
-                  <a
-                    href="#"
-                    class="text-green-500 mx-1 hover:text-green-700"
-                    onclick="handleEdit(event)"
-                  >
-                    <i class="fas fa-edit"></i>
-                  </a>
-                  <a
-                    href="#"
-                    class="text-red-500 mx-1 hover:text-red-700"
-                    onclick="handleDelete(event)"
-                  >
-                    <i class="fas fa-trash-alt"></i>
-                  </a>
-                </div>
-              </li>
-              <li>
-                <a
-                  href="detailpersebaranumkmadm.html"
-                  class="text-blue-500 hover:text-blue-700"
-                  >UMKM 2</a
-                >
-                <div class="flex">
-                  <a
-                    href="#"
-                    class="text-green-500 mx-1 hover:text-green-700"
-                    onclick="handleEdit(event)"
-                  >
-                    <i class="fas fa-edit"></i>
-                  </a>
-                  <a
-                    href="#"
-                    class="text-red-500 mx-1 hover:text-red-700"
-                    onclick="handleDelete(event)"
-                  >
-                    <i class="fas fa-trash-alt"></i>
-                  </a>
-                </div>
-              </li>
-              <li>
-                <a
-                  href="detailpersebaranumkmadm.html"
-                  class="text-blue-500 hover:text-blue-700"
-                  >UMKM 3</a
-                >
-                <div class="flex">
-                  <a
-                    href="#"
-                    class="text-green-500 mx-1 hover:text-green-700"
-                    onclick="handleEdit(event)"
-                  >
-                    <i class="fas fa-edit"></i>
-                  </a>
-                  <a
-                    href="#"
-                    class="text-red-500 mx-1 hover:text-red-700"
-                    onclick="handleDelete(event)"
-                  >
-                    <i class="fas fa-trash-alt"></i>
-                  </a>
-                </div>
-              </li>
-              <li class="flex justify-end">
-                <a href="#" class="text-green-500 mx-1 hover:text-green-700">
-                  <i class="fas fa-plus"></i>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </main>
-      </div>
-    </div>
+                @foreach ($desas as $desa)
+                    <li>
+                        <div class="flex items-center justify-between mb-4 cursor-pointer"
+                            onclick="toggleDropdown('{{ $desa->nama_desa }}')">
+                            <h2 class="text-lg font-semibold font-poppins">{{ $desa->nama_desa }}</h2>
+                            {{-- <i class="fas fa-chevron-down text-gray-600"></i> --}}
 
-    <script src="../js/jsadmin.js"></script>
+                        </div>
+
+                        {{-- Isian list 1 --}}
+                        <ul class="ml-4" id="{{ $desa->nama_desa }}" style="display: none">
+                            <div class="container-persebaran grid grid-cols-1 lg:grid-cols-5 gap-6">
+                                {{-- Potensi Desa --}}
+                                <div class="potensi-desa p-2 col-span-3 bg-white rounded-md shadow-md">
+                                    <h5 class="text-lg font-semibold">Daftar Persebaran Potensi Desa {{ $desa->nama_desa }}
+                                    </h5>
+
+                                    @if ($desa->potensiDesa->isEmpty())
+                                        <a href="{{ route('admin.edit-desa', $desa->id) }}">
+                                            <button type="button" class="bg-red-500 text-white px-4 py-2 rounded-md mt-4">
+                                                Edit Desa dan Persebarannya
+                                            </button>
+                                        </a>
+                                        <p class="mb-5">Daftar POTENSI DESA KOSONG</p>
+                                    @else
+                                        <a href="{{ route('admin.edit-desa', $desa->id) }}">
+                                            <button type="button" class="bg-red-500 text-white px-4 py-2 rounded-md mt-4">
+                                                Edit Desa dan Persebarannya
+                                            </button>
+                                        </a>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                                            @foreach ($desa->potensiDesa as $potensi)
+                                                <div class="bg-white rounded-md shadow-md overflow-hidden">
+                                                    <div class="gambar-produk mt-2 h-100">
+                                                        <img src="{{ asset('fotoPotensiDesa/' . $potensi->foto_potensi) }}"
+                                                            alt="{{ $potensi->nama_potensi }}"
+                                                            class="w-full h-64 object-cover">
+                                                    </div>
+                                                    <div class="p-4">
+                                                        <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                                                            {{ $potensi->nama_potensi }}</h3>
+                                                        <p class="text-gray-600">{{ $potensi->deskripsi_potensi }}</p>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+
+                                {{-- UMKM Desa --}}
+                                <div class="potensi-umkm-desa p-2 col-span-2 bg-white rounded-md shadow-md">
+                                    <h5 class="text-lg font-semibold">Daftar UMKM Desa {{ $desa->nama_desa }}</h5>
+
+                                    @if ($desa->umkm->isEmpty())
+                                        <p class="mb-5">Data UMKM di Desa Ini Kosong</p>
+                                    @else
+                                        @php $no = 1; @endphp
+                                        <ul>
+                                            @foreach ($desa->umkm as $umkm)
+                                                <li class="mb-2" style="list-style-type: none;">
+                                                    <a href="{{ route('admin.detail-umkm', $umkm->id) }}"
+                                                        class="text-blue-500 hover:text-blue-700">{{ $no++ }}.
+                                                        {{ $umkm->nama_umkm }}</a>
+                                                    <div class="flex">
+                                                        <a href="{{ route('admin.edit-umkm', $umkm->id) }}">
+                                                            <button class="mx-2 text-gray-600 hover:text-gray-900">
+                                                                <i class="fas fa-edit" style="color: #ea7434;"></i>
+                                                            </button>
+                                                        </a>
+                                                        <form action="{{ route('admin.destroy-umkm', $umkm->id) }}"
+                                                            method="POST" class="text-red-500 mx-1 hover:text-red-700">
+                                                            @csrf
+                                                            <button type="submit"
+                                                                class="delete-button mx-2 text-gray-600 hover:text-gray-900">
+                                                                <i
+                                                                    class="fa-solid fa-trash text-red-600 hover:text-gray-900"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </div>
+                            </div>
+                        </ul>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+
+        <button id="tambahButton"
+            class="add-button fixed bottom-4 right-4 bg-yellow-500 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
+            aria-label="Tambah Tim">
+            <i class="fa-solid fa-plus"></i>
+        </button>
+    </main>
+    <br>
+
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="../../map.js"></script>
+
     <script>
-      function toggleDropdown(id) {
-        const list = document.getElementById(id);
-        list.style.display = list.style.display === "none" ? "block" : "none";
-      }
+        // Inisialisasi peta dengan koordinat tengah dan zoom level
+        var map = L.map('map').setView([-2.1, 102.3], 11);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Load GeoJSON data
+        fetch('/geojson/geopark_merangin.json') // path file GeoJSON yang di simpan
+            .then(response => response.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    style: function(feature) {
+                        return {
+                            color: 'blue',
+                            fillColor: '#f03',
+                            fillOpacity: 0.1
+                        };
+                    },
+                    onEachFeature: function(feature, layer) {
+                        if (feature.properties && feature.properties.name) {
+                            layer.bindPopup(feature.properties.name);
+                        }
+                    }
+                }).addTo(map);
+            });
+
+        // Buat ikon marker hijau khusus untuk desa
+        var desaIcon = L.icon({
+            iconUrl: '../icon-marker/markergreen.png', // Ganti dengan path ikon Anda
+            iconSize: [22, 34], // Ukuran ikon
+            iconAnchor: [16, 32], // Titik anchor (bagian bawah tengah ikon)
+            popupAnchor: [0, -32] // Titik anchor popup
+        });
+        // Data lokasi desa dari controller
+        var desas = @json($desas);
+
+        // Tambahkan marker dengan ikon hijau untuk setiap desa
+        desas.forEach(function(desa) {
+            var popupContent =
+                '<div> <a href="persebaran/desa/detailDesa/' + desa.id + '">' +
+                '<strong> <center>Data Potensi </center>' + desa
+                .nama_desa + '</strong> </a> </div>';
+
+            var marker = L.marker([desa.latitude, desa.longitude], {
+                    icon: desaIcon
+                })
+                .addTo(map)
+                .bindPopup(popupContent);
+        });
+
+
+        //Data UMKM dari controller
+        var umkms = @json($umkms);
+
+        // Tambahkan marker untuk setiap lokasi UMKM
+        umkms.forEach(function(umkm) {
+            var popupContent =
+                '<div> <a href="/admin/persebaran/umkm/detailUMKM/' + umkm.id + '">' + umkm.nama_umkm +
+                '<br>' + umkm
+                .deskripsi_umkm + '</a></div>'
+
+            var marker = L.marker([umkm.latitude, umkm.longitude])
+                .addTo(map)
+                .bindPopup(popupContent);
+        });
+
+        // Buat ikon khusus
+        var customIcon = L.icon({
+            iconUrl: 'path/to/your/icon.png', // Ganti dengan path ikon Anda
+            iconSize: [32, 32], // Ukuran ikon
+            iconAnchor: [16, 32], // Titik anchor (bagian bawah tengah ikon)
+            popupAnchor: [0, -32] // Titik anchor popup
+        });
+
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+
+            // Hapus marker sebelumnya jika ada
+            if (marker) {
+                map.removeLayer(marker);
+            }
+
+            // Tambahkan marker pada lokasi yang diklik
+            marker = L.marker([lat, lng]), {
+                    icon: customIcon
+                }
+                .addTo(map);
+        });
+
+        function toggleDropdown(id) {
+            const list = document.getElementById(id);
+            list.style.display = list.style.display === "none" ? "block" : "none";
+        }
+
+        // pop up untuk memunculkan menu create desa, create UMKM dan create Produk UMKM dari tombol tambahButton
+        document.getElementById('tambahButton').addEventListener('click', function() {
+            Swal.fire({
+                title: 'Pilih yang Ingin Ditambahkan',
+                showCancelButton: true,
+                showDenyButton: false,
+                showConfirmButton: false,
+                showCloseButton: true,
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'bg-blue-500 text-white px-4 py-2 rounded',
+                    cancelButton: 'bg-red-500 text-white px-4 py-2 rounded',
+                    denyButton: 'bg-yellow-500 text-white px-4 py-2 rounded'
+                },
+                html: `
+            <div class="container-button-option mt-2">
+                <button onclick="location.href='{{ route('admin.create-desa') }}'"
+                    class="bg-blue-900 text-white px-4 py-2 mb-3 rounded w-[200px] ">Tambah Desa</button>
+                <br>
+                <button onclick="location.href='{{ route('admin.create-umkm') }}'"
+                    class="bg-blue-900 text-white px-4 py-2 mb-3 rounded w-[200px] ">Tambah Daftar UMKM</button>
+                <br>
+            </div>
+                   `,
+                cancelButtonText: 'Batal'
+            });
+        });
+
+        // Memunculkan pop-up untuk edit dan delete-button
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const form = this.closest('form'); // Temukan formulir terdekat dari tombol
+                const persebaranId = this.getAttribute('data-id');
+                event.preventDefault(); // Cegah tindakan default
+
+                Swal.fire({
+                    title: 'Apakah Anda yakin ingin menghapus?',
+                    text: "Anda tidak akan dapat mengembalikan artikel ini!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Hapus!',
+                    cancelButtonText: 'Batalkan'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit(); // Kirim formulir penghapusan
+                    }
+                });
+            });
+        });
     </script>
-  </body>
-</html>
+@endsection

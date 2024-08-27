@@ -1,408 +1,330 @@
-   <!--konten pertama-->
+<!--konten pertama-->
+<div class="content">
     <div class="container mx-auto py-24">
-      <div class="flex items-center">
-        <!-- Penjelasan gambar -->
-        <div class="w-1/2 bg-cream p-6 rounded-lg animate-slide-in-bottom">
-          <h2
-            class="text-indigo-900 text-2xl font-semibold mb-4 font-poppins ml-10"
-          >
-            PUI GEMAR
-          </h2>
-          <p class="text-indigo-900 font-poppins ml-10">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book.
-          </p>
-          <!-- Tautan -->
-          <a
-            href="link_ke_halaman_lain"
-            class="text-blue-500 hover:underline ml-10 mt-2 block"
-            >Sejarah PUI GEMAR</a
-          >
+        <div class="flex flex-col md:flex-row items-center">
+            <!-- Penjelasan gambar -->
+            <div class="w-full md:w-1/2 bg-cream p-6 rounded-lg animate-slide-in-bottom">
+                <h2 class="text-indigo-900 text-2xl font-semibold mb-4 font-poppins ml-10 text-center md:text-left">
+                    PUI GEMAR
+                </h2>
+                <p class="text-indigo-900 font-poppins ml-10 text-center md:text-left">
+                    PUI-GEMAR UNJA merupakan salah satu PUI yang ada di Universitas
+                    Jambi. PUI GEMAR didirikan pada tanggal 13 Mei 2020 berdasarkan SK Rektor
+                    Universitas Jambi yang memiliki lingkup di bidang penelitian dan
+                    pembelajaran pada kawasan Geowisata Merangin Jambi.
+                    Geopark Merangin resmi didirikan pada tahun 2012, menyandang
+                    status Geopark Nasional pada tahun 2013, dan pada 24 Mei 2023 diterima
+                    menjadi UNESCO Global Geopark (UGGp) sekaligus menjadi Geopark Global
+                    UNESCO yang pertama di provinsi Jambi. Geopark Merangin memiliki potensi alam berupa keragaman
+                    geologi
+                    yang tersebar di sepanjang Sungai Merangin. Fosil flora dan fauna di
+                    kawasan ini diperkirakan berumur sekitar 250-290 juta tahun lalu yang
+                    terdapat pada batuan gunung api bersisipan sedimen laut berupa batu
+                    gamping dan serpih gamping. Kawasan Geopark Merangin tersebar di sepanjang aliran Sungai Batang
+                    Merangin dan Sungai
+                    Mengkarang. Secara geologi, Sungai Mengkarang tersusun dari batuan dari
+                    Formasi Mengkarang (Pm), ranit Tantan (TJRgr), dan Formasi Kasai (QTK). Geopark memiliki peranan
+                    penting untuk membuka peluang
+                    penelitian, pendidikan serta pengembangan ekonomi masyarakat setempat.
+                    Geopark dapat dikembangkan menjadi objek daya tarik wisata (geotourism),
+                    kegiatan perdagangan barang kerajinan (geoproducts) dan makanan khas
+                    daerah atau UMKM.
+                </p>
+
+                <!-- Tautan -->
+                <a href="{{ route('sejarah') }}" class="text-blue-500 hover:underline ml-10 mt-2 block">
+                    Sejarah PUI GEMAR
+                </a>
+            </div>
+            <!-- Gambar -->
+            <div class="w-full md:w-2/5 mb-6 md:mb-0 animate-slide-in-right">
+                <img src="{{ asset('img/logo.png') }}" alt="Gambar" class="w-full rounded-lg" />
+            </div>
         </div>
-        <!-- Gambar -->
-        <div class="w-2/5 ml-10 animate-slide-in-right">
-          <img src="img/logo.png" alt="Gambar" class="w-full rounded-lg" />
-        </div>
-      </div>
     </div>
 
     <!--konten kedua-->
-    <div
-      class="overflow-x-auto whitespace-nowrap bg-indigo-900 py-4 px-8 shadow-md"
-    >
-      <h2
-        class="text-3xl text-center font-Roboto font-bold text-white mb-5 relative mt-2"
-      >
-        TEAM
+    <div class="overflow-x-auto whitespace-nowrap bg-indigo-900 py-4 px-8 shadow-md">
+        <h2 class="text-3xl text-center font-Roboto font-bold text-white mb-5 relative mt-2">
+            TEAM
 
-        <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2">
-          <div class="w-20 h-1 bg-white"></div>
+            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+                <div class="w-20 h-1 bg-white"></div>
+            </div>
+        </h2>
+        <div class="overflow-x-auto whitespace-nowrap bg-indigo-900 py-4 px-8 shadow-md">
+            <div class="flex" style="height: 500px">
+                @foreach ($dataTimPui as $tim)
+                    <!-- Kartu 1 -->
+                    <a href="/tim-detail/{{ $tim->id }}"
+                        class="team-member flex-none w-50 mr-4 bg-white rounded-lg shadow-md overflow-hidden transform transition-transform hover:scale-105"
+                        style="width: 400px; height:500px;">
+                        <img src="{{ asset('fotoTim/' . $tim->foto) }}" alt="foto {{ $tim->nama }}"
+                            class="w-full h-40 object-cover object-center" style="width: 400px; height:300px;" />
+                        <div class="p-4">
+                            <h3 class="text-lg text-center mb-2">{{ $tim->nama }}</h3>
+                            <p class="text-sm text-center">Divisi : {{ $tim->divisi->nama_divisi }}</p>
+                            <p class="text-sm text-center">Jabatan Sebagai : {{ $tim->jabatan->nama_jabatan }}</p>
+                        </div>
+                    </a>
+                @endforeach
+
+                <div
+                    class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div
+                        class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <h3 class="text-lg font-semibold text-indigo-600">
+                            Lihat Semua
+                        </h3>
+                    </div>
+                </div>
+                </a>
+            </div>
         </div>
-      </h2>
-      <div
-        class="overflow-x-auto whitespace-nowrap bg-indigo-900 py-4 px-8 shadow-md"
-      >
-        <div class="flex">
-          <!-- Kartu 1 -->
-          <a
-            href="#"
-            class="team-member flex-none w-50 mr-4 bg-white rounded-lg shadow-md overflow-hidden transform transition-transform hover:scale-105"
-          >
-            <img
-              src="{{ asset('img/pas1.jpg') }}"
-              alt="Team Member 1"
-              class="w-full h-40 object-cover object-center"
-            />
-            <div class="p-4">
-              <h3 class="text-lg text-center mb-2">Jenny</h3>
-              <p class="text-sm text-center">Ketua</p>
-            </div>
-          </a>
-          <!-- Kartu 2 -->
-          <a
-            href="#"
-            class="team-member flex-none w-50 mr-4 bg-white rounded-lg shadow-md overflow-hidden transform transition-transform hover:scale-105"
-          >
-            <img
-              src="{{ asset('img/pas1.jpg') }}"
-              alt="Team Member 1"
-              class="w-full h-40 object-cover object-center"
-            />
-            <div class="p-4">
-              <h3 class="text-lg text-center font-semibold mb-2">Jenny</h3>
-              <p class="text-sm text-center text-gray-600">Ketua</p>
-            </div>
-          </a>
-
-          <!--kartu 3-->
-          <a
-            href="#"
-            class="team-member flex-none w-50 mr-4 bg-white rounded-lg shadow-md overflow-hidden transform transition-transform hover:scale-105"
-          >
-            <img
-              src="{{ asset('img/pas1.jpg') }}"
-              alt="Team Member 1"
-              class="w-full h-40 object-cover object-center"
-            />
-            <div class="p-4">
-              <h3 class="text-lg text-center font-semibold mb-2">Jenny</h3>
-              <p class="text-sm text-center text-gray-600">Ketua</p>
-            </div>
-          </a>
-
-          <!--kartu 4-->
-          <a
-            href="#"
-            class="team-member flex-none w-50 mr-4 bg-white rounded-lg shadow-md overflow-hidden transform transition-transform hover:scale-105"
-          >
-            <img
-              src="{{ asset('img/pas1.jpg') }}"
-              alt="Team Member 1"
-              class="w-full h-40 object-cover object-center"
-            />
-            <div class="p-4">
-              <h3 class="text-lg text-center font-semibold mb-2">Jenny</h3>
-              <p class="text-sm text-center text-gray-600">Ketua</p>
-            </div>
-          </a>
-
-          <!--kartu 5-->
-          <a
-            href="#"
-            class="team-member flex-none w-50 mr-4 bg-white rounded-lg shadow-md overflow-hidden transform transition-transform hover:scale-105"
-          >
-            <img
-              src="img/pas1.jpg"
-              alt="Team Member 1"
-              class="w-full h-40 object-cover object-center"
-            />
-            <div class="p-4">
-              <h3 class="text-lg text-center font-semibold mb-2">Jenny</h3>
-              <p class="text-sm text-center text-gray-600">Ketua</p>
-            </div>
-          </a>
-
-          <!--kartu 6-->
-          <a
-            href="#"
-            class="team-member flex-none w-50 mr-4 bg-white rounded-lg shadow-md overflow-hidden transform transition-transform hover:scale-105"
-          >
-            <img
-              src="img/pas1.jpg"
-              alt="Team Member 1"
-              class="w-full h-40 object-cover object-center"
-            />
-            <div class="p-4">
-              <h3 class="text-lg text-center font-semibold mb-2">Jenny</h3>
-              <p class="text-sm text-center text-gray-600">Ketua</p>
-            </div>
-          </a>
-
-          <!--kartu 7-->
-          <a
-            href="#"
-            class="team-member flex-none w-50 mr-4 bg-white rounded-lg shadow-md overflow-hidden transform transition-transform hover:scale-105"
-          >
-            <img
-              src="img/pas1.jpg"
-              alt="Team Member 1"
-              class="w-full h-40 object-cover object-center"
-            />
-            <div class="p-4">
-              <h3 class="text-lg text-center font-semibold mb-2">Jenny</h3>
-              <p class="text-sm text-center text-gray-600">Ketua</p>
-            </div>
-          </a>
-
-          <!--kartu 8-->
-          <a
-            href="#"
-            class="team-member flex-none w-50 mr-4 bg-white rounded-lg shadow-md overflow-hidden transform transition-transform hover:scale-105"
-          >
-            <img
-              src="img/pas1.jpg"
-              alt="Team Member 1"
-              class="w-full h-40 object-cover object-center"
-            />
-            <div class="p-4">
-              <h3 class="text-lg text-center font-semibold mb-2">Jenny</h3>
-              <p class="text-sm text-center text-gray-600">Ketua</p>
-            </div>
-          </a>
-
-          <!--kartu 9-->
-          <a
-            href="#"
-            class="team-member flex-none w-50 mr-4 bg-white rounded-lg shadow-md overflow-hidden transform transition-transform hover:scale-105"
-          >
-            <img
-              src="img/pas1.jpg"
-              alt="Team Member 1"
-              class="w-full h-40 object-cover object-center"
-            />
-            <div class="p-4">
-              <h3 class="text-lg text-center font-semibold mb-2">Jenny</h3>
-              <p class="text-sm text-center text-gray-600">Ketua</p>
-            </div>
-          </a>
-
-          <!-- Kartu Terakhir  -->
-          <a
-            href="/team"
-            class="team-member flex-none w-50 mr-8 bg-white rounded-lg shadow-md overflow-hidden relative group transform transition-transform hover:scale-105"
-          >
-            <img
-              src="img/pas1.jpg"
-              alt="Team Member 1"
-              class="w-full h-40 object-cover object-center filter grayscale opacity-90"
-            />
-            <div class="p-4">
-              <h3 class="text-lg text-center font-semibold mb-2">Jenny</h3>
-              <p class="text-sm text-center">Ketua</p>
-            </div>
-            <div
-              class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-              <div
-                class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <h3 class="text-lg font-semibold text-indigo-600">
-                  Lihat Semua
-                </h3>
-              </div>
-            </div>
-          </a>
-        </div>
-      </div>
     </div>
     <!--konten ketiga-->
 
-    <div
-      class="container mx-auto py-8 bg-indigo-900 text-white shadow-md p-6 mt-32"
-    >
-      <h2
-        class="text-3xl font-bold text-center font-poppins text-white mb-5 relative mt-2"
-      >
-        ARTIKEL
+    <div class="container mx-auto py-8 bg-indigo-900 text-white shadow-md p-6 mt-32">
+        <h2 class="text-3xl font-bold text-center font-poppins text-white mb-5 relative mt-2">
+            ARTIKEL
 
-        <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2">
-          <div class="w-32 h-1 bg-white"></div>
+            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+                <div class="w-32 h-1 bg-white"></div>
+            </div>
+        </h2>
+        <!-- Artikel -->
+        @foreach ($articles as $article)
+            <div class="mb-8 hover:shadow-lg transition duration-300">
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold font-poppins mb-0">
+                        {{ $article->judul }}
+                    </h3>
+                    <p class="text-sm text-gray-200 mb-4">{{ $article->created_at }}</p>
+                    <p class="text-sm font-poppins">
+                        {!! $article->deskripsi !!}
+                    </p>
+                    <a href="{{ route('artikel-detail', $article->id) }}"
+                        class="block text-blue-400 font-semibold py-2 hover:text-blue-300 transition duration-300">Baca
+                        Selengkapnya</a>
+                    <div class="flex items-center mt-4 space-x-4">
+                        <button
+                            class="flex items-center text-gray-400 hover:text-blue-400 transition duration-300 commentBtn"
+                            data-article-id="{{ $article->id }}">
+                            <i class="far fa-comment mr-1"></i>
+                            <span class="commentCount">{{ $article->totalComments }}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <hr class="border-white my-1" />
+        @endforeach
+
+        <!-- Link Lihat Semua -->
+        <div class="text-center">
+            <a href="{{ route('artikel') }}"
+                class="block text-blue-400 font-semibold mt-4 hover:text-blue-600 transition duration-300 border border-blue-200 rounded-md py-2 px-4 inline-block">Lihat
+                Semua</a>
         </div>
-      </h2>
-      <!-- Artikel 1 -->
-      <div class="mb-8 hover:shadow-lg transition duration-300">
-        <div class="p-6">
-          <h3 class="text-lg font-semibold font-poppins mb-0">
-            Judul Artikel 1
-          </h3>
-          <p class="text-sm text-gray-200 mb-4">01 April 2024</p>
-          <p class="text-sm font-poppins">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's
-          </p>
-          <a
-            href="#"
-            class="block text-blue-400 font-semibold py-2 hover:text-blue-300 transition duration-300"
-            >Baca Selengkapnya</a
-          >
-        </div>
-      </div>
-      <hr class="border-white my-1" />
-      <!-- Artikel 2 -->
-      <div class="mb-8 hover:shadow-lg transition duration-300">
-        <div class="p-6">
-          <h3 class="text-lg font-semibold font-poppins mb-0">
-            Judul Artikel 2
-          </h3>
-          <p class="text-sm text-gray-200 mb-4">01 April 2024</p>
-          <p class="text-sm font-poppins">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's
-          </p>
-          <a
-            href="#"
-            class="block text-blue-400 font-semibold py-2 hover:text-blue-300 transition duration-300"
-            >Baca Selengkapnya</a
-          >
-        </div>
-      </div>
-      <hr class="border-white my-1" />
-      <!-- Artikel 3 -->
-      <div class="mb-8 hover:shadow-lg transition duration-300">
-        <div class="p-6">
-          <h3 class="text-lg font-semibold font-poppins mb-0">
-            Judul Artikel 3
-          </h3>
-          <p class="text-sm text-gray-200 mb-4">01 April 2024</p>
-          <p class="text-sm font-poppins">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's
-          </p>
-          <a
-            href="#"
-            class="block text-blue-400 font-semibold py-2 hover:text-blue-300 transition duration-300"
-            >Baca Selengkapnya</a
-          >
-        </div>
-      </div>
-      <!-- Link Lihat Semua -->
-      <div class="text-center">
-        <a
-          href="#"
-          class="block text-blue-400 font-semibold mt-4 hover:text-blue-600 transition duration-300 border border-blue-200 rounded-md py-2 px-4 inline-block"
-          >Lihat Semua</a
-        >
-      </div>
     </div>
     <!--konten keempat-->
     <div class="container mx-auto py-8">
-      <h2
-        class="text-3xl font-bold text-center font-poppins text-indigo-900 mt-5 mb-8"
-      >
-        Kegiatan
-      </h2>
-      <div class="container mx-auto py-8 w-full relative">
-        <div class="carousel-container flex items-center justify-center">
-          <!-- Slide 1 -->
-          <div class="slide h-96 w-3/4">
-            <img
-              src="img/dok1.jpg"
-              alt="Documentation 1"
-              class="w-full h-full object-cover"
-            />
-            <div class="bg-gray-100 text-center mb-4">
-              <h3 class="text-lg font-semibold mb-2">Documentation Title 1</h3>
-              <p class="text-sm text-gray-600">
-                Short description of documentation 1
-              </p>
-            </div>
-          </div>
-          <!-- Slide 2 -->
-          <div class="slide h-96 w-3/4 hidden">
-            <img
-              src="img/dok2.jpg"
-              alt="Documentation 2"
-              class="w-full h-full object-cover"
-            />
-            <div class="bg-gray-100 text-center mb-4">
-              <h3 class="text-lg font-semibold mb-2">Documentation Title 2</h3>
-              <p class="text-sm text-gray-600">
-                Short description of documentation 2
-              </p>
-            </div>
-          </div>
-          <!-- Slide 3 -->
-          <div class="slide h-96 w-3/4 hidden">
-            <img
-              src="img/dok3.jpg"
-              alt="Documentation 3"
-              class="w-full h-full object-cover"
-            />
-            <div class="bg-gray-100 text-center mb-4">
-              <h3 class="text-lg font-semibold mb-2">Documentation Title 3</h3>
-              <p class="text-sm text-gray-600">
-                Short description of documentation 3
-              </p>
-            </div>
-          </div>
-          <!-- Slide 4 -->
-          <div class="slide h-96 w-3/4 relative hidden">
-            <img
-              src="img/dok4.jpg"
-              alt="Documentation 4"
-              class="w-full h-full object-cover"
-            />
+        <h2 class="text-3xl font-bold text-center font-poppins text-indigo-900 mt-5 mb-8">
+            Kegiatan
+        </h2>
+        <div class="container mx-auto py-8 w-full relative">
+            <div class="carousel-container flex items-center justify-center">
 
-            <div
-              class="absolute inset-0 flex flex-col justify-center items-center bg-black bg-opacity-75"
-            >
-              <div class="text-center text-white">
-                <h3 class="text-lg font-semibold mb-2">
-                  Documentation Title 4
-                </h3>
-                <p class="text-sm text-gray-300 mb-4">
-                  Short description of documentation 4
-                </p>
-                <a
-                  href="#"
-                  class="text-indigo-800 hover:text-blue-200 transition duration-300"
-                  >Lihat Semua</a
-                >
-              </div>
+                @foreach ($kegiatans as $kegiatan)
+                    <!-- Slide 1 -->
+                    <div class="slide h-96 w-3/4">
+                        <img src="{{ asset('storage/' . $kegiatan->foto_kegiatan) }}"
+                            alt="{{ $kegiatan->nama_kegiatan }}" class="w-full h-full object-cover" />
+                        <div class="bg-gray-100 text-center mb-4">
+                            <h3 class="text-lg font-semibold mb-1 mt-2">{{ $kegiatan->nama_kegiatan }}</h3>
+                            <p class="text-sm text-gray-600 line-clamp pt-5">
+                                {!! $kegiatan->deskripsi_kegiatan !!}
+                            </p>
+                            <a href="{{ route('detail-kegiatan', $kegiatan->id) }}">
+                                Lihat Selengkapnya
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+
+                <div class="dots absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-2 mt-4 my-16">
+                    <span class="dot bg-gray-300 w-2 h-2 rounded-full cursor-pointer selected"></span>
+                    <span class="dot bg-gray-300 w-2 h-2 rounded-full cursor-pointer"></span>
+                    <span class="dot bg-gray-300 w-2 h-2 rounded-full cursor-pointer"></span>
+                    <span class="dot bg-gray-300 w-2 h-2 rounded-full cursor-pointer"></span>
+
+                    <!-- dot sesuai jumlah slide -->
+                </div>
             </div>
-          </div>
         </div>
-        <div
-          class="dots absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-2 mt-4 my-16"
-        >
-          <span
-            class="dot bg-gray-300 w-2 h-2 rounded-full cursor-pointer selected"
-          ></span>
-          <span
-            class="dot bg-gray-300 w-2 h-2 rounded-full cursor-pointer"
-          ></span>
-          <span
-            class="dot bg-gray-300 w-2 h-2 rounded-full cursor-pointer"
-          ></span>
-          <span
-            class="dot bg-gray-300 w-2 h-2 rounded-full cursor-pointer"
-          ></span>
 
-          <!-- dot sesuai jumlah slide -->
+        <div class="text-center">
+            <a href="{{ route('kegiatan') }}"
+                class="block text-blue-400 font-semibold mt-4 hover:text-blue-600 transition duration-300 border border-blue-200 rounded-md py-2 px-4 inline-block">Lihat
+                Semua</a>
         </div>
-      </div>
-    </div>
 
-    <!-- Konten kelima: Persebaran Sumber Daya -->
-    <div class="container mx-auto py-8">
-      <h2
-        class="text-3xl font-bold text-center font-poppins text-indigo-900 mt-5 mb-8"
-      >
-        Persebaran Sumber Daya
-      </h2>
-      <div class="bg-gray-100 p-10">
-        <div id="map" class="h-80"></div>
-      </div>
+        <!-- Konten kelima: Persebaran Sumber Daya -->
+        <div class="container mx-auto py-8 mt-20">
+            <h2 class="text-3xl font-bold text-center font-poppins text-indigo-900 mt-5 mb-8">
+                Persebaran Sumber Daya
+            </h2>
+            <div class="bg-gray-100 p-10">
+                <div id="map"></div>
+
+                <!-- Modal -->
+                <div id="commentModal"
+                    class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50">
+                    <div class="bg-white p-6 rounded-lg w-full max-w-md">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-semibold">Tulis Komentar</h2>
+                            <button id="closeModal" class="text-gray-500 hover:text-gray-700 text-xl">&times;</button>
+                        </div>
+                        <div id="modalContent">
+                            <!-- Comments will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+
+                <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+                <script>
+                    // Inisialisasi peta dengan koordinat tengah dan zoom level
+                    var map = L.map('map').setView([-2.1, 102.3], 11);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map);
+
+                    //control zoom
+                    L.control.zoom({
+                        position: 'topright'
+                    }).addTo(map);
+
+                    // Load GeoJSON data
+                    fetch('/geojson/geopark_merangin.json') // Ganti dengan path file GeoJSON yang Anda simpan
+                        .then(response => response.json())
+                        .then(data => {
+                            L.geoJSON(data, {
+                                style: function(feature) {
+                                    return {
+                                        color: 'blue',
+                                        fillColor: '#f03',
+                                        fillOpacity: 0.1
+                                    };
+                                },
+                                onEachFeature: function(feature, layer) {
+                                    if (feature.properties && feature.properties.name) {
+                                        layer.bindPopup(feature.properties.name);
+                                    }
+                                }
+                            }).addTo(map);
+                        });
+
+                    // Buat ikon marker hijau khusus untuk desa
+                    var desaIcon = L.icon({
+                        iconUrl: '../icon-marker/markergreen.png', // Ganti dengan path ikon Anda
+                        iconSize: [22, 34], // Ukuran ikon
+                        iconAnchor: [16, 32], // Titik anchor (bagian bawah tengah ikon)
+                        popupAnchor: [0, -32] // Titik anchor popup
+                    });
+                    // Data lokasi desa dari controller
+                    var desas = @json($desas);
+
+                    // Tambahkan marker dengan ikon hijau untuk setiap desa
+                    desas.forEach(function(desa) {
+                        var popupContent =
+                            '<div> <a href="persebaran/detail-desa/' + desa.id + '">' +
+                            '<strong> <center>Data Potensi </center>' + desa
+                            .nama_desa + '</strong> </a> </div>';
+
+                        var marker = L.marker([desa.latitude, desa.longitude], {
+                                icon: desaIcon
+                            })
+                            .addTo(map)
+                            .bindPopup(popupContent);
+                    });
+
+                    //Data UMKM dari controller
+                    var umkms = @json($umkms);
+
+                    // Tambahkan marker untuk setiap lokasi UMKM
+                    umkms.forEach(function(umkm) {
+                        var popupContent =
+
+                            '<div> <a href="persebaran/detail-umkm/' + umkm.id + '">' + umkm.nama_umkm + '</a> <br>' + umkm
+                            .alamat_umkm + '<br><br>' + umkm.deskripsi_umkm + '</div>'
+
+                        var marker = L.marker([umkm.latitude, umkm.longitude])
+                            .addTo(map)
+                            .bindPopup(popupContent);
+                    });
+
+                    // Buat ikon khusus
+                    var customIcon = L.icon({
+                        iconUrl: 'path/to/your/icon.png', // Ganti dengan path ikon Anda
+                        iconSize: [32, 32], // Ukuran ikon
+                        iconAnchor: [16, 32], // Titik anchor (bagian bawah tengah ikon)
+                        popupAnchor: [0, -32] // Titik anchor popup
+                    });
+
+                    map.on('click', function(e) {
+                        var lat = e.latlng.lat;
+                        var lng = e.latlng.lng;
+
+                        // Hapus marker sebelumnya jika ada
+                        if (marker) {
+                            map.removeLayer(marker);
+                        }
+
+                        // Tambahkan marker pada lokasi yang diklik
+                        marker = L.marker([lat, lng]), {
+                                icon: customIcon
+                            }
+                            .addTo(map);
+                    });
+
+                    // dokumentasi
+                    document.addEventListener("DOMContentLoaded", function() {
+                        const slides = document.querySelectorAll(".slide");
+                        const dots = document.querySelectorAll(".dot");
+                        let currentSlide = 0;
+
+                        function showSlide(n) {
+                            slides.forEach((slide) => slide.classList.add("hidden"));
+                            dots.forEach((dot) => dot.classList.remove("bg-indigo-600"));
+                            slides[n].classList.remove("hidden");
+                            dots[n].classList.add("bg-indigo-600");
+                            currentSlide = n;
+                        }
+
+                        function nextSlide() {
+                            currentSlide = (currentSlide + 1) % slides.length;
+                            showSlide(currentSlide);
+                            setActiveDot(currentSlide);
+                        }
+
+                        setInterval(nextSlide, 4000); // Ganti slide setiap 20 detik
+
+                        dots.forEach((dot, index) => {
+                            dot.addEventListener("click", () => {
+                                showSlide(index);
+                                setActiveDot(index);
+                            });
+                        });
+
+                        function setActiveDot(index) {
+                            dots.forEach((dot) => dot.classList.remove("bg-indigo-600"));
+                            dots[index].classList.add("bg-indigo-600");
+                        }
+
+                        showSlide(0); // Tampilkan slide pertama saat halaman dimuat
+                    });
+                </script>
+            </div>
+        </div>
     </div>
+</div>

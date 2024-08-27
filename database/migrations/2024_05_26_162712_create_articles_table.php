@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable();
-            $table->string('slug')->nullable();
-            $table->string('image')->nullable();
-            $table->string('desc',1000)->nullable();
+            $table->string('judul');
+            $table->string('penulis');
+            $table->string('foto_artikel')->nullable();
+            $table->longText('deskripsi');
             $table->timestamps();
         });
     }

@@ -45,8 +45,8 @@ class ResetPasswordMail extends Mailable
     {
         return new Content(
             view: 'admin/login.mail-resetPw',
-            with:[
-                'token'=>$this->token
+            with: [
+                'token' => $this->token
             ]
         );
     }

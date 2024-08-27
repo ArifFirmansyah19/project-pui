@@ -1,311 +1,114 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Tim</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-  </head>
+@extends('layouts.app-admin')
+@section('title', 'Halaman Edit Tim PUI GEMAR')
+@section('content-admin')
 
-  <body class="bg-gray-100">
-    <div class="flex h-screen overflow-hidden">
-      <!-- Sidebar -->
-      <div
-        id="sidebar"
-        class="fixed inset-y-0 left-0 z-30 w-64 bg-indigo-900 shadow-lg transform -translate-x-full transition-transform duration-100 ease-in-out"
-      >
-        <div class="flex items-center justify-center px-4 py-4">
-          <img
-            src="../../img/logo.png"
-            alt="Logo"
-            class="h-16 w-auto object-contain mt-4"
-          />
-        </div>
-        <nav class="mt-5 ml-2">
-          <a
-            href="../homeadmin.html"
-            class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-            >Dashboard</a
-          >
-          <div class="relative">
-            <a
-              href="#"
-              id="profilSubMenuToggle"
-              class="block px-4 py-2 text-sm text-white hover:bg-gray-600 flex items-center"
-            >
-              Profil <i class="fas fa-caret-down ml-2"></i>
-            </a>
-            <div id="profilSubMenu" class="ml-4 hidden">
-              <a
-                href="sejarahadmin.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Sejarah</a
-              >
-              <a
-                href="visimisiadm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Visi Misi</a
-              >
-              <a
-                href="strukturoradmin.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Struktur Organisasi</a
-              >
-              <a
-                href="timadm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Tim</a
-              >
-            </div>
-          </div>
-          <div class="relative">
-            <a
-              href="#"
-              id="sumberdayaSubMenuToggle"
-              class="block px-4 py-2 text-sm text-white hover:bg-gray-600 flex items-center"
-            >
-              Sumber Daya <i class="fas fa-caret-down ml-2"></i>
-            </a>
-            <div id="sumberdayaSubMenu" class="ml-4 hidden">
-              <a
-                href="../sdadmin/artikeladm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Artikel</a
-              >
-              <a
-                href="sdadmin/persebaranumkm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Kegiatan</a
-              >
-              <a
-                href="../sdadmin/persebaranumkm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Persebaran UMKM</a
-              >
-            </div>
-          </div>
-          <div class="relative">
-            <a
-              href="#"
-              id="kontakSubMenuToggle"
-              class="block px-4 py-2 text-sm text-white hover:bg-gray-600 flex items-center"
-            >
-              Kontak <i class="fas fa-caret-down ml-2"></i>
-            </a>
-            <div id="kontakSubMenu" class="ml-4 hidden">
-              <a
-                href="../editkontak.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Edit Kontak</a
-              >
-            </div>
-          </div>
-        </nav>
-      </div>
-
-      <!-- Main content -->
-      <div
-        id="main-content"
-        class="flex-1 flex flex-col overflow-hidden transition-transform duration-100 ease-in-out"
-      >
-        <!-- Header -->
-        <nav class="bg-indigo-900 border-b border-gray-200">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-              <div class="flex items-center">
-                <button
-                  id="menu-button"
-                  class="text-white hover:text-gray-400 focus:outline-none"
-                  aria-label="Toggle Sidebar"
-                >
-                  <i class="fas fa-bars fa-lg"></i>
-                  <span class="sr-only">Toggle Sidebar</span>
-                </button>
-              </div>
-              <div class="flex items-center ml-3">
-                <div class="relative">
-                  <!-- Profile Button -->
-                  <button
-                    id="profile-menu-button"
-                    class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-transparent hover:text-gray-400"
-                  >
-                    <i
-                      class="fas fa-user-circle fa-lg text-white hover:text-gray-400"
-                    ></i>
-                  </button>
-                  <!-- Profile Menu -->
-                  <div
-                    id="profile-menu"
-                    class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-gray-700 ring-1 ring-black ring-opacity-5 hidden"
-                    role="menu"
-                    aria-orientation="vertical"
-                    aria-labelledby="profile-menu-button"
-                  >
-                    <a
-                      href="#"
-                      class="block px-4 py-2 text-sm text-white hover:bg-gray-400"
-                      role="menuitem"
-                      >Edit</a
-                    >
-                    <a
-                      href="#"
-                      class="block px-4 py-2 text-sm text-white hover:bg-gray-400"
-                      role="menuitem"
-                      >Logout</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </nav>
-        <!-- Content -->
-        <main class="flex-1 bg-gray-100 p-4 sm:p-6 overflow-y-auto">
-          <div
-            id="content"
-            class="transition-transform duration-500 ease-in-out"
-          >
+    <main class="flex-1 bg-gray-100 p-4 sm:p-6 overflow-y-auto">
+        <div id="content" class="transition-transform duration-500 ease-in-out">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">
-              Formulir Anggota Tim
+                Halaman Edit Data TIM PUI GEMAR
             </h2>
-            <form action="#" method="POST" class="space-y-4">
-              <!-- Nama -->
-              <div>
-                <label
-                  for="nama"
-                  class="block text-sm font-medium text-gray-700"
-                  >Nama</label
-                >
-                <input
-                  type="text"
-                  id="nama"
-                  name="nama"
-                  placeholder="Masukkan nama lengkap"
-                  required
-                  class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
 
-              <!-- Foto (Gambar) -->
-              <div>
-                <label
-                  for="foto"
-                  class="block text-sm font-medium text-gray-700"
-                  >Foto (unggah gambar)</label
-                >
-                <input
-                  type="file"
-                  id="foto"
-                  name="foto"
-                  accept="image/*"
-                  class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500"
-                />
-                <p class="text-xs text-gray-500 mt-1">
-                  Format yang didukung: JPG, PNG, GIF. Ukuran file maksimal:
-                  5MB.
-                </p>
-              </div>
+            <form id="updateForm" action="{{ route('admin.update-tim', $tim->id) }}" method="POST"
+                enctype="multipart/form-data" class="space-y-4">
+                @csrf
+                <!-- Nama -->
+                <div>
+                    <label for="nama" class="block text-sm font-medium text-gray-700">Nama</label>
+                    <input type="text" id="nama" name="nama" placeholder="Masukkan nama lengkap" required
+                        value="{{ old('name', $tim->nama) }}"
+                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
+                </div>
 
-              <!-- NIP -->
-              <div>
-                <label for="nip" class="block text-sm font-medium text-gray-700"
-                  >NIP</label
-                >
-                <input
-                  type="text"
-                  id="nip"
-                  name="nip"
-                  placeholder="Masukkan NIP"
-                  class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
+                <!-- Foto (Gambar) -->
+                <div>
+                    <label for="foto" class="block text-sm font-medium text-gray-700">Foto lama</label>
+                    <input type="hidden" name="foto_lama" value="{{ $tim->foto }}">
+                    <div class="foto_lama p-3">
 
-              <!-- Keanggotaan -->
-              <div>
-                <label
-                  for="keanggotaan"
-                  class="block text-sm font-medium text-gray-700"
-                  >Keanggotaan</label
-                >
-                <input
-                  type="text"
-                  id="keanggotaan"
-                  name="keanggotaan"
-                  placeholder="Masukkan keanggotaan dalam tim/organisasi"
-                  class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
 
-              <!-- Riwayat Pendidikan -->
-              <div>
-                <label
-                  for="riwayat-pendidikan"
-                  class="block text-sm font-medium text-gray-700"
-                  >Riwayat Pendidikan</label
-                >
-                <textarea
-                  id="riwayat-pendidikan"
-                  name="riwayat_pendidikan"
-                  rows="3"
-                  placeholder="Masukkan riwayat pendidikan terakhir"
-                  class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500"
-                ></textarea>
-              </div>
+                        @if ($tim->foto)
+                            <!-- Jika ada gambar, tampilkan gambar -->
+                            <img src="{{ asset('storage/' . $tim->foto) }}" alt="Foto Anggota {{ $tim->nama }}"
+                                height="150px" width="150px" />
+                        @else
+                            <!-- Jika tidak ada gambar, isi foto Default -->
+                            <img src="{{ asset('img/fotoKosong.png') }}" alt="Foto Anggota {{ $tim->nama }}"
+                                height="150px" width="150px" />
+                        @endif
 
-              <!-- Pengalaman Kerja -->
-              <div>
-                <label
-                  for="pengalaman-kerja"
-                  class="block text-sm font-medium text-gray-700"
-                  >Pengalaman Kerja</label
-                >
-                <textarea
-                  id="pengalaman-kerja"
-                  name="pengalaman_kerja"
-                  rows="3"
-                  placeholder="Masukkan pengalaman kerja terkait"
-                  class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500"
-                ></textarea>
-              </div>
+                    </div>
 
-              <!-- Bidang Keahlian-->
-              <div>
-                <label
-                  for="bidang"
-                  class="block text-sm font-medium text-gray-700"
-                  >Bidang</label
-                >
-                <input
-                  type="text"
-                  id="bidang"
-                  name="bidang"
-                  placeholder="Masukkan bidang keahlian"
-                  class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
+                    <input type="file" id="foto" name="foto"
+                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500"
+                        value="{{ old('foto') }}" />
+                    <p class="text-xs text-gray-500 mt-1">
+                        Format yang didukung: JPG, PNG Ukuran file maksimal: 2MB.
+                    </p>
+                </div>
 
-              <!-- Tombol Submit -->
-              <div class="flex justify-end">
-                <button
-                  type="submit"
-                  class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700"
-                >
-                  Submit
-                </button>
-              </div>
+                <!-- Divisi -->
+                <div>
+                    <label for="divisi_id" class="block text-sm font-medium text-gray-700">Divisi</label>
+                    <select id="divisi_id" name="divisi_id"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
+                        @foreach ($divisis as $divisi)
+                            <option value="{{ $divisi->id }}" {{ $divisi->id == $tim->divisi_id ? 'selected' : '' }}>
+                                {{ $divisi->nama_divisi }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Jabatan -->
+                <div>
+                    <label for="jabatan_id" class="block text-sm font-medium text-gray-700">Jabatan</label>
+                    <select id="jabatan_id" name="jabatan_id" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
+                        @foreach ($jabatans as $jabatan)
+                            <option value="{{ $jabatan->id }}" {{ $jabatan->id == $tim->jabatan_id ? 'selected' : '' }}>
+                                {{ $jabatan->nama_jabatan }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Bidang Keahlian -->
+                <div class="mt-2">
+                    <label for="bidang_keahlian" class="block text-sm font-medium text-gray-700">Bidang Keahlian</label>
+                    <input type="text" id="bidang_keahlian" name="bidang_keahlian"
+                        placeholder="Masukkan Bidang Keahlian dalam tim/organisasi" required
+                        value="{{ old('bidang_keahlian', $tim->bidang_keahlian) }}"
+                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
+                </div>
+
+                <!-- Tombol Submit -->
+                <div class="flex justify-end">
+                    <button type="submit" id="updateButton"
+                        class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700">
+                        Update
+                    </button>
+                </div>
             </form>
-          </div>
-        </main>
-      </div>
-    </div>
 
-    <script src="../js/jsadmin.js"></script>
-  </body>
-</html>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('updateButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: 'Pastikan data yang diinput sudah benar!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yakin!',
+                cancelButtonText: 'Batalkan',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('updateForm').submit(); // Submit the form
+                }
+            });
+        });
+    </script>
+
+@endsection

@@ -1,5 +1,5 @@
-@extends('layouts.app-user');
+@extends('layouts.app-user')
 @section('title', 'Beranda PUI GEMAR')
-@section('content') 
-  @include('layouts.dashboard-web')
+@section('content')
+    @include('layouts.dashboard-web')
 @endsection

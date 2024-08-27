@@ -1,76 +1,94 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Kelola Artikel</title>
-  @include('layouts.style')
-  {{-- summernote css --}}
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.css" />
-  
-  <script type="text/javascript">
-  $(document).ready(function(){
-    $('#summernote').summernote({
-      height: 200,
-    });
-  });
-  </script>
+@extends('layouts.app-admin')
+@section('title', 'halaman tambah Artikel admin')
+@section('content-admin')
+    <main class="flex-1 bg-gray-100 p-4 sm:p-6 overflow-y-auto">
+        <div id="content" class="transition-transform duration-500 ease-in-out">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                Tambah Artikel
+            </h2>
+            <form action="{{ route('admin.store-artikel') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                @csrf
+                <!-- Nama -->
+                <div>
+                    <label for="judul_artikel" class="block text-sm font-medium text-gray-700">
+                        Masukkan Judul Artikel
+                    </label>
+                    <input type="text" id="judul" name="judul" placeholder="Masukkan judul artikel" required
+                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500"
+                        @error('judul')
+                    is-invalid
+                @enderror
+                        value="{{ old('judul') }}" />
+                    @error('judul')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
 
-</head>
-<body>
-  <h1>Halaman buat Artikel</h1>
-  <form action="{{ route('article.store') }}" method="POST" enctype="multipart/form-data">
-  @csrf
+                <!-- Penulis -->
+                <div>
+                    <label for="penulis" class="block text-sm font-medium text-gray-700">
+                        Nama Penulis Artikel
+                    </label>
+                    <input type="text" id="penulis" name="penulis" placeholder="Masukkan nama penulis artikel" required
+                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
+                </div>
 
-  <div class="form-group">
-    <label for="">Masukkan Judul Artikel</label>
-    <input type="text" name="title" @error('title')
-        is-invalid
-    @enderror value="{{ old('title') }}">
-
-    @error('title')
-    <div class="invalid-feedback">
-      {{ $message }}
-    </div>
-    @enderror
-  </div>
-
-  <div class="form-group">
-    <label for="">Pilih Gambar Artikel</label>
-    <input type="file" name="image" @error('image')
-        is-invalid
-    @enderror>
-
-    @error('image')
-    <div class="invalid-feedback">
-      {{ $message }}
-    </div>
-    @enderror
-  </div>
-
-
-  <div class="form-group">
-    <label for="">Isi Artikel</label>
-    <textarea name="desc" id="summernote">
-      {{ old('desc') }}
-    </textarea>
-
-    @error('desc')
-    <div class="text-danger">
-      {{ $message }}
-    </div>
-    @enderror
-  </div>
+                <!-- Foto (Gambar) -->
+                <div>
+                    <label for="gambar_artikel" class="block text-sm font-medium text-gray-700">
+                        Foto (unggah gambar) : Opsional
+                    </label>
+                    <input type="file" id="foto_artikel" name="foto_artikel" {{-- accept="foto_artikel/*" --}}
+                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500"
+                        @error('foto_artikel')
+                is-invalid
+                @enderror
+                        value="{{ old('foto_artikel') }}" />
+                    <p class="text-xs text-gray-500 mt-1">
+                        Format yang didukung: JPG, PNG Ukuran file maksimal: 2MB.
+                    </p>
+                    @error('foto_artikel')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
 
 
-  
-  <button type="submit" class="btn btn-primary">Simpan</button>
-</form>
-  <br><br><br><br><br><br>
-  <a href="{{ route('article') }}">Kembali</a>
-  @include('layouts.script')
-  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfktSj8PCmoN9aaq30gDh27xc0jk=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.js"></script>
-</body>
-</html>
+                <!-- Isi Artikel -->
+                <div>
+                    <label for="isi_artikel" class="block text-sm font-medium text-gray-700">
+                        Isi Artikel
+                    </label>
+                    <textarea name="deskripsi" id="summernote"></textarea>
+
+                    @error('deskripsi')
+                        <div class="text-danger">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+
+
+                <!-- Tombol Submit -->
+                <div class="flex justify-end">
+                    <button type="submit"
+                        class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700">
+                        Tambah
+                    </button>
+                </div>
+            </form>
+
+            <!-- Floating Action Button -->
+            <a href="{{ route('admin.artikel') }}">
+                <button
+                    class="fixed bottom-4 left-4 bg-yellow-500 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
+                    aria-label="Kembali">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+            </a>
+    </main>
+
+@endsection

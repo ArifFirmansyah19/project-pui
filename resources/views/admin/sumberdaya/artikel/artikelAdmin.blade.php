@@ -1,208 +1,125 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Artikel admin</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-  </head>
+@extends('layouts.app-admin')
+@section('title', 'halaman edit artikel admin')
+@section('content-admin')
 
-  <body class="bg-gray-100">
-    <div class="flex h-screen overflow-hidden">
-      <!-- Sidebar -->
-      @include('layouts.sidebar-admin')
+    {{-- allert berhasil simpan data artikel, update --}}
+    @if (session('success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    icon: 'success'
+                });
+            });
+        </script>
+    @endif
 
-      <!-- Main content -->
-      <div
-        id="main-content"
-        class="flex-1 flex flex-col overflow-y-auto transition-transform duration-100 ease-in-out"
-      >
-        <!-- Header -->
-        <nav class="bg-indigo-900 border-b border-gray-200">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-              <div class="flex items-center">
-                <button
-                  id="menu-button"
-                  class="text-white hover:text-gray-400 focus:outline-none"
-                  aria-label="Toggle Sidebar"
-                >
-                  <i class="fas fa-bars fa-lg"></i>
-                  <span class="sr-only">Toggle Sidebar</span>
-                </button>
-              </div>
-              <div class="flex items-center ml-3">
-                <div class="relative">
-                  <!-- Profile Button -->
-                  <button
-                    id="profile-menu-button"
-                    class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-transparent hover:text-gray-400"
-                  >
-                    <i
-                      class="fas fa-user-circle fa-lg text-white hover:text-gray-400"
-                    ></i>
-                  </button>
-                  <!-- Profile Menu -->
-                  <div
-                    id="profile-menu"
-                    class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-gray-700 ring-1 ring-black ring-opacity-5 hidden"
-                    role="menu"
-                    aria-orientation="vertical"
-                    aria-labelledby="profile-menu-button"
-                  >
-                    <a
-                      href="#"
-                      class="block px-4 py-2 text-sm text-white hover:bg-gray-400"
-                      role="menuitem"
-                      >Edit</a
-                    >
-                    <a
-                      href="#"
-                      class="block px-4 py-2 text-sm text-white hover:bg-gray-400"
-                      role="menuitem"
-                      >Logout</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </nav>
-        <!-- Content -->
-        <main class="flex-1 bg-gray-100 p-4 sm:p-6">
-          <div
-            id="content"
-            class="transition-transform duration-500 ease-in-out"
-          >
-            <h1 class="text-4xl font-bold text-indigo-900 mb-8 mt-20">
-              Artikel
+    <!-- Content -->
+    <main class="flex-1 bg-gray-100 p-4 sm:p-6">
+        <div id="content" class="transition-transform duration-500 ease-in-out">
+            <h1 class="text-4xl font-bold text-indigo-900 mb-8 mt-10">
+                Artikel
             </h1>
 
-            <!-- Artikel 1 -->
-            <div class="mb-8">
-              <a
-                href="detail_artikel_1.html"
-                class="block text-xl font-semibold text-indigo-900 mb-0"
-                >Judul Artikel 1</a
-              >
-              <p class="text-sm text-gray-500 mb-2">01 April 2024</p>
-              <p class="text-gray-800 leading-relaxed">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s, when an unknown printer took a galley
-                of type and scrambled it to make a type specimen book..
-              </p>
+            {{-- keterangan jika tidak ada artikel --}}
+            @if ($articles->isEmpty())
+                <div class="flex justify-center items-center ">
+                    <a href="#"
+                        class=" text-center block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Mohon Maaf Admin
+                        </h5>
+                        <br>
+                        <p class="font-normal text-gray-700 dark:text-gray-400">Saat ini kamu tidak memiliki data artikel
+                            apapun.
+                            Mulailah untuk menambahkan artikel baru untuk memuat data. Tombol buat artikel tersedia di pojok
+                            kanan bawah
+                        </p>
+                        <br>
+                    </a>
+                </div>
+            @else
+                {{-- jika artikel tersedia, tampilkan artikel --}}
+                @foreach ($articles as $article)
+                    <!-- Artikel 1 -->
+                    <div class="mb-8">
+                        <a href="{{ route('admin.detail-artikel', $article->id) }}"
+                            class="block text-xl font-semibold text-indigo-900 mb-0">Artikel:
+                            {{ $article->judul }}</a>
+                        <p class="text-sm text-gray-500 mb-2">Diunggah pada : {{ $article->formatted_created_at }}</p>
+                        <p class="text-sm text-gray-500 mb-2">Penulis : {{ $article->penulis }}</p>
+                        <div class="prose lg:prose-xl">
 
-              <!-- Edit and Delete Buttons -->
-              <div class="flex justify-end mt-4">
-                <button class="mx-2 text-gray-600 hover:text-gray-900">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button class="mx-2 text-gray-600 hover:text-gray-900">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
-            </div>
+                            <p class="text-gray-800 leading-relaxed line-clamp">
+                                {!! $article->deskripsi !!}
+                            </p>
+                        </div>
+                        <a href="{{ route('admin.detail-artikel', $article->id) }}"
+                            class="block text-blue-500 font-semibold mt-2 hover:text-blue-300 transition duration-300">
+                            Baca Selengkapnya
+                        </a>
 
-            <hr class="border-gray-800 my-1" />
+                        <!-- Edit Button  -->
+                        <div class="flex justify-end mt-4">
+                            <a href="{{ route('admin.edit-artikel', $article->id) }}">
+                                <button class="mx-2 hover:text-gray-900">
+                                    <i class="fas fa-edit" style="color: #ea7434;"></i>
+                                </button>
+                            </a>
 
-            <!-- Artikel 2 -->
-            <div class="mb-8">
-              <a
-                href="detail_artikel_2.html"
-                class="block text-xl font-semibold text-indigo-900 mb-2"
-                >Judul Artikel 2</a
-              >
-              <p class="text-sm text-gray-500 mb-2">01 April 2024</p>
-              <p class="text-gray-800 leading-relaxed">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s, when an unknown printer took a galley
-                of type and scrambled it to make a type specimen book.
-              </p>
-              <!-- Edit and Delete Buttons -->
-              <div class="flex justify-end mt-4">
-                <button class="mx-2 text-gray-600 hover:text-gray-900">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button class="mx-2 text-gray-600 hover:text-gray-900">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
-            </div>
-            <hr class="border-gray-800 my-1" />
+                            <!-- Delete Buttons -->
+                            <form class="delete-form" action="{{ route('admin.destroy-artikel', $article->id) }}"
+                                method="POST">
+                                @csrf
+                                <button type="button" data-id="{{ $article->id }}" class="delete-button mx-2">
+                                    <i class="fa-solid fa-trash text-red-600 hover:text-gray-900"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
 
-            <!-- Artikel 3 -->
-            <div class="mb-8">
-              <a
-                href="detail_artikel_3.html"
-                class="block text-xl font-semibold text-indigo-900 mb-2"
-                >Judul Artikel 3</a
-              >
-              <p class="text-sm text-gray-500 mb-2">01 April 2024</p>
-              <p class="text-gray-800 leading-relaxed">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s, when an unknown printer took a galley
-                of type and scrambled it to make a type specimen book.
-              </p>
+                    <hr class="border-gray-800 my-1" />
+                @endforeach
+            @endif
 
-              <!-- Tombol Edit dan Delete -->
-              <div class="flex justify-end mt-4">
-                <button class="mx-2 text-gray-600 hover:text-gray-900">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button class="mx-2 text-gray-600 hover:text-gray-900">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
-            </div>
-            <hr class="border-gray-800 my-1" />
-            <!-- Artikel 4 -->
-            <div class="mb-8">
-              <a
-                href="detail_artikel_4.html"
-                class="block text-xl font-semibold text-indigo-900 mb-2"
-                >Judul Artikel 4</a
-              >
-              <p class="text-sm text-gray-500 mb-2">01 April 2024</p>
-              <p class="text-gray-800 leading-relaxed">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s, when an unknown printer took a galley
-                of type and scrambled it to make a type specimen book.
-              </p>
-              <!-- Edit and Delete Buttons -->
-              <div class="flex justify-end mt-4">
-                <button class="mx-2 text-gray-600 hover:text-gray-900">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button class="mx-2 text-gray-600 hover:text-gray-900">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
-            </div>
-            <hr class="border-gray-800 my-1" />
 
-            <!-- Floating Action Button -->
-            <button
-              class="fixed bottom-4 right-4 bg-yellow-500 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
-              aria-label="Tambah Tim"
-            >
-              <i class="fa-solid fa-plus"></i>
-            </button>
-          </div>
-        </main>
-      </div>
+        </div>
+        <!-- Floating Action Button -->
+
+        <button
+            class="fixed bottom-1 right-3 border-4 border-green-500 rounded-full w-14 h-14 bg-white items-center justify-center shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
+            aria-label="Tambah Artikel">
+            <a href="{{ route('admin.create-artikel') }}">
+                <i class="fa-solid fa-plus" style="color: #19be71;"></i>
+            </a>
+        </button>
+        </div>
+    </main>
+    </div>
     </div>
 
-    <script src="../jsadmin.js"></script>
-  </body>
-</html>
+    <script>
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const form = this.closest('form'); // Temukan formulir terdekat dari tombol
+                const articleId = this.getAttribute('data-id');
+                event.preventDefault(); // Cegah tindakan default
+
+                Swal.fire({
+                    title: 'Apakah Anda yakin ingin menghapus?',
+                    text: "Anda tidak akan dapat mengembalikan artikel ini!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Hapus!',
+                    cancelButtonText: 'Batalkan'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit(); // Kirim formulir penghapusan
+                    }
+                });
+            });
+        });
+    </script>
+
+@endsection

@@ -1,244 +1,116 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Visi Misi Admin</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-  </head>
+@extends('layouts.app-admin')
+@section('title', 'detail Umkm admin')
+@section('content-admin')
 
-  <body class="bg-gray-100">
-    <div class="flex h-screen overflow-hidden">
-      <!-- Sidebar -->
-      <div
-        id="sidebar"
-        class="fixed inset-y-0 left-0 z-30 w-64 bg-indigo-900 shadow-lg transform -translate-x-full transition-transform duration-100 ease-in-out">
-        <div class="flex items-center justify-center px-4 py-4">
-          <img
-            src="../../img/logo.png"
-            alt="Logo"
-            class="h-16 w-auto object-contain mt-4"
-          />
-        </div>
-        <nav class="mt-5 ml-2">
-          <a
-            href="../homeadmin.html"
-            class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-            >Dashboard</a
-          >
-          <div class="relative">
-            <a
-              href="#"
-              id="profilSubMenuToggle"
-              class="block px-4 py-2 text-sm text-white hover:bg-gray-600 flex items-center"
-            >
-              Profil <i class="fas fa-caret-down ml-2"></i>
-            </a>
-            <div id="profilSubMenu" class="ml-4 hidden">
-              <a
-                href="sejarahadmin.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Sejarah</a
-              >
-              <a
-                href="visimisiadm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Visi Misi</a
-              >
-              <a
-                href="strukturoradmin.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Struktur Organisasi</a
-              >
-              <a
-                href="timadm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Tim</a
-              >
-            </div>
-          </div>
-          <div class="relative">
-            <a
-              href="#"
-              id="sumberdayaSubMenuToggle"
-              class="block px-4 py-2 text-sm text-white hover:bg-gray-600 flex items-center"
-            >
-              Sumber Daya <i class="fas fa-caret-down ml-2"></i>
-            </a>
-            <div id="sumberdayaSubMenu" class="ml-4 hidden">
-              <a
-                href="../sdadmin/artikeladm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Artikel</a
-              >
-              <a
-                href="sdadmin/persebaranumkm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Kegiatan</a
-              >
-              <a
-                href="../sdadmin/persebaranumkm.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Persebaran UMKM</a
-              >
-            </div>
-          </div>
-          <div class="relative">
-            <a
-              href="#"
-              id="kontakSubMenuToggle"
-              class="block px-4 py-2 text-sm text-white hover:bg-gray-600 flex items-center"
-            >
-              Kontak <i class="fas fa-caret-down ml-2"></i>
-            </a>
-            <div id="kontakSubMenu" class="ml-4 hidden">
-              <a
-                href="../editkontak.html"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600"
-                >Edit Kontak</a
-              >
-            </div>
-          </div>
-        </nav>
-      </div>
-
-      <!-- Main content -->
-      <div
-        id="main-content"
-        class="flex-1 flex flex-col overflow-y-auto transition-transform duration-100 ease-in-out">
-        <!-- Header -->
-        <nav class="bg-indigo-900 border-b border-gray-200">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-              <div class="flex items-center">
-                <button
-                  id="menu-button"
-                  class="text-white hover:text-gray-400 focus:outline-none"
-                  aria-label="Toggle Sidebar"
-                >
-                  <i class="fas fa-bars fa-lg"></i>
-                  <span class="sr-only">Toggle Sidebar</span>
-                </button>
-              </div>
-              <div class="flex items-center ml-3">
-                <div class="relative">
-                  <!-- Profile Button -->
-                  <button
-                    id="profile-menu-button"
-                    class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-transparent hover:text-gray-400"
-                  >
-                    <i
-                      class="fas fa-user-circle fa-lg text-white hover:text-gray-400"
-                    ></i>
-                  </button>
-                  <!-- Profile Menu -->
-                  <div
-                    id="profile-menu"
-                    class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-gray-700 ring-1 ring-black ring-opacity-5 hidden"
-                    role="menu"
-                    aria-orientation="vertical"
-                    aria-labelledby="profile-menu-button"
-                  >
-                    <a
-                      href="#"
-                      class="block px-4 py-2 text-sm text-white hover:bg-gray-400"
-                      role="menuitem"
-                      >Edit</a
-                    >
-                    <a
-                      href="#"
-                      class="block px-4 py-2 text-sm text-white hover:bg-gray-400"
-                      role="menuitem"
-                      >Logout</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </nav>
-        <!-- Content -->
-        <main class="flex-1 bg-gray-100 p-4 sm:p-6">
-          <div
-            id="content"
-            class="transition-transform duration-500 ease-in-out"
-          >
-            <h1 class="text-3xl font-bold text-gray-800 mb-4 mt-24">
-              UMKM XYZ
+    <!-- Content -->
+    <main class="flex-1 bg-gray-100 p-4 sm:p-6">
+        <div id="content" class="transition-transform duration-500 ease-in-out">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4 mt-3">
+                {{ $umkm->nama_umkm }}
             </h1>
+            <h2 class="text-lg text-gray-700 mb-8">
+                Alamat: {{ $umkm->desaPotensi->nama_desa }} - {{ $umkm->alamat_umkm }}
+            </h2>
             <p class="text-lg text-gray-700 mb-8">
-              Kami adalah UMKM yang berfokus pada pembuatan produk kerajinan
-              tangan berkualitas tinggi. Produk kami terbuat dari bahan-bahan
-              alami dan ramah lingkungan.
+                {{ $umkm->deskripsi_umkm }}
             </p>
 
-            <!-- produk produk -->
+            @if ($umkm->foto_umkm)
+                <!-- Jika ada gambar, tampilkan gambar -->
+                <img src="{{ asset('storage/' . $umkm->foto_umkm) }}" alt="Foto UMKM {{ $umkm->nama_umkm }}"
+                    class="mb-2 rounded-lg h-96 w-full object-cover" />
+            @else
+                <!-- Jika tidak ada gambar, isi foto Default -->
+                <img src="{{ asset('img/gambarKosong.png') }}" alt="Foto UMKM {{ $umkm->nama_umkm }}"
+                    class="mb-2 rounded-lg h-96 w-full object-cover" />
+            @endif
+
+
+            {{-- <div class="mb-8">
+                <h3 class="inline-block text-2xl font-bold text-indigo-900 mb-4 mt-6 border-b-2 border-indigo-900">
+                    Produk
+                </h3>
+                <!-- Produk Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    @foreach ($umkm->produkUmkm as $produk)
+                        <figure class="relative">
+                            <img src="{{ asset('storage/' . $produk->foto_produk) }}" alt="{{ $produk->nama_produk }}"
+                                height="150px" width="150px"
+                                class="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-75 transition"
+                                onclick="openModal('{{ asset('storage/' . $produk->foto_produk) }}', '{{ $produk->deskripsi_produk }}')" />
+                            <figcaption
+                                class="absolute bottom-0 left-0 w-full bg-gray-800 bg-opacity-60 text-white text-center p-2 rounded-b-lg">
+                                Produk {{ $produk->nama_produk }}
+                            </figcaption>
+                        </figure>
+                    @endforeach
+                </div>
+            </div> --}}
+
+
             <div class="mb-8">
-              <h2 class="text-xl font-semibold text-gray-800 mb-4">Produk</h2>
-              <div
-                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-8"
-              >
-                <div class="bg-white rounded-md shadow-md overflow-hidden">
-                  <img
-                    src="../../img/prdk1.jpg"
-                    alt="Produk 1"
-                    class="w-full h-60 object-cover"
-                  />
-                  <div class="p-4">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">
-                      Produk 1
-                    </h3>
-                    <p class="text-gray-600">Deskripsi singkat produk 1.</p>
-                  </div>
+                <h3 class="text-2xl font-semibold text-indigo-900 mb-4">Produk</h3>
+                <div class="grid grid-cols-2 gap-6 px-8 md:grid-cols-3">
+                    @foreach ($umkm->produkUmkm as $produk)
+                        <div class="bg-white rounded-md shadow-md overflow-hidden">
+                            <img src="{{ asset('storage/' . $produk->foto_produk) }}" alt="{{ $produk->nama_produk }}"
+                                class="w-full h-60 object-cover" />
+                            <div class="p-4">
+                                <h3 class="text-lg font-semibold text-indigo-900 mb-2">
+                                    {{ $produk->nama_produk }}
+                                </h3>
+                                <p class="text-gray-600 mb-1">{{ $produk->deskripsi_produk }}</p>
+                                <div class="flex items-center justify-between">
+                                    @if ($produk->harga_terendah == $produk->harga_tertinggi)
+                                        <span class="text-indigo-700 font-semibold text-sm">
+                                            Rp {{ number_format($produk->harga_terendah, 2, ',', '.') }}
+                                        </span>
+                                    @else
+                                        <span class="text-indigo-700 font-semibold text-sm">
+                                            Rp {{ number_format($produk->harga_terendah, 2, ',', '.') }} - Rp
+                                            {{ number_format($produk->harga_tertinggi, 2, ',', '.') }}
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
-                <div class="bg-white rounded-md shadow-md overflow-hidden">
-                  <img
-                    src="../../img/prdk2.jpg"
-                    alt="Produk 2"
-                    class="w-full h-60 object-cover"
-                  />
-                  <div class="p-4">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">
-                      Produk 2
-                    </h3>
-                    <p class="text-gray-600">Deskripsi singkat produk 2.</p>
-                  </div>
-                </div>
-                <div class="bg-white rounded-md shadow-md overflow-hidden">
-                  <img
-                    src="../../img/prdk3.jpg"
-                    alt="Produk 3"
-                    class="w-full h-60 object-cover"
-                  />
-                  <div class="p-4">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">
-                      Produk 3
-                    </h3>
-                    <p class="text-gray-600">Deskripsi singkat produk 3.</p>
-                  </div>
-                </div>
-              </div>
             </div>
 
-            <!-- Floating Action Button -->
-            <button
-              class="fixed bottom-4 right-4 bg-yellow-500 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
-              aria-label="Tambah Tim"
-            >
-              <i class="fa-regular fa-pen-to-square"></i>
-            </button>
-          </div>
-        </main>
-      </div>
-    </div>
 
-    <script src="../js/jsadmin.js"></script>
-  </body>
-</html>
+
+            <a href="{{ route('admin.edit-umkm', $umkm->id) }}">
+                <button
+                    class="fixed bottom-4 right-4 bg-yellow-500 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
+                    aria-label="Edit UMKM">
+                    <i class="fas fa-edit" style="color: #ffffff;">
+                    </i>
+            </a>
+            </button>
+        </div>
+        <!-- Modal -->
+        <div id="modalImage" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 hidden z-50">
+            <div class="relative mt-20">
+                <span class="absolute top-0 right-0 text-white text-2xl cursor-pointer p-4"
+                    onclick="closeModal()">&times;</span>
+                <img id="modalImageContent" src="" class="w-80 h-80" />
+                <!-- Deskripsi di bawah gambar -->
+                <div id="modalImageDescription" class="text-white mt-4 p-4 bg-gray-900 bg-opacity-75 rounded">
+                    <!-- Deskripsi akan dimasukkan di sini -->
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        function openModal(src, description) {
+            document.getElementById('modalImage').classList.remove('hidden');
+            document.getElementById('modalImageContent').src = src;
+            document.getElementById('modalImageDescription').textContent = description; // Set deskripsi
+        }
+
+        function closeModal() {
+            document.getElementById('modalImage').classList.add('hidden');
+        }
+    </script>
+@endsection
