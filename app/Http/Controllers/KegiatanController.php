@@ -13,6 +13,23 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 class KegiatanController extends Controller
 {
+
+    protected function validateKegiatan(Request $request)
+    {
+        return $request->validate([
+            'nama_kegiatan' => 'required|string|max:255',
+            'foto_kegiatan' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:1000',
+            'deskripsi_kegiatan' => 'required|string',
+        ], [
+            'nama_kegiatan.required' => 'Judul kegiatan wajib diisi.',
+            'penulis.required' => 'Penulis kegiatan wajib diisi.',
+            'foto_kegiatan.image' => 'File yang diunggah harus berupa gambar.',
+            'foto_kegiatan.mimes' => 'Gambar kegiatan harus dalam format jpg, jpeg, png, atau webp.',
+            'foto_kegiatan.max' => 'Ukuran gambar kegiatan tidak boleh lebih dari 1 MB.',
+            'deskripsi_kegiatan.required' => 'Deskripsi kegiatan wajib diisi.',
+        ]);
+    }
+
     // Menampilkan halaman kegiatan untuk admin
     public function index_admin()
     {
@@ -29,25 +46,8 @@ class KegiatanController extends Controller
     // Menyimpan kegiatan baru
     public function store_kegiatan(Request $request)
     {
-        // Aturan validasi
-        $rules = [
-            'nama_kegiatan' => 'required|string|max:255',
-            'foto_kegiatan' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:1000',
-            'deskripsi_kegiatan' => 'required|string',
-        ];
-
-        // Pesan kesalahan khusus
-        $messages = [
-            'nama_kegiatan.required' => 'Judul kegiatan wajib diisi.',
-            'penulis.required' => 'Penulis kegiatan wajib diisi.',
-            'foto_kegiatan.image' => 'File yang diunggah harus berupa gambar.',
-            'foto_kegiatan.mimes' => 'Gambar kegiatan harus dalam format jpg, jpeg, png, atau webp.',
-            'foto_kegiatan.max' => 'Ukuran gambar kegiatan tidak boleh lebih dari 1 MB.',
-            'deskripsi_kegiatan.required' => 'Deskripsi kegiatan wajib diisi.',
-        ];
-
         // Validasi request
-        $validatedData = $request->validate($rules, $messages);
+        $validatedData = $this->validateKegiatan($request);
 
         // Mengolah deskripsi_kegiatan dan gambar
         $storagePath = storage_path('app/public/fotoKegiatan');
@@ -124,31 +124,8 @@ class KegiatanController extends Controller
     // Mengupdate data kegiatan
     public function update_kegiatan(Request $request, $id)
     {
-        // Debug request data untuk melihat input yang diterima
-        // dd($request->all());
-
-        // Aturan validasi
-        $rules = [
-            'nama_kegiatan' => 'required|string|max:255',
-            'foto_kegiatan' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:1000',
-            'deskripsi_kegiatan' => 'required|string',
-            'old_images' => 'array',
-            'old_images.*' => 'string',
-            'old_foto_kegiatan' => 'nullable|string'
-        ];
-
-        // Pesan kesalahan khusus
-        $messages = [
-            'nama_kegiatan.required' => 'Judul kegiatan wajib diisi.',
-            'penulis.required' => 'Penulis kegiatan wajib diisi.',
-            'foto_kegiatan.image' => 'File yang diunggah harus berupa gambar.',
-            'foto_kegiatan.mimes' => 'Gambar kegiatan harus dalam format jpg, jpeg, png, atau webp.',
-            'foto_kegiatan.max' => 'Ukuran gambar kegiatan tidak boleh lebih dari 1 MB.',
-            'deskripsi_kegiatan.required' => 'Deskripsi kegiatan wajib diisi.',
-        ];
-
         // Validasi request
-        $validatedData = $request->validate($rules, $messages);
+        $validatedData = $this->validateKegiatan($request);
 
         // Temukan kegiatan
         $kegiatan = Kegiatan::findOrFail($id);

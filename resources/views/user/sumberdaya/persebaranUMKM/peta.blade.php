@@ -3,11 +3,9 @@
 
 @section('content')
     <!-- Content -->
-
-
     <div class="flex flex-col mt-5 md:flex-row w-full">
         <div class="bg-white shadow-md mt-5 rounded-lg p-4 md:w-2/3">
-            <!--konten sejarah-->
+            <!-- Konten Persebaran UMKM -->
             <div class="container mx-auto py-4">
                 <h3 class="text-3xl font-bold text-center font-poppins text-indigo-900 mt-10 mb-8 p-4">
                     Peta Persebaran Sumber Daya
@@ -32,15 +30,13 @@
                         @else
                             <li style="list-style-type: none;">
                                 <a href="{{ route('detail-potensi-desa', $desa->id) }}"
-                                    class="text-blue-500 hover:text-blue-700">Potensi Alam Desa
-                                    {{ $desa->nama_desa }}</a>
+                                    class="text-blue-500 hover:text-blue-700">Potensi Alam Desa {{ $desa->nama_desa }}</a>
                             </li>
                         @endif
 
                         @if ($desa->umkm->isEmpty())
-                            <li style="list-style-type: none;>
-                                <p class="text-black-500">
-                                UMKM di Desa ini Kosong</p>
+                            <li style="list-style-type: none;">
+                                <p class="text-black-500">UMKM di Desa ini Kosong</p>
                             </li>
                         @else
                             @foreach ($desa->umkm as $umkm)
@@ -57,10 +53,7 @@
         @include('layouts.session-article')
     </div>
 
-
-
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
     <script>
         // Inisialisasi peta dengan koordinat tengah dan zoom level
         var map = L.map('map').setView([-2.1, 102.3], 11);
@@ -96,45 +89,54 @@
             iconAnchor: [16, 32], // Titik anchor (bagian bawah tengah ikon)
             popupAnchor: [0, -32] // Titik anchor popup
         });
+
         // Data lokasi desa dari controller
         var desas = @json($desas);
 
         // Tambahkan marker dengan ikon hijau untuk setiap desa
         desas.forEach(function(desa) {
-            var popupContent =
-                '<div> <a href="persebaran/detail-desa/' + desa.id + '">' +
-                '<strong> <center>Data Potensi </center>' + desa
-                .nama_desa + '</strong> </a> </div>';
+            var popupContent = `
+                <div>
+                    <a href="persebaran/detail-desa/${desa.id}">
+                        <strong><center>Data Potensi</center> ${desa.nama_desa}</strong>
+                    </a>
+                </div>
+            `;
 
-            var marker = L.marker([desa.latitude, desa.longitude], {
+            L.marker([desa.latitude, desa.longitude], {
                     icon: desaIcon
                 })
                 .addTo(map)
                 .bindPopup(popupContent);
         });
 
-        //Data UMKM dari controller
+        // Data UMKM dari controller
         var umkms = @json($umkms);
 
         // Tambahkan marker untuk setiap lokasi UMKM
         umkms.forEach(function(umkm) {
-            var popupContent =
+            var popupContent = `
+                <div>
+                    <a href="persebaran/detail-umkm/${umkm.id}">${umkm.nama_umkm}</a>
+                    <br>${umkm.alamat_umkm}
+                    <br><br>${umkm.deskripsi_umkm}
+                </div>
+            `;
 
-                '<div> <a href="persebaran/detail-umkm/' + umkm.id + '">' + umkm.nama_umkm + '</a> <br>' + umkm
-                .alamat_umkm + '<br><br>' + umkm.deskripsi_umkm + '</div>'
-
-            var marker = L.marker([umkm.latitude, umkm.longitude])
+            L.marker([umkm.latitude, umkm.longitude])
                 .addTo(map)
                 .bindPopup(popupContent);
         });
 
-        // Buat ikon khusus
+        // Buat ikon khusus untuk marker yang ditambahkan secara manual
         var customIcon = L.icon({
             iconUrl: 'path/to/your/icon.png', // Ganti dengan path ikon Anda
             iconSize: [32, 32], // Ukuran ikon
             iconAnchor: [16, 32], // Titik anchor (bagian bawah tengah ikon)
             popupAnchor: [0, -32] // Titik anchor popup
         });
+
+        var marker; // Variabel untuk marker yang ditambahkan secara manual
 
         map.on('click', function(e) {
             var lat = e.latlng.lat;
@@ -146,9 +148,9 @@
             }
 
             // Tambahkan marker pada lokasi yang diklik
-            marker = L.marker([lat, lng]), {
+            marker = L.marker([lat, lng], {
                     icon: customIcon
-                }
+                })
                 .addTo(map);
         });
 
@@ -157,5 +159,4 @@
             list.style.display = list.style.display === "none" ? "block" : "none";
         }
     </script>
-
 @endsection

@@ -28,105 +28,64 @@
             </div>
         </div>
 
-        {{-- Kontainer list --}}
-        <div class="bg-gray-200 p-4 mt-10">
-            {{-- Bagian Judul Konten List --}}
-            <div class="flex items-center justify-between mb-4 cursor-pointer" onclick="toggleDropdown('list2')">
-                <h4 class="font-semibold font-poppins">Persebaran Potensi Desa & UMKM</h4>
-                <i class="fas fa-chevron-down text-gray-600"></i>
-            </div>
-
-            {{-- List 1 --}}
-            <ul class="ml-4" id="list2" style="display: none">
-                @foreach ($desas as $desa)
-                    <li>
-                        <div class="flex items-center justify-between mb-4 cursor-pointer"
-                            onclick="toggleDropdown('{{ $desa->nama_desa }}')">
-                            <h2 class="text-lg font-semibold font-poppins">{{ $desa->nama_desa }}</h2>
-                            {{-- <i class="fas fa-chevron-down text-gray-600"></i> --}}
-
+        <div class="bg-gray-200 p-4">
+            @foreach ($desas as $desa)
+                <div class="flex items-center justify-between mb-1 cursor-pointer"
+                    onclick="toggleDropdown('{{ $desa->nama_desa }}')">
+                    <h2 class="text-lg font-semibold">{{ $desa->nama_desa }}</h2>
+                    <i class="fas fa-chevron-down text-gray-600"></i>
+                </div>
+                <ul class="ml-2" id="{{ $desa->nama_desa }}" style="display: none">
+                    @if ($desa->potensiDesa->isEmpty())
+                        <li style="list-style-type: none;">
+                            <p class="text-black-500">Desa ini Tidak Memiliki Potensi Persebaran</p>
+                        </li>
+                    @else
+                        <li style="list-style-type: none;">
+                            <a href="{{ route('detail-potensi-desa', $desa->id) }}"
+                                class="text-blue-500 hover:text-blue-700">Potensi Alam Desa
+                                {{ $desa->nama_desa }}</a>
+                        </li>
+                        <div class="flex">
+                            <a href="{{ route('admin.edit-desa', $desa->id) }}">
+                                <button class="mx-2 text-gray-600 hover:text-gray-900">
+                                    <i class="fas fa-edit" style="color: #ea7434;"></i>
+                                </button>
+                            </a>
                         </div>
+                    @endif
 
-                        {{-- Isian list 1 --}}
-                        <ul class="ml-4" id="{{ $desa->nama_desa }}" style="display: none">
-                            <div class="container-persebaran grid grid-cols-1 lg:grid-cols-5 gap-6">
-                                {{-- Potensi Desa --}}
-                                <div class="potensi-desa p-2 col-span-3 bg-white rounded-md shadow-md">
-                                    <h5 class="text-lg font-semibold">Daftar Persebaran Potensi Desa {{ $desa->nama_desa }}
-                                    </h5>
-
-                                    @if ($desa->potensiDesa->isEmpty())
-                                        <a href="{{ route('admin.edit-desa', $desa->id) }}">
-                                            <button type="button" class="bg-red-500 text-white px-4 py-2 rounded-md mt-4">
-                                                Edit Desa dan Persebarannya
-                                            </button>
-                                        </a>
-                                        <p class="mb-5">Daftar POTENSI DESA KOSONG</p>
-                                    @else
-                                        <a href="{{ route('admin.edit-desa', $desa->id) }}">
-                                            <button type="button" class="bg-red-500 text-white px-4 py-2 rounded-md mt-4">
-                                                Edit Desa dan Persebarannya
-                                            </button>
-                                        </a>
-                                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                                            @foreach ($desa->potensiDesa as $potensi)
-                                                <div class="bg-white rounded-md shadow-md overflow-hidden">
-                                                    <div class="gambar-produk mt-2 h-100">
-                                                        <img src="{{ asset('fotoPotensiDesa/' . $potensi->foto_potensi) }}"
-                                                            alt="{{ $potensi->nama_potensi }}"
-                                                            class="w-full h-64 object-cover">
-                                                    </div>
-                                                    <div class="p-4">
-                                                        <h3 class="text-lg font-semibold text-gray-800 mb-2">
-                                                            {{ $potensi->nama_potensi }}</h3>
-                                                        <p class="text-gray-600">{{ $potensi->deskripsi_potensi }}</p>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    @endif
-                                </div>
-
-                                {{-- UMKM Desa --}}
-                                <div class="potensi-umkm-desa p-2 col-span-2 bg-white rounded-md shadow-md">
-                                    <h5 class="text-lg font-semibold">Daftar UMKM Desa {{ $desa->nama_desa }}</h5>
-
-                                    @if ($desa->umkm->isEmpty())
-                                        <p class="mb-5">Data UMKM di Desa Ini Kosong</p>
-                                    @else
-                                        @php $no = 1; @endphp
-                                        <ul>
-                                            @foreach ($desa->umkm as $umkm)
-                                                <li class="mb-2" style="list-style-type: none;">
-                                                    <a href="{{ route('admin.detail-umkm', $umkm->id) }}"
-                                                        class="text-blue-500 hover:text-blue-700">{{ $no++ }}.
-                                                        {{ $umkm->nama_umkm }}</a>
-                                                    <div class="flex">
-                                                        <a href="{{ route('admin.edit-umkm', $umkm->id) }}">
-                                                            <button class="mx-2 text-gray-600 hover:text-gray-900">
-                                                                <i class="fas fa-edit" style="color: #ea7434;"></i>
-                                                            </button>
-                                                        </a>
-                                                        <form action="{{ route('admin.destroy-umkm', $umkm->id) }}"
-                                                            method="POST" class="text-red-500 mx-1 hover:text-red-700">
-                                                            @csrf
-                                                            <button type="submit"
-                                                                class="delete-button mx-2 text-gray-600 hover:text-gray-900">
-                                                                <i
-                                                                    class="fa-solid fa-trash text-red-600 hover:text-gray-900"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    @endif
-                                </div>
+                    @if ($desa->umkm->isEmpty())
+                        <li style="list-style-type: none;">
+                            <p class="text-black-500">UMKM di Desa ini Kosong</p>
+                        </li>
+                    @else
+                        @foreach ($desa->umkm as $umkm)
+                            <li style="list-style-type: none;">
+                                <a href="{{ route('detail-umkm', $umkm->id) }}"
+                                    class="text-blue-500 hover:text-blue-700">{{ $umkm->nama_umkm }}</a>
+                            </li>
+                            <div class="flex">
+                                <a href="{{ route('admin.edit-umkm', $umkm->id) }}">
+                                    <button class="mx-2 text-gray-600 hover:text-gray-900">
+                                        <i class="fas fa-edit" style="color: #ea7434;"></i>
+                                    </button>
+                                </a>
+                                <form action="{{ route('admin.destroy-umkm', $umkm->id) }}" method="POST"
+                                    class="text-red-500 mx-1 hover:text-red-700">
+                                    @csrf
+                                    <button type="submit" class="delete-button mx-2 text-gray-600 hover:text-gray-900">
+                                        <i class="fa-solid fa-trash text-red-600 hover:text-gray-900"></i>
+                                    </button>
+                                </form>
                             </div>
-                        </ul>
-                    </li>
-                @endforeach
-            </ul>
+                        @endforeach
+                    @endif
+                </ul>
+            @endforeach
+        </div>
+
+
         </div>
 
         <button id="tambahButton"

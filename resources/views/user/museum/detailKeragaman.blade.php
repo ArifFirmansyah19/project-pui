@@ -7,7 +7,7 @@
         <div class="container mx-auto px-4 py-8" style="margin-top: 90px">
             <h2 class="text-3xl font-bold mb-6">{{ $dataKeragaman->nama }}</h2>
 
-            <img src="{{ asset('fotoKeragaman/' . $dataKeragaman->foto_keragaman) }}" alt="gambar {{ $dataKeragaman->nama }}"
+            <img src="{{ asset('storage/' . $dataKeragaman->foto_keragaman) }}" alt="gambar {{ $dataKeragaman->nama }}"
                 class="mb-4 rounded-lg h-96 w-full object-cover" />
 
             <p class="text-gray-600 mb-4">{!! $dataKeragaman->deskripsi !!}</p>

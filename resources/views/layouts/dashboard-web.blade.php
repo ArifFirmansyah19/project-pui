@@ -56,10 +56,10 @@
             <div class="flex" style="height: 500px">
                 @foreach ($dataTimPui as $tim)
                     <!-- Kartu 1 -->
-                    <a href="/tim-detail/{{ $tim->id }}"
+                    <a href="{{ route('tim-detail', $tim->id) }}"
                         class="team-member flex-none w-50 mr-4 bg-white rounded-lg shadow-md overflow-hidden transform transition-transform hover:scale-105"
                         style="width: 400px; height:500px;">
-                        <img src="{{ asset('fotoTim/' . $tim->foto) }}" alt="foto {{ $tim->nama }}"
+                        <img src="{{ asset('storage/' . $tim->foto) }}" alt="foto {{ $tim->nama }}"
                             class="w-full h-40 object-cover object-center" style="width: 400px; height:300px;" />
                         <div class="p-4">
                             <h3 class="text-lg text-center mb-2">{{ $tim->nama }}</h3>

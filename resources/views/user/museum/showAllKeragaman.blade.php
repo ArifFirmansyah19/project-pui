@@ -14,7 +14,7 @@
                         <a href="{{ route('detail-data-keragaman', $dataKeragaman->id) }}">
                             <div class="bg-white shadow-md rounded-lg p-6">
                                 <h3 class="text-xl font-semibold mb-2">{{ $dataKeragaman->nama }}</h3>
-                                <img src="{{ asset('fotoKeragaman/' . $dataKeragaman->foto_keragaman) }}"
+                                <img src="{{ asset('storage/' . $dataKeragaman->foto_keragaman) }}"
                                     alt="gambar {{ $dataKeragaman->nama }}"
                                     class="mb-2 rounded-lg h-48 w-full object-cover" />
                                 <p class="text-gray-600 line-clamp">{!! $dataKeragaman->deskripsi !!}</p>

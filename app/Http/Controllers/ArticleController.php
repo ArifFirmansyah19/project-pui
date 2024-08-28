@@ -12,6 +12,25 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 class ArticleController extends Controller
 {
+
+
+    protected function validateArticle(Request $request)
+    {
+        return $request->validate([
+            'judul' => 'required|string|max:255',
+            'penulis' => 'required|string|max:255',
+            'foto_artikel' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:1000',
+            'deskripsi' => 'required|string',
+        ], [
+            'judul.required' => 'Judul artikel wajib diisi.',
+            'penulis.required' => 'Penulis artikel wajib diisi.',
+            'foto_artikel.image' => 'File yang diunggah harus berupa gambar.',
+            'foto_artikel.mimes' => 'Gambar artikel harus dalam format jpg, jpeg, png, atau webp.',
+            'foto_artikel.max' => 'Ukuran gambar artikel tidak boleh lebih dari 1 MB.',
+            'deskripsi.required' => 'Deskripsi artikel wajib diisi.',
+        ]);
+    }
+
     // untuk admin
     public function index_admin()
     {
@@ -45,7 +64,7 @@ class ArticleController extends Controller
         ];
 
         // Validasi request
-        $validatedData = $request->validate($rules, $messages);
+        $validatedData = $this->validateArticle($request);
 
         // Mengolah deskripsi dan gambar dalam summernote
         $storagePath = storage_path('app/public/fotoArtikel');
@@ -115,30 +134,8 @@ class ArticleController extends Controller
 
     public function update_artikel(Request $request, $id)
     {
-        dd($request->all());
-        // Aturan validasi
-        $rules = [
-            'judul' => 'required|string|max:255',
-            'penulis' => 'required|string|max:255',
-            'foto_artikel' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:1000',
-            'deskripsi' => 'required|string',
-            'old_images' => 'array', // Menambahkan aturan untuk old_images
-            'old_images.*' => 'string', // Setiap item dalam old_images harus string
-            'old_foto_artikel' => 'nullable|string' // Menambahkan aturan untuk old_foto_artikel
-        ];
-
-        // Pesan kesalahan khusus
-        $messages = [
-            'judul.required' => 'Judul artikel wajib diisi.',
-            'penulis.required' => 'Penulis artikel wajib diisi.',
-            'foto_artikel.image' => 'File yang diunggah harus berupa gambar.',
-            'foto_artikel.mimes' => 'Gambar artikel harus dalam format jpg, jpeg, png, atau webp.',
-            'foto_artikel.max' => 'Ukuran gambar artikel tidak boleh lebih dari 1 MB.',
-            'deskripsi.required' => 'Deskripsi artikel wajib diisi.',
-        ];
-
         // Validasi request
-        $validatedData = $request->validate($rules, $messages);
+        $validatedData = $this->validateArticle($request);
 
         // Temukan artikel
         $article = Article::findOrFail($id);

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use App\Models\umkm;
 use App\Models\desaPotensi;
 use App\Models\PotensiDesa;
@@ -11,13 +10,95 @@ use App\Models\produkUmkm;
 
 class PersebaranUmkmController extends Controller
 {
+
+    protected function validateDesa(Request $request)
+    {
+        return $request->validate([
+            'nama_desa' => 'required|string|max:255',
+            'deskripsi_desa' => 'required|string|max:255',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'potensi_desa.*.nama_potensi' => 'required|string|max:255',
+            'potensi_desa.*.foto_potensi' => 'nullable|file|mimes:jpg,png|max:2048',
+            'potensi_desa.*.deskripsi_potensi' => 'required|string|max:255',
+        ], [
+            'nama_desa.required' => 'Nama desa wajib diisi.',
+            'deskripsi_desa.required' => 'Deskripsi desa wajib diisi.',
+            'latitude.required' => 'Latitude wajib diisi. Klik lokasi desa pada peta',
+            'longitude.required' => 'Longitude wajib diisi. Klik lokasi desa pada peta',
+            'potensi_desa.*.nama_potensi.required' => 'Nama potensi wajib diisi.',
+            'potensi_desa.*.foto_potensi.mimes' => 'Foto potensi harus dalam format JPG atau PNG.',
+            'potensi_desa.*.foto_potensi.max' => 'Ukuran file foto potensi tidak boleh lebih dari 2MB.',
+            'potensi_desa.*.deskripsi_potensi.required' => 'Deskripsi potensi wajib diisi.',
+        ]);
+    }
+
+    protected function validateUmkm(Request $request)
+    {
+        return $request->validate([
+            'nama_umkm' => 'required|string|max:255',
+            'nama_pemilik' => 'required|string|max:255',
+            'alamat_umkm' => 'required|string|max:255',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'foto_umkm' => 'nullable|file|mimes:jpg,png|max:2048',
+            'deskripsi_umkm' => 'required|string',
+            'kontak' => 'required|string|max:20',
+            'whatsapp' => 'nullable|string|max:15',
+            'email' => 'nullable|email|max:255',
+            'instagram' => 'nullable|string|max:255',
+            'desa_potensi_id' => 'required|exists:desa_potensis,id',
+            'produk_umkm.*.nama_produk' => 'required|string|max:255',
+            'produk_umkm.*.deskripsi_produk' => 'required|string',
+            'produk_umkm.*.foto_produk' => 'nullable|file|mimes:jpg,png|max:2048',
+            'produk_umkm.*.harga_terendah' => [
+                'required',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/', // Validasi untuk angka dengan 0 atau 2 tempat desimal
+            ],
+            'produk_umkm.*.harga_tertinggi' => [
+                'required',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/', // Validasi untuk angka dengan 0 atau 2 tempat desimal
+            ],
+        ], [
+            'nama_umkm.required' => 'Nama UMKM wajib diisi.',
+            'nama_pemilik.required' => 'Nama pemilik UMKM wajib diisi.',
+            'alamat_umkm.required' => 'Alamat UMKM wajib diisi.',
+            'latitude.required' => 'Latitude wajib diisi.',
+            'longitude.required' => 'Longitude wajib diisi.',
+            'foto_umkm.mimes' => 'Foto UMKM harus dalam format JPG atau PNG.',
+            'foto_umkm.max' => 'Ukuran file foto UMKM tidak boleh lebih dari 2MB.',
+            'deskripsi_umkm.required' => 'Deskripsi UMKM wajib diisi.',
+            'kontak.required' => 'Kontak UMKM wajib diisi.',
+            'kontak.max' => 'Kontak UMKM tidak boleh lebih dari 20 karakter.',
+            'whatsapp.max' => 'Nomor WhatsApp tidak boleh lebih dari 15 karakter.',
+            'email.email' => 'Format email tidak valid.',
+            'desa_potensi_id.required' => 'Desa potensi wajib dipilih.',
+            'desa_potensi_id.exists' => 'Desa potensi yang dipilih tidak valid.',
+            'produk_umkm.*.nama_produk.required' => 'Nama produk UMKM wajib diisi.',
+            'produk_umkm.*.deskripsi_produk.required' => 'Deskripsi produk UMKM wajib diisi.',
+            'produk_umkm.*.foto_produk.mimes' => 'Foto produk harus dalam format JPG atau PNG.',
+            'produk_umkm.*.foto_produk.max' => 'Ukuran file foto produk tidak boleh lebih dari 2MB.',
+            'produk_umkm.*.harga_terendah.required' => 'Harga terendah produk wajib diisi.',
+            'produk_umkm.*.harga_tertinggi.required' => 'Harga tertinggi produk wajib diisi.',
+            'produk_umkm.*.harga_terendah.regex' => 'Harga terendah harus berupa angka dengan maksimal dua desimal.',
+            'produk_umkm.*.harga_tertinggi.regex' => 'Harga tertinggi harus berupa angka dengan maksimal dua desimal.',
+        ]);
+    }
+
+    protected function savePhoto($file, $folder)
+    {
+        return $file->store($folder, 'public');
+    }
+
+    // halaman index admin persebaran UMKM
     public function index_admin()
     {
         $umkms = umkm::all();
         $desas = DesaPotensi::with('potensiDesa')->get();
         return view('admin.sumberdaya.persebaranUMKM.persebaranUMKM', compact('umkms', 'desas'));
     }
-
 
     // kelola desa dan potensi
     public function create_desa_potensi()
@@ -27,31 +108,8 @@ class PersebaranUmkmController extends Controller
 
     public function store_desa_potensi(Request $request)
     {
-        // Aturan validasi
-        $rules = [
-            'nama_desa' => 'required|string|max:255',
-            'deskripsi_desa' => 'required|string|max:255',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'potensi_desa.*.nama_potensi' => 'required|string|max:255',
-            'potensi_desa.*.foto_potensi' => 'nullable|file|mimes:jpg,png|max:2048',
-            'potensi_desa.*.deskripsi_potensi' => 'required|string|max:255',
-        ];
-
-        // Pesan kesalahan
-        $messages = [
-            'nama_desa.required' => 'Nama desa wajib diisi.',
-            'deskripsi_desa.required' => 'Deskripsi desa wajib diisi.',
-            'latitude.required' => 'Latitude wajib diisi. Klik lokasi desa pada peta',
-            'longitude.required' => 'Longitude wajib diisi. Klik lokasi desa pada peta',
-            'potensi_desa.*.nama_potensi.required' => 'Nama potensi wajib diisi.',
-            'potensi_desa.*.foto_potensi.mimes' => 'Foto potensi harus dalam format JPG atau PNG.',
-            'potensi_desa.*.foto_potensi.max' => 'Ukuran file foto potensi tidak boleh lebih dari 2MB.',
-            'potensi_desa.*.deskripsi_potensi.required' => 'Deskripsi potensi wajib diisi.',
-        ];
-
-        // Validasi request
-        $validatedData = $request->validate($rules, $messages);
+        // Validasi request mengambil dari validateDesa
+        $validatedData = $this->validateDesa($request);
 
         // Menyimpan data desa
         $desa = desaPotensi::create([
@@ -70,8 +128,7 @@ class PersebaranUmkmController extends Controller
 
             // Menyimpan gambar jika ada
             if ($request->hasFile('potensi_desa.' . $key . '.foto_potensi')) {
-                $file = $request->file('potensi_desa.' . $key . '.foto_potensi');
-                $filePath = $file->store('fotoPotensiDesa', 'public');
+                $filePath = $this->savePhoto($request->file('potensi_desa.' . $key . '.foto_potensi'), 'fotoPotensiDesa');
                 $potensiItem->foto_potensi = $filePath;
             }
 
@@ -85,7 +142,6 @@ class PersebaranUmkmController extends Controller
             return redirect()->route('admin.persebaran')->with('success', 'Data desa dan potensi berhasil disimpan');
         }
     }
-
 
     public function detail_desa_admin($id)
     {
@@ -113,33 +169,8 @@ class PersebaranUmkmController extends Controller
 
     public function update_desa_potensi(Request $request, $id)
     {
-        // dd($request->all());
-        $rules = [
-            'nama_desa' => 'required|string|max:255',
-            'deskripsi_desa' => 'required|string|max:255',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'potensi_desa.*.nama_potensi' => 'required|string|max:255',
-            'potensi_desa.*.foto_potensi' => 'nullable|file|mimes:jpg,png|max:2048',
-            'potensi_desa.*.deskripsi_potensi' => 'required|string|max:255',
-            'potensi_desa.*.old_foto_potensi' => 'nullable|string',
-        ];
-
-        // Pesan kesalahan
-        $messages = [
-            'nama_desa.required' => 'Nama desa wajib diisi.',
-            'deskripsi_desa.required' => 'Deskripsi desa wajib diisi.',
-            'latitude.required' => 'Latitude wajib diisi. Klik lokasi desa pada peta',
-            'longitude.required' => 'Longitude wajib diisi. Klik lokasi desa pada peta',
-            'potensi_desa.*.nama_potensi.required' => 'Nama potensi wajib diisi.',
-            'potensi_desa.*.foto_potensi.mimes' => 'Foto potensi harus dalam format JPG atau PNG.',
-            'potensi_desa.*.foto_potensi.max' => 'Ukuran file foto potensi tidak boleh lebih dari 2MB.',
-            'potensi_desa.*.deskripsi_potensi.required' => 'Deskripsi potensi wajib diisi.',
-            'potensi_desa.*.old_foto_potensi.string' => 'Foto potensi lama harus berupa teks yang valid.',
-        ];
-
-        // Validasi request
-        $validatedData = $request->validate($rules, $messages);
+        // Validasi request mengambil dari validateDesa
+        $validatedData = $this->validateDesa($request);
 
         // Update data desa
         $desa = DesaPotensi::findOrFail($id);
@@ -152,7 +183,6 @@ class PersebaranUmkmController extends Controller
 
         // Ambil semua ID potensi desa yang ada di database untuk desa ini
         $existingPotensiIds = $desa->potensiDesa->pluck('id')->toArray();
-
 
         // Proses data potensi desa
         $inputPotensiIds = []; // Array untuk menyimpan ID dari potensi yang diinputkan
@@ -173,9 +203,7 @@ class PersebaranUmkmController extends Controller
 
             // Cek jika ada file foto potensi yang diupload
             if ($request->hasFile('potensi_desa.' . $key . '.foto_potensi')) {
-                // Path penyimpanan gambar baru
-                $file = $request->file('potensi_desa.' . $key . '.foto_potensi');
-                $filePath = $file->store('fotoPotensiDesa', 'public');
+                $filePath = $this->savePhoto($request->file('potensi_desa.' . $key . '.foto_potensi'), 'fotoPotensiDesa');
 
                 // Cek jika ada old_foto_potensi
                 if (!empty($potensi_desa['old_foto_potensi'])) {
@@ -221,68 +249,10 @@ class PersebaranUmkmController extends Controller
         return view('admin.sumberdaya.persebaranUMKM.tambahUMKM', compact('desas'));
     }
 
-
-    // dd($request->all())
     public function store_umkm(Request $request)
     {
-        // dd($request->all());
-        // Aturan validasi
-        $rules = [
-            'nama_umkm' => 'required|string|max:255',
-            'nama_pemilik' => 'required|string|max:255',
-            'alamat_umkm' => 'required|string|max:255',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'foto_umkm' => 'nullable|file|mimes:jpg,png|max:2048',
-            'deskripsi_umkm' => 'required|string',
-            'kontak' => 'required|string|max:20',
-            'whatsapp' => 'nullable|string|max:15',
-            'email' => 'nullable|email|max:255',
-            'instagram' => 'nullable|string|max:255',
-            'desa_potensi_id' => 'required|exists:desa_potensis,id',
-            'produk_umkm.*.nama_produk' => 'required|string|max:255',
-            'produk_umkm.*.deskripsi_produk' => 'required|string',
-            'produk_umkm.*.foto_produk' => 'nullable|file|mimes:jpg,png|max:2048',
-            'produk_umkm.*.harga_terendah' => [
-                'required',
-                'numeric',
-                'regex:/^\d+(\.\d{1,2})?$/', // Validasi untuk angka dengan 0 atau 2 tempat desimal
-            ],
-            'produk_umkm.*.harga_tertinggi' => [
-                'required',
-                'numeric',
-                'regex:/^\d+(\.\d{1,2})?$/', // Validasi untuk angka dengan 0 atau 2 tempat desimal
-            ],
-        ];
-
-        // Pesan kesalahan
-        $messages = [
-            'nama_umkm.required' => 'Nama UMKM wajib diisi.',
-            'nama_pemilik.required' => 'Nama pemilik UMKM wajib diisi.',
-            'alamat_umkm.required' => 'Alamat UMKM wajib diisi.',
-            'latitude.required' => 'Latitude wajib diisi.',
-            'longitude.required' => 'Longitude wajib diisi.',
-            'foto_umkm.mimes' => 'Foto UMKM harus dalam format JPG atau PNG.',
-            'foto_umkm.max' => 'Ukuran file foto UMKM tidak boleh lebih dari 2MB.',
-            'deskripsi_umkm.required' => 'Deskripsi UMKM wajib diisi.',
-            'kontak.required' => 'Kontak UMKM wajib diisi.',
-            'kontak.max' => 'Kontak UMKM tidak boleh lebih dari 20 karakter.',
-            'whatsapp.max' => 'Nomor WhatsApp tidak boleh lebih dari 15 karakter.',
-            'email.email' => 'Format email tidak valid.',
-            'desa_potensi_id.required' => 'Desa potensi wajib dipilih.',
-            'desa_potensi_id.exists' => 'Desa potensi yang dipilih tidak valid.',
-            'produk_umkm.*.nama_produk.required' => 'Nama produk UMKM wajib diisi.',
-            'produk_umkm.*.deskripsi_produk.required' => 'Deskripsi produk UMKM wajib diisi.',
-            'produk_umkm.*.foto_produk.mimes' => 'Foto produk harus dalam format JPG atau PNG.',
-            'produk_umkm.*.foto_produk.max' => 'Ukuran file foto produk tidak boleh lebih dari 2MB.',
-            'produk_umkm.*.harga_terendah.required' => 'Harga terendah produk wajib diisi.',
-            'produk_umkm.*.harga_tertinggi.required' => 'Harga tertinggi produk wajib diisi.',
-            'produk_umkm.*.harga_terendah.regex' => 'Harga terendah harus berupa angka dengan maksimal dua desimal.',
-            'produk_umkm.*.harga_tertinggi.regex' => 'Harga tertinggi harus berupa angka dengan maksimal dua desimal.',
-        ];
-
-        // Validasi request
-        $validatedData = $request->validate($rules, $messages);
+        // Validasi request dari validateUmkm
+        $validatedData = $this->validateUmkm($request);
 
         // Simpan UMKM
         $umkm = UMKM::create([
@@ -299,11 +269,8 @@ class PersebaranUmkmController extends Controller
             'desa_potensi_id' => $request->input('desa_potensi_id'),
         ]);
 
-        // Menyimpan foto UMKM jika ada
         if ($request->hasFile('foto_umkm')) {
-            $file = $request->file('foto_umkm');
-            $filePath = $file->store('fotoUmkm', 'public');
-            $umkm->foto_umkm = $filePath;
+            $umkm->foto_umkm = $this->savePhoto($request->file('foto_umkm'), 'fotoUmkm');
             $umkm->save();
         }
 
@@ -316,8 +283,7 @@ class PersebaranUmkmController extends Controller
 
             // Menyimpan foto produk jika ada
             if ($request->hasFile('produk_umkm.' . $key . '.foto_produk')) {
-                $file = $request->file('produk_umkm.' . $key . '.foto_produk');
-                $filePath = $file->store('fotoProdukUmkm', 'public');
+                $filePath = $this->savePhoto($request->file('produk_umkm.' . $key . '.foto_produk'), 'fotoProdukUmkm');
                 $produkItem->foto_produk = $filePath;
             }
 
@@ -333,7 +299,6 @@ class PersebaranUmkmController extends Controller
             return redirect()->route('admin.persebaran')->with('success', 'Data UMKM dan produk berhasil disimpan');
         }
     }
-
 
     public function edit_umkm($id)
     {
@@ -356,70 +321,13 @@ class PersebaranUmkmController extends Controller
     }
 
 
-
     public function update_umkm(Request $request, $id)
     {
-        // dd($request->all());
-        // Validasi input
-        $rules = [
-            'nama_umkm' => 'required|string|max:255',
-            'nama_pemilik' => 'required|string|max:255',
-            'alamat_umkm' => 'required|string|max:255',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'foto_umkm' => 'nullable|file|mimes:jpg,png|max:2048',
-            'deskripsi_umkm' => 'required|string',
-            'kontak' => 'required|string|max:20',
-            'whatsapp' => 'nullable|string|max:15',
-            'email' => 'nullable|email|max:255',
-            'instagram' => 'nullable|string|max:255',
-            'desa_potensi_id' => 'required|exists:desa_potensis,id',
-            'produk_umkm.*.nama_produk' => 'required|string|max:255',
-            'produk_umkm.*.deskripsi_produk' => 'required|string',
-            'produk_umkm.*.foto_produk' => 'nullable|file|mimes:jpg,png|max:2048',
-            'produk_umkm.*.harga_terendah' => [
-                'required',
-                'numeric',
-                'regex:/^\d+(\.\d{1,2})?$/', // Validasi untuk angka dengan 0 atau 2 tempat desimal
-            ],
-            'produk_umkm.*.harga_tertinggi' => [
-                'required',
-                'numeric',
-                'regex:/^\d+(\.\d{1,2})?$/', // Validasi untuk angka dengan 0 atau 2 tempat desimal
-            ],
-        ];
-
-        // Pesan kesalahan
-        $messages = [
-            'nama_umkm.required' => 'Nama UMKM wajib diisi.',
-            'nama_pemilik.required' => 'Nama pemilik UMKM wajib diisi.',
-            'alamat_umkm.required' => 'Alamat UMKM wajib diisi.',
-            'latitude.required' => 'Latitude wajib diisi.',
-            'longitude.required' => 'Longitude wajib diisi.',
-            'foto_umkm.mimes' => 'Foto UMKM harus dalam format JPG atau PNG.',
-            'foto_umkm.max' => 'Ukuran file foto UMKM tidak boleh lebih dari 2MB.',
-            'deskripsi_umkm.required' => 'Deskripsi UMKM wajib diisi.',
-            'kontak.required' => 'Kontak UMKM wajib diisi.',
-            'kontak.max' => 'Kontak UMKM tidak boleh lebih dari 20 karakter.',
-            'whatsapp.max' => 'Nomor WhatsApp tidak boleh lebih dari 15 karakter.',
-            'email.email' => 'Format email tidak valid.',
-            'desa_potensi_id.required' => 'Desa potensi wajib dipilih.',
-            'desa_potensi_id.exists' => 'Desa potensi yang dipilih tidak valid.',
-            'produk_umkm.*.nama_produk.required' => 'Nama produk UMKM wajib diisi.',
-            'produk_umkm.*.deskripsi_produk.required' => 'Deskripsi produk UMKM wajib diisi.',
-            'produk_umkm.*.foto_produk.mimes' => 'Foto produk harus dalam format JPG atau PNG.',
-            'produk_umkm.*.foto_produk.max' => 'Ukuran file foto produk tidak boleh lebih dari 2MB.',
-            'produk_umkm.*.harga_terendah.required' => 'Harga terendah produk wajib diisi.',
-            'produk_umkm.*.harga_tertinggi.required' => 'Harga tertinggi produk wajib diisi.',
-            'produk_umkm.*.harga_terendah.regex' => 'Harga terendah harus berupa angka dengan maksimal dua desimal.',
-            'produk_umkm.*.harga_tertinggi.regex' => 'Harga tertinggi harus berupa angka dengan maksimal dua desimal.',
-        ];
-
-        $validatedData = $request->validate($rules, $messages);
+        // Validasi request dari validateUmkm
+        $validatedData = $this->validateUmkm($request);
 
         // Update data UMKM
         $umkm = Umkm::findOrFail($id);
-
 
         // Tangani upload foto UMKM
         if ($request->hasFile('foto_umkm')) {
@@ -428,8 +336,7 @@ class PersebaranUmkmController extends Controller
                 \Storage::delete('public/' . $umkm->foto_umkm);
             }
 
-            // Simpan foto UMKM yang baru
-            $filePath = $request->file('foto_umkm')->store('fotoUmkm', 'public');
+            $filePath = $this->savePhoto($request->file('foto_umkm'), 'fotoUmkm');
             $umkm->foto_umkm = $filePath;
         }
 
@@ -472,9 +379,8 @@ class PersebaranUmkmController extends Controller
 
             // Tangani upload foto produk
             if ($request->hasFile('produk_umkm.' . $key . '.foto_produk')) {
-                // Path penyimpanan foto produk baru
-                $file = $request->file("produk_umkm.$key.foto_produk");
-                $filePath = $file->store('fotoProdukUmkm', 'public');
+
+                $filePath = $this->savePhoto($request->file('produk_umkm.' . $key . '.foto_produk'), 'fotoProdukUmkm');
 
                 // Hapus foto lama jika ada
                 if (!empty($produkData['old_foto_produk'])) {
@@ -483,7 +389,6 @@ class PersebaranUmkmController extends Controller
                         \Storage::delete('public/fotoProdukUmkm/' . $oldFotoName);
                     }
                 }
-
                 $produkItem->foto_produk = $filePath;
             } else {
                 // Jika tidak ada foto baru, gunakan foto lama jika ada
@@ -521,11 +426,31 @@ class PersebaranUmkmController extends Controller
         return view('admin.sumberdaya.persebaranUMKM.detailPersebaran', compact('umkm'));
     }
 
+
     public function destroy_umkm($id)
     {
-        $umkm = umkm::findOrFail($id);
+        // Ambil UMKM berdasarkan ID
+        $umkm = Umkm::with('produkUmkm')->findOrFail($id);
+
+        // Hapus foto UMKM dari storage jika ada
+        if ($umkm->foto_umkm && \Storage::exists('public/' . $umkm->foto_umkm)) {
+            \Storage::delete('public/' . $umkm->foto_umkm);
+        }
+
+        // Hapus produk terkait UMKM
+        foreach ($umkm->produkUmkm as $produk) {
+            // Hapus foto produk dari storage jika ada
+            if ($produk->foto_produk && \Storage::exists('public/' . $produk->foto_produk)) {
+                \Storage::delete('public/' . $produk->foto_produk);
+            }
+
+            $produk->delete();
+        }
+
+        // Hapus UMKM dari database
         $umkm->delete();
 
-        return redirect(route('admin.persebaran'))->with('success', 'data produk UMKM berhasil di hapus');
+        // Redirect dengan pesan sukses
+        return redirect()->route('admin.persebaran')->with('success', 'Data UMKM dan produk terkait berhasil dihapus');
     }
 }

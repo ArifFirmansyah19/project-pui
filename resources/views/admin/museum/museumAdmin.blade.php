@@ -29,7 +29,10 @@
                         onchange="document.getElementById('filterForm').submit()">
                         <option value="" disabled {{ request('jenis_keragaman') == '' ? 'selected' : '' }}>Pilih
                             opsi...</option>
+                        <option value="all" {{ request('jenis_keragaman') == 'all' ? 'selected' : '' }}>Semua Jenis
+                            Keragaman</option>
                         @foreach ($jenisKeragamans as $jenisKeragaman)
+                            {{-- <dd>{{ $jenisKeragaman }}</dd> --}}
                             <option value="{{ $jenisKeragaman->id }}"
                                 {{ request('jenis_keragaman') == $jenisKeragaman->id ? 'selected' : '' }}>
                                 {{ $jenisKeragaman->jenis_keragaman }}
@@ -42,72 +45,118 @@
 
             <!-- Judul Tabel -->
             <h2 id="table-title" class="text-2xl font-bold text-gray-800 mb-4">
-                Data {{ $selectedJenis ? $jenisKeragamans->find($selectedJenis)->jenis_keragaman : 'Keseluruhan' }}
+                Data
+                {{ $selectedJenis && $jenisKeragamans->contains($selectedJenis) ? $jenisKeragamans->find($selectedJenis)->jenis_keragaman : 'Jenis Keragaman yang Tersedia' }}
             </h2>
 
-            <!-- Tabel -->
-            <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
-                <thead>
-                    <tr class="w-full bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                        <th class="py-3 px-6 text-center">No.</th>
-                        <th class="py-3 px-6 text-center">Nama Keragaman</th>
-                        <th class="py-3 px-6 text-center">Foto</th>
-                        <th class="py-3 px-6 text-center">Deskripsi</th>
-                        <th class="py-3 px-6 text-center">Lokasi</th>
-                        <th class="py-3 px-6 text-center">Umur</th>
-                        <th class="py-3 px-6 text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="data-table-body" class="text-gray-600 text-sm font-light">
-                    @php $no = 1; @endphp
-                    @forelse ($dataKeragamans as $dataKeragaman)
-                        <tr class="border-b border-gray-200 hover:bg-gray-100">
-                            <td class="py-3 px-6 text-center">{{ $no++ }}.</td>
-                            <td class="py-3 px-6 text-center">{{ $dataKeragaman->nama }}</td>
-                            <td class="py-3 px-6 text-center">
-                                <!-- Memeriksa apakah ada foto_keragaman -->
-                                @if ($dataKeragaman->foto_keragaman)
-                                    <!-- Jika ada gambar, tampilkan gambar -->
-                                    <img src="{{ asset('storage/' . $dataKeragaman->foto_keragaman) }}"
-                                        alt="Foto Keragaman {{ $dataKeragaman->nama }}"
-                                        style="width:200px; height:200px" />
-                                @else
-                                    <!-- Jika tidak ada gambar, isi foto Default -->
-                                    <img src="{{ asset('img/gambarKosong.png') }}"
-                                        alt="Foto Keragaman {{ $dataKeragaman->nama }}"
-                                        style="width:200px; height:200px" />
-                                @endif
+            <!-- Tabel Jenis Keragaman-->
+            @if ($selectedJenis == 'all' || !$selectedJenis)
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+                    <thead>
+                        <tr class="w-full bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-center">No.</th>
+                            <th class="py-3 px-6 text-center">Jenis Keragaman</th>
+                            <th class="py-3 px-6 text-center">Deskripsi Jenis Keragaman</th>
+                            <th class="py-3 px-6 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-table-body" class="text-gray-600 text-sm font-light">
+                        @php $no = 1; @endphp
+                        @foreach ($jenisKeragamans as $jenisKeragaman)
+                            <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                <td class="py-3 px-6 text-center">{{ $no++ }}.</td>
+                                <td class="py-3 px-6 text-center">{{ $jenisKeragaman->jenis_keragaman }}</td>
+                                <td class="py-3 px-6 text-center">{{ $jenisKeragaman->deskripsi_keragaman }}
+                                </td>
 
-                            </td>
-                            <td class="py-3 px-6 text-center">{!! $dataKeragaman->deskripsi !!}</td>
-                            <td class="py-3 px-6 text-center">{{ $dataKeragaman->lokasi }}</td>
-                            <td class="py-3 px-6 text-center">{{ $dataKeragaman->umur }}</td>
-                            <td class="py-3 px-6 text-center">
-                                <div class="flex justify-center">
-                                    <a href="{{ route('admin.editDK', $dataKeragaman->id) }}">
-                                        <button class="mx-2 hover:text-gray-900">
-                                            <i class="fas fa-edit" style="color: #ea7434;"></i>
-                                        </button>
-                                    </a>
-                                    <form class="delete-form" action="{{ route('admin.destroyDK', $dataKeragaman->id) }}"
-                                        method="POST">
-                                        @csrf
-                                        <button type="button" data-id="" class="delete-button mx-2">
-                                            <i class="fa-solid fa-trash text-red-600 hover:text-gray-900"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
+                                <td class="py-3 px-6 text-center">
+                                    <div class="flex justify-center">
+                                        {{-- <a href="{{ route('admin.destroyJK', $jenisKeragaman->id) }}"> --}}
+                                        <a href="#">
+                                            <button class="mx-2 hover:text-gray-900">
+                                                <i class="fas fa-edit" style="color: #ea7434;"></i>
+                                            </button>
+                                        </a>
+                                        <form class="delete-form"
+                                            action="{{ route('admin.destroyJK', $jenisKeragaman->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="delete-button mx-2">
+                                                <i class="fa-solid fa-trash text-red-600 hover:text-gray-900"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+
+            <!-- Tabel Data Keragaman-->
+            @if ($selectedJenis != 'all' && $selectedJenis)
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+                    <thead>
+                        <tr class="w-full bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-center">No.</th>
+                            <th class="py-3 px-6 text-center">Nama Keragaman</th>
+                            <th class="py-3 px-6 text-center">Foto</th>
+                            <th class="py-3 px-6 text-center">Deskripsi</th>
+                            <th class="py-3 px-6 text-center">Lokasi</th>
+                            <th class="py-3 px-6 text-center">Umur</th>
+                            <th class="py-3 px-6 text-center">Aksi</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="py-3 px-6 text-center text-gray-500">
-                                Data tidak tersedia untuk jenis keragaman yang dipilih.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody id="data-table-body" class="text-gray-600 text-sm font-light">
+                        @php $no = 1; @endphp
+                        @forelse ($dataKeragamans as $dataKeragaman)
+                            <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                <td class="py-3 px-6 text-center">{{ $no++ }}.</td>
+                                <td class="py-3 px-6 text-center">{{ $dataKeragaman->nama }}</td>
+                                <td class="py-3 px-6 text-center">
+                                    <!-- Memeriksa apakah ada foto_keragaman -->
+                                    @if ($dataKeragaman->foto_keragaman)
+                                        <!-- Jika ada gambar, tampilkan gambar -->
+                                        <img src="{{ asset('storage/' . $dataKeragaman->foto_keragaman) }}"
+                                            alt="Foto Keragaman {{ $dataKeragaman->nama }}"
+                                            style="width:200px; height:200px" />
+                                    @else
+                                        <!-- Jika tidak ada gambar, isi foto Default -->
+                                        <img src="{{ asset('img/gambarKosong.png') }}"
+                                            alt="Foto Keragaman {{ $dataKeragaman->nama }}"
+                                            style="width:200px; height:200px" />
+                                    @endif
+
+                                </td>
+                                <td class="py-3 px-6 text-center">{!! $dataKeragaman->deskripsi !!}</td>
+                                <td class="py-3 px-6 text-center">{{ $dataKeragaman->lokasi }}</td>
+                                <td class="py-3 px-6 text-center">{{ $dataKeragaman->umur }}</td>
+                                <td class="py-3 px-6 text-center">
+                                    <div class="flex justify-center">
+                                        <a href="{{ route('admin.editDK', $dataKeragaman->id) }}">
+                                            <button class="mx-2 hover:text-gray-900">
+                                                <i class="fas fa-edit" style="color: #ea7434;"></i>
+                                            </button>
+                                        </a>
+                                        <form class="delete-form"
+                                            action="{{ route('admin.destroyDK', $dataKeragaman->id) }}" method="POST">
+                                            @csrf
+                                            <button type="button" data-id="" class="delete-button mx-2">
+                                                <i class="fa-solid fa-trash text-red-600 hover:text-gray-900"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="py-3 px-6 text-center text-gray-500">
+                                    Data tidak tersedia untuk jenis keragaman yang dipilih.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            @endif
         </div>
 
         <button id="tambahButton"

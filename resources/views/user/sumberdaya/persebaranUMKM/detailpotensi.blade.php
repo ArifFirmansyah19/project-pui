@@ -20,9 +20,9 @@
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 @foreach ($desa->potensiDesa as $potensi)
                     <figure class="relative">
-                        <img src="{{ asset('fotoPotensiDesa/' . $potensi->foto_potensi) }}" alt="{{ $potensi->nama_potensi }}"
+                        <img src="{{ asset('storage/' . $potensi->foto_potensi) }}" alt="{{ $potensi->nama_potensi }}"
                             class="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-75 transition"
-                            onclick="openModal('{{ asset('fotoPotensiDesa/' . $potensi->foto_potensi) }}', '{{ $potensi->deskripsi_potensi }}')" />
+                            onclick="openModal('{{ asset('storage/' . $potensi->foto_potensi) }}', '{{ $potensi->deskripsi_potensi }}')" />
                         <figcaption
                             class="absolute bottom-0 left-0 w-full bg-gray-800 bg-opacity-60 text-white text-center p-2 rounded-b-lg">
                             Potensi {{ $potensi->nama_potensi }}
@@ -38,7 +38,7 @@
         <div class="relative mt-20">
             <span class="absolute top-0 right-0 text-white text-2xl cursor-pointer p-4"
                 onclick="closeModal()">&times;</span>
-            <img id="modalImageContent" src="" class="max-w-full max-h-[84vh]" />
+            <img id="modalImageContent" src="" style="height: 500px; width:500px" />
             <!-- Deskripsi di bawah gambar -->
             <div id="modalImageDescription" class="text-white mt-4 p-4 bg-gray-900 bg-opacity-75 rounded">
                 <!-- Deskripsi akan dimasukkan di sini -->

@@ -45,7 +45,7 @@ Route::middleware('guest')->prefix('profil')->group(function () {
 // Tim
 Route::middleware('guest')->prefix('tim')->group(function () {
   Route::get('/', [TimController::class, 'tim'])->name('tim');
-  Route::get('/detail-anggota/{id}', [TimController::class, 'detail_tim'])->name('tim-detail');
+  Route::get('/detail-tim/{id}', [TimController::class, 'detail_tim'])->name('tim-detail');
 });
 
 // Artikel
@@ -191,6 +191,7 @@ Route::prefix('admin/museum')->name('admin.')->middleware('auth')->group(functio
   Route::get('/', [MuseumController::class, 'index_museum'])->name('museum');
   Route::get('/create_jenisKeragaman', [MuseumController::class, 'create_jenis_keragaman'])->name('createJK');
   Route::post('/store_jenisKeragaman', [MuseumController::class, 'store_jenis_keragaman'])->name('storeJK');
+  Route::post('/destroy_jenisKeragaman/{id}', [MuseumController::class, 'destroy_jenis_keragaman'])->name('destroyJK');
   Route::get('/create_dataKeragaman', [MuseumController::class, 'create_data_keragaman'])->name('createDK');
   Route::post('/store_dataKeragaman', [MuseumController::class, 'store_data_keragaman'])->name('storeDK');
   Route::get('/edit_dataKeragaman/{id}', [MuseumController::class, 'edit_data_keragaman'])->name('editDK');

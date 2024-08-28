@@ -106,7 +106,6 @@ class ProfilController extends Controller
         }
     }
 
-
     public function edit_struktur_organisasi($id)
     {
         $strukturOrganisasi = StrukturOrganisasi::findOrFail($id);

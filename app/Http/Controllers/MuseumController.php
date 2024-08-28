@@ -10,22 +10,46 @@ use App\Models\kontak;
 class MuseumController extends Controller
 {
 
-    // untuk admin
+    protected function validateDataKeragaman(Request $request)
+    {
+        return $request->validate([
+            'nama' => 'required|string|max:255',
+            'foto_keragaman' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'deskripsi' => 'required|string',
+            'lokasi' => 'required|string|max:255',
+            'umur' => 'required|string|max:255',
+            'jenis_keragaman_id' => 'required|exists:jenis_keragamans,id',
+        ], [
+            'nama.required' => 'Nama tim wajib diisi.',
+            'foto_keragaman.image' => 'File yang diunggah harus berupa gambar.',
+            'foto_keragaman.mimes' => 'Gambar harus dalam format jpeg, png, jpg, gif, atau svg.',
+            'foto_keragaman.max' => 'Ukuran gambar tidak boleh lebih dari 2 MB.',
+            'deskripsi.required' => 'Deskripsi dari data keragaman wajib diisi.',
+            'lokasi.required' => 'lokasi dari data keragaman wajib diisi.',
+            'umur.required' => 'Umurdari data keragaman yang diinputkan wajib diisi.',
+            'jenis_keragaman_id.required' => 'Divisi wajib diisi.',
+            'jenis_keragaman_id.exists' => 'Divisi yang dipilih tidak valid.',
+        ]);
+    }
 
+    protected function savePhoto($file, $folder)
+    {
+        return $file->store($folder, 'public');
+    }
+
+    // untuk admin
     public function index_museum(Request $request)
     {
         $selectedJenis = $request->input('jenis_keragaman');
-
-        // Ambil semua jenis keragaman untuk dropdown
         $jenisKeragamans = JenisKeragaman::all();
+        $dataKeragamans = $selectedJenis == 'all' || !$selectedJenis
+            ? DataKeragaman::all()
+            : DataKeragaman::where('jenis_keragaman_id', $selectedJenis)->get();
 
-        // Ambil data keragaman berdasarkan jenis yang dipilih
-        $dataKeragamans = DataKeragaman::when($selectedJenis, function ($query, $selectedJenis) {
-            return $query->where('jenis_keragaman_id', $selectedJenis);
-        })->get();
 
         return view('admin.museum.museumAdmin', compact('jenisKeragamans', 'dataKeragamans', 'selectedJenis'));
     }
+
 
 
     public function create_jenis_keragaman()
@@ -40,6 +64,34 @@ class MuseumController extends Controller
         return redirect(route('admin.museum'))->with('success', 'jenis keragaman berhasil di simpan');
     }
 
+
+    public function destroy_jenis_keragaman($id)
+    {
+        // Temukan jenis keragaman yang akan dihapus
+        $jenisKeragaman = JenisKeragaman::findOrFail($id);
+
+        // Temukan semua data keragaman yang terkait dengan jenis keragaman ini
+        $dataKeragamans = DataKeragaman::where('jenis_keragaman_id', $id)->get();
+
+        // Hapus setiap data keragaman dan file gambar terkait
+        foreach ($dataKeragamans as $dataKeragaman) {
+            // Hapus file gambar dari storage jika ada
+            if ($dataKeragaman->foto_keragaman && \Storage::exists('public/' . $dataKeragaman->foto_keragaman)) {
+                \Storage::delete('public/' . $dataKeragaman->foto_keragaman);
+            }
+
+            // Hapus data keragaman dari database
+            $dataKeragaman->delete();
+        }
+
+        // Hapus jenis keragaman
+        $jenisKeragaman->delete();
+
+        // Redirect dengan pesan sukses
+        return redirect()->route('admin.museum')->with('success', 'Jenis keragaman beserta data keragaman yang terkait berhasil dihapus');
+    }
+
+
     public function create_data_keragaman()
     {
         $jenisKeragamans = jenisKeragaman::all();
@@ -48,31 +100,8 @@ class MuseumController extends Controller
 
     public function store_data_keragaman(Request $request)
     {
-        // Aturan validasi input
-        $rules = [
-            'nama' => 'required|string|max:255',
-            'foto_keragaman' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'deskripsi' => 'required|string',
-            'lokasi' => 'required|string|max:255',
-            'umur' => 'required|string|max:255',
-            'jenis_keragaman_id' => 'required|exists:jenis_keragamans,id',
-        ];
-
-        // Pesan kesalahan khusus
-        $messages = [
-            'nama.required' => 'Nama tim wajib diisi.',
-            'foto_keragaman.image' => 'File yang diunggah harus berupa gambar.',
-            'foto_keragaman.mimes' => 'Gambar harus dalam format jpeg, png, jpg, gif, atau svg.',
-            'foto_keragaman.max' => 'Ukuran gambar tidak boleh lebih dari 2 MB.',
-            'deskripsi.required' => 'Deskripsi dari data keragaman wajib diisi.',
-            'lokasi.required' => 'lokasi dari data keragaman wajib diisi.',
-            'umur.required' => 'Umurdari data keragaman yang diinputkan wajib diisi.',
-            'jenis_keragaman_id.required' => 'Divisi wajib diisi.',
-            'jenis_keragaman_id.exists' => 'Divisi yang dipilih tidak valid.',
-        ];
-
         // Validasi request
-        $validatedData = $request->validate($rules, $messages);
+        $validatedData = $this->validateDataKeragaman($request);
 
         $dataKeragamans = dataKeragaman::create([
             'nama' => $request->nama,
@@ -84,8 +113,7 @@ class MuseumController extends Controller
 
         if ($request->hasFile('foto_keragaman')) {
             // Simpan foto_keragaman baru
-            $filePath = $request->file('foto_keragaman')->store('fotoDataKeragaman', 'public');
-            $dataKeragamans->foto_keragaman = $filePath;
+            $dataKeragamans->foto_keragaman = $this->savePhoto($request->file('foto_keragaman'), 'fotoDataKeragaman');
             $dataKeragamans->save();
         }
         // Menyimpan pesan sukses atau kesalahan di session flash
@@ -104,31 +132,8 @@ class MuseumController extends Controller
 
     public function update_data_keragaman(Request $request, $id)
     {
-        // Aturan validasi input
-        $rules = [
-            'nama' => 'required|string|max:255',
-            'foto_keragaman' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'deskripsi' => 'required|string',
-            'lokasi' => 'required|string|max:255',
-            'umur' => 'required|string|max:255',
-            'jenis_keragaman_id' => 'required|exists:jenis_keragamans,id',
-        ];
-
-        // Pesan kesalahan khusus
-        $messages = [
-            'nama.required' => 'Nama tim wajib diisi.',
-            'foto_keragaman.image' => 'File yang diunggah harus berupa gambar.',
-            'foto_keragaman.mimes' => 'Gambar harus dalam format jpeg, png, jpg, gif, atau svg.',
-            'foto_keragaman.max' => 'Ukuran gambar tidak boleh lebih dari 2 MB.',
-            'deskripsi.required' => 'Deskripsi dari data keragaman wajib diisi.',
-            'lokasi.required' => 'lokasi dari data keragaman wajib diisi.',
-            'umur.required' => 'Umurdari data keragaman yang diinputkan wajib diisi.',
-            'jenis_keragaman_id.required' => 'Divisi wajib diisi.',
-            'jenis_keragaman_id.exists' => 'Divisi yang dipilih tidak valid.',
-        ];
-
         // Validasi request
-        $validatedData = $request->validate($rules, $messages);
+        $validatedData = $this->validateDataKeragaman($request);
 
         $dataKeragaman = dataKeragaman::findOrFail($id);
 
@@ -148,7 +153,7 @@ class MuseumController extends Controller
             }
 
             // Simpan foto_keragaman baru
-            $filePath = $request->file('foto_keragaman')->store('fotoDataKeragaman', 'public');
+            $filePath = $this->savePhoto($request->file('foto_keragaman'), 'fotoDataKeragaman');
             $dataKeragaman->foto_keragaman = $filePath;
             $dataKeragaman->save();
         }
@@ -173,7 +178,6 @@ class MuseumController extends Controller
         $dataKeragaman->delete();
         return redirect(route('admin.museum', compact('dataKeragaman')))->with('success', 'data keragaman berhasil dihapus');
     }
-
 
 
     // untuk pengguna

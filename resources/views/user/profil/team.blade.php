@@ -13,10 +13,10 @@
 
                         <!-- Team member -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10 ml-4">
-                            @foreach ($dataTimPui as $item)
+                            @foreach ($dataTimPui as $tim)
                                 <div
                                     class="team-member bg-white rounded-lg overflow-hidden shadow-md transform transition duration-300 hover:scale-105 w-[40%]">
-                                    <a href="{{ route('tim-detail', $item->id) }}">
+                                    <a href="{{ route('tim-detail', $tim->id) }}">
                                         <!-- Gambar -->
                                         <!-- Memeriksa apakah ada gambar tim -->
                                         @if ($tim->foto)
@@ -31,9 +31,9 @@
 
                                         <!-- Konten -->
                                         <div class="p-6">
-                                            <h3 class="text-2xl font-semibold text-gray-800 mb-2">{{ $item->nama }}
+                                            <h3 class="text-2xl font-semibold text-gray-800 mb-2">{{ $tim->nama }}
                                             </h3>
-                                            <p class="text-gray-600">{{ $item->jabatan->nama_jabatan }}</p>
+                                            <p class="text-gray-600">{{ $tim->jabatan->nama_jabatan }}</p>
                                         </div>
                                     </a>
                                 </div>

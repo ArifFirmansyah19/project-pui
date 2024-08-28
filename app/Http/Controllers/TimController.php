@@ -13,11 +13,35 @@ use App\Models\CommentArticle;
 class TimController extends Controller
 {
 
+    protected function validateTimPuiGemar(Request $request)
+    {
+        return $request->validate([
+            'nama' => 'required|string|max:255',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'divisi_id' => 'required|exists:divisis,id',
+            'jabatan_id' => 'required|exists:jabatans,id',
+            'bidang_keahlian' => 'required|string|max:255',
+        ], [
+            'nama.required' => 'Nama tim wajib diisi.',
+            'foto.image' => 'File yang diunggah harus berupa gambar.',
+            'foto.mimes' => 'Gambar harus dalam format jpeg, png, jpg, gif, atau svg.',
+            'foto.max' => 'Ukuran gambar tidak boleh lebih dari 2 MB.',
+            'divisi_id.required' => 'Divisi wajib diisi.',
+            'divisi_id.exists' => 'Divisi yang dipilih tidak valid.',
+            'jabatan_id.required' => 'Jabatan wajib diisi.',
+            'jabatan_id.exists' => 'Jabatan yang dipilih tidak valid.',
+            'bidang_keahlian.required' => 'Bidang keahlian wajib diisi.',
+        ]);
+    }
+
     // untuk admin
     public function index_admin()
     {
         $divisis = divisi::all();
-        $jabatans = jabatan::select('nama_jabatan')->distinct()->get();
+        // $jabatans = jabatan::select('nama_jabatan')->distinct()->get();
+        $jabatans = jabatan::with('divisi')->orderBy('created_at', 'asc')->select('id', 'nama_jabatan', 'divisi_id', 'deskripsi_jabatan')
+            ->groupBy('nama_jabatan', 'id', 'divisi_id', 'deskripsi_jabatan')
+            ->get();
         $dataTimPui = tim::with('divisi', 'jabatan')->get();
 
         // Mengelompokkan data tim berdasarkan nama divisi
@@ -36,30 +60,8 @@ class TimController extends Controller
 
     public function store_tim(Request $request)
     {
-        // Aturan validasi input
-        $rules = [
-            'nama' => 'required|string|max:255',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'divisi_id' => 'required|exists:divisis,id',
-            'jabatan_id' => 'required|exists:jabatans,id',
-            'bidang_keahlian' => 'required|string|max:255',
-        ];
-
-        // Pesan kesalahan khusus
-        $messages = [
-            'nama.required' => 'Nama tim wajib diisi.',
-            'foto.image' => 'File yang diunggah harus berupa gambar.',
-            'foto.mimes' => 'Gambar harus dalam format jpeg, png, jpg, gif, atau svg.',
-            'foto.max' => 'Ukuran gambar tidak boleh lebih dari 2 MB.',
-            'divisi_id.required' => 'Divisi wajib diisi.',
-            'divisi_id.exists' => 'Divisi yang dipilih tidak valid.',
-            'jabatan_id.required' => 'Jabatan wajib diisi.',
-            'jabatan_id.exists' => 'Jabatan yang dipilih tidak valid.',
-            'bidang_keahlian.required' => 'Bidang keahlian wajib diisi.',
-        ];
-
         // Validasi request
-        $validatedData = $request->validate($rules, $messages);
+        $validatedData = $this->validateTimPuiGemar($request);
 
         // Membuat artikel baru
         $tim = tim::create([
@@ -94,30 +96,8 @@ class TimController extends Controller
 
     public function update_tim(Request $request, $id)
     {
-        // Aturan validasi input
-        $rules = [
-            'nama' => 'required|string|max:255',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'divisi_id' => 'required|exists:divisis,id',
-            'jabatan_id' => 'required|exists:jabatans,id',
-            'bidang_keahlian' => 'required|string|max:255',
-        ];
-
-        // Pesan kesalahan khusus
-        $messages = [
-            'nama.required' => 'Nama tim wajib diisi.',
-            'foto.image' => 'File yang diunggah harus berupa gambar.',
-            'foto.mimes' => 'Gambar harus dalam format jpeg, png, jpg, gif, atau svg.',
-            'foto.max' => 'Ukuran gambar tidak boleh lebih dari 2 MB.',
-            'divisi_id.required' => 'Divisi wajib diisi.',
-            'divisi_id.exists' => 'Divisi yang dipilih tidak valid.',
-            'jabatan_id.required' => 'Jabatan wajib diisi.',
-            'jabatan_id.exists' => 'Jabatan yang dipilih tidak valid.',
-            'bidang_keahlian.required' => 'Bidang keahlian wajib diisi.',
-        ];
-
         // Validasi request
-        $validatedData = $request->validate($rules, $messages);
+        $validatedData = $this->validateTimPuiGemar($request);
 
         // Temukan tim yang akan diperbarui
         $tim = Tim::findOrFail($id);
