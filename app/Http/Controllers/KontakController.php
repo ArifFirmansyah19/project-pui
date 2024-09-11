@@ -43,6 +43,7 @@ class KontakController extends Controller
     public function edit_kontak($id)
     {
         $kontak = Kontak::findOrFail($id);
+        session()->forget('success');
         return view('admin.kontak.editKontak', compact('kontak'));
     }
 

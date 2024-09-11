@@ -16,8 +16,9 @@
                         <img src="{{ asset('storage/' . $kegiatan->foto_kegiatan) }}"
                             alt="gambar kegiatan {{ $kegiatan->nama_kegiatan }}"
                             class="mb-2 rounded-lg h-96 w-full object-cover" />
-                        <p class="text-gray-800 leading-relaxed line-clamp pt-5">
-                            {!! $kegiatan->deskripsi_kegiatan !!}
+                        <p class="text-gray-800 leading-relaxed">
+                            {{ implode("\n", array_slice(explode("\n", wordwrap(strip_tags($kegiatan->deskripsi_kegiatan), 150, "\n")), 0, 7)) }}
+                            ...........
                         </p>
                 </a>
 

@@ -3,17 +3,14 @@
 @section('content')
 
     <br><br><br><br>
-
     <!-- Content -->
-    <main class="flex-1 bg-gray-100 p-4 sm:p-6 overflow-y-auto">
-        <div id="content" class="transition-transform duration-500 ease-in-out">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">
-                Museum PUI GEMAR UNJA
-            </h2>
-
-            <div class="container mx-auto px-4 py-8">
-                <!-- Grid untuk menampilkan jenis_keragaman -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div class="flex flex-col mt-5 md:flex-row w-full">
+        <div class="p-4 md:w-2/3">
+            <div id="content" class="transition-transform duration-500 ease-in-out">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                    Museum PUI GEMAR UNJA
+                </h2>
+                <div class="grid grid-cols-1 gap-6 px-8 md:grid-cols-2">
                     @foreach ($jenisKeragamans as $jenisKeragaman)
                         <div class="bg-white shadow-md rounded-lg p-6">
                             <a href="{{ route('all-jenis-keragaman', $jenisKeragaman->id) }}">
@@ -28,8 +25,6 @@
                     @endforeach
                 </div>
             </div>
-
         </div>
-    </main>
 
-@endsection
+    @endsection

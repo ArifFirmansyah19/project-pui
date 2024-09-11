@@ -45,12 +45,8 @@ class MuseumController extends Controller
         $dataKeragamans = $selectedJenis == 'all' || !$selectedJenis
             ? DataKeragaman::all()
             : DataKeragaman::where('jenis_keragaman_id', $selectedJenis)->get();
-
-
         return view('admin.museum.museumAdmin', compact('jenisKeragamans', 'dataKeragamans', 'selectedJenis'));
     }
-
-
 
     public function create_jenis_keragaman()
     {
@@ -63,7 +59,6 @@ class MuseumController extends Controller
         $jenisKeragamans->save();
         return redirect(route('admin.museum'))->with('success', 'jenis keragaman berhasil di simpan');
     }
-
 
     public function destroy_jenis_keragaman($id)
     {
@@ -83,14 +78,9 @@ class MuseumController extends Controller
             // Hapus data keragaman dari database
             $dataKeragaman->delete();
         }
-
-        // Hapus jenis keragaman
         $jenisKeragaman->delete();
-
-        // Redirect dengan pesan sukses
         return redirect()->route('admin.museum')->with('success', 'Jenis keragaman beserta data keragaman yang terkait berhasil dihapus');
     }
-
 
     public function create_data_keragaman()
     {
@@ -100,7 +90,6 @@ class MuseumController extends Controller
 
     public function store_data_keragaman(Request $request)
     {
-        // Validasi request
         $validatedData = $this->validateDataKeragaman($request);
 
         $dataKeragamans = dataKeragaman::create([
@@ -112,11 +101,10 @@ class MuseumController extends Controller
         ]);
 
         if ($request->hasFile('foto_keragaman')) {
-            // Simpan foto_keragaman baru
             $dataKeragamans->foto_keragaman = $this->savePhoto($request->file('foto_keragaman'), 'fotoDataKeragaman');
             $dataKeragamans->save();
         }
-        // Menyimpan pesan sukses atau kesalahan di session flash
+
         if ($request->session()->has('errors')) {
             return redirect()->back()->withErrors($validatedData)->withInput();
         } else {
@@ -127,6 +115,7 @@ class MuseumController extends Controller
     public function edit_data_keragaman($id)
     {
         $dataKeragaman = DataKeragaman::with('jenisKeragaman')->findOrFail($id);
+        session()->forget('success');
         return view('admin.museum.editDataKeragaman', compact('dataKeragaman'));
     }
 
@@ -134,9 +123,7 @@ class MuseumController extends Controller
     {
         // Validasi request
         $validatedData = $this->validateDataKeragaman($request);
-
         $dataKeragaman = dataKeragaman::findOrFail($id);
-
         $dataKeragaman->update([
             'nama' => $request->nama,
             'deskripsi' => $request->deskripsi,
@@ -145,20 +132,17 @@ class MuseumController extends Controller
             'jenis_keragaman_id' => $request->jenis_keragaman_id,
         ]);
 
-
         if ($request->hasFile('foto_keragaman')) {
             // Hapus foto_keragaman lama jika ada
             if ($dataKeragaman->foto_keragaman && \Storage::exists('public/' . $dataKeragaman->foto_keragaman)) {
                 \Storage::delete('public/' . $dataKeragaman->foto_keragaman);
             }
-
             // Simpan foto_keragaman baru
             $filePath = $this->savePhoto($request->file('foto_keragaman'), 'fotoDataKeragaman');
             $dataKeragaman->foto_keragaman = $filePath;
             $dataKeragaman->save();
         }
 
-        // Menyimpan pesan sukses atau kesalahan di session flash
         if ($request->session()->has('errors')) {
             return redirect()->back()->withErrors($validatedData)->withInput();
         } else {
@@ -166,12 +150,10 @@ class MuseumController extends Controller
         }
     }
 
-
     public function destroy_data_keragaman($id)
     {
         $dataKeragaman = dataKeragaman::findOrFail($id);
 
-        // Hapus foto_keragaman jika ada
         if ($dataKeragaman->foto_keragaman && \Storage::exists('public/' . $dataKeragaman->foto_keragaman)) {
             \Storage::delete('public/' . $dataKeragaman->foto_keragaman);
         }

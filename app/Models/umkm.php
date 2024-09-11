@@ -40,30 +40,4 @@ class umkm extends Model
     {
         return $this->hasMany(produkUmkm::class);
     }
-
-
-    //menghapus foto dari direktori public->fotoUmkm
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::deleting(function ($umkmLocations) {
-            //menghapus file gambar dari direktori public->fotoUmkm
-
-            $imagePath = public_path('fotoUmkm/' . $umkmLocations->foto_umkm);
-            if (File::exists($imagePath)) {
-                File::delete($imagePath);
-            }
-        });
-        static::updating(function ($umkmLocations) {
-            //cek apakah atribut foto diubah
-            if ($umkmLocations->isDirty('foto_umkm')) {
-                //hapus file foto lama dari direktori
-                $imagePath = public_path('fotoUmkm/' . $umkmLocations->getOriginal('foto_umkm'));
-                if (File::exists($imagePath)) {
-                    File::delete($imagePath);
-                }
-            }
-        });
-    }
 }

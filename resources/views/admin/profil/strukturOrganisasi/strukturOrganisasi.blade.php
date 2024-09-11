@@ -2,19 +2,6 @@
 @section('title', 'halaman struktur organisasi admin')
 @section('content-admin')
 
-    <!-- alert succes simpan data / ubah data -->
-    @if (session('success'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    title: 'Berhasil!',
-                    text: '{{ session('success') }}',
-                    icon: 'success'
-                });
-            });
-        </script>
-    @endif
-
     <!-- Content -->
     <main class="flex-1 bg-gray-100 p-4 sm:p-6">
         @if (!$gambarStrukturOrganisasiExists)

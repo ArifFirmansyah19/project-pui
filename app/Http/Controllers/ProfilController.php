@@ -9,15 +9,156 @@ use App\Models\divisi;
 use App\Models\VisionMission;
 use App\Models\kontak;
 use App\Models\CommentArticle;
+use App\Models\Sejarah;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class ProfilController extends Controller
 {
     // Untuk Admin
-    public function index_admin()
+    public function index_sejarah()
     {
-        return view('admin.profil.sejarah.sejarahAdmin');
+        $sejarahExists = Sejarah::exists();
+        $sejarah = Sejarah::first();
+        return view('admin.profil.sejarah.sejarahAdmin', compact('sejarahExists', 'sejarah'));
     }
 
+    public function create_sejarah()
+    {
+        return view('admin.profil.sejarah.createSejarah');
+    }
+
+    public function store_sejarah(Request $request)
+    {
+        // Mengolah isi_sejarah dan gambar (jika ada)
+        $storagePath = storage_path('app/public/fotoSejarah');
+        $dom = new \DOMDocument();
+        libxml_use_internal_errors(true);
+        $dom->loadHTML($request->isi_sejarah, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
+        libxml_clear_errors();
+
+        $images = $dom->getElementsByTagName('img');
+        foreach ($images as $img) {
+            $src = $img->getAttribute('src');
+            if (preg_match('/data:image/', $src)) {
+                preg_match('/data:image\/(?<mime>.*?)\;/', $src, $groups);
+                $mimetype = $groups['mime'];
+                $fileNameContentRand = substr(md5(uniqid()), 0, 6) . '_' . time();
+                $filePath = "$fileNameContentRand.$mimetype";
+                $image = Image::make($src)->resize(400, 400)->encode($mimetype, 100)->save("$storagePath/$filePath");
+                $new_src = asset('storage/fotoSejarah/' . $filePath);
+                $img->removeAttribute('src');
+                $img->setAttribute('src', $new_src);
+                $img->setAttribute('class', 'img-responsive');
+            }
+        }
+        // Membuat sejarah baru
+        $sejarahs = Sejarah::create([
+            'isi_sejarah' => $dom->saveHTML(),
+        ]);
+        $sejarahs->save();
+
+        return redirect(route('admin.sejarah'))->with('success', 'data Sejarah berhasil ditambahkan');
+    }
+
+    public function edit_sejarah($id)
+    {
+        $sejarah = Sejarah::findOrFail($id);
+        // Mengolah isi_sejarah dan mendapatkan gambar lama (jika ada)
+        $oldDom = new \DOMDocument();
+        libxml_use_internal_errors(true);
+        $oldDom->loadHTML($sejarah->isi_sejarah, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
+        libxml_clear_errors();
+        $oldImages = [];
+        foreach ($oldDom->getElementsByTagName('img') as $img) {
+            $src = $img->getAttribute('src');
+            if (!preg_match('/data:image/', $src)) {
+                $oldImages[] = basename(parse_url($src, PHP_URL_PATH));
+            }
+        }
+        session()->forget('success');
+        return view('admin.profil.sejarah.editSejarah', compact('sejarah', 'oldImages'));
+    }
+
+    public function update_sejarah(Request $request, $id)
+    {
+        // dd($request->all());
+        $sejarah = Sejarah::findOrFail($id);
+
+        $storagePath = storage_path('app/public/fotoSejarah');
+
+        // Mengambil daftar gambar lama dari isi_sejarah yang tersimpan di database
+        $oldDom = new \DOMDocument();
+        libxml_use_internal_errors(true);
+        $oldDom->loadHTML($sejarah->isi_sejarah, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
+        libxml_clear_errors();
+        $oldImages = [];
+        foreach ($oldDom->getElementsByTagName('img') as $img) {
+            $src = $img->getAttribute('src');
+            if (!preg_match('/data:image/', $src)) {
+                $oldImages[] = basename(parse_url($src, PHP_URL_PATH));
+            }
+        }
+
+        // Mengambil daftar gambar lama yang dikirim dari input hidden
+        $oldImagesFromRequest = $request->input('old_images', []);
+        if (!is_array($oldImagesFromRequest)) {
+            $oldImagesFromRequest = [];
+        }
+        $oldImages = array_merge($oldImages, $oldImagesFromRequest);
+
+        // Mengolah isi_sejarah baru untuk gambar baru
+        $newDom = new \DOMDocument();
+        libxml_use_internal_errors(true);
+        $newDom->loadHTML($request->isi_sejarah, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
+        libxml_clear_errors();
+        $newImages = [];
+        foreach ($newDom->getElementsByTagName('img') as $img) {
+            $src = $img->getAttribute('src');
+            if (preg_match('/data:image/', $src)) {
+                // Jika ini adalah gambar baru (base64)
+                preg_match('/data:image\/(?<mime>.*?)\;/', $src, $groups);
+                $mimetype = $groups['mime'];
+                $fileNameContentRand = substr(md5(uniqid()), 0, 6) . '_' . time();
+                $filePath = "$fileNameContentRand.$mimetype";
+
+                // Simpan gambar baru
+                $image = Image::make($src)->encode($mimetype, 100)->save("$storagePath/$filePath");
+                $new_src = asset('storage/fotoSejarah/' . $filePath);
+                $img->removeAttribute('src');
+                $img->setAttribute('src', $new_src);
+                $img->setAttribute('class', 'img-responsive');
+                $newImages[] = basename(parse_url($new_src, PHP_URL_PATH));
+
+                // Hapus gambar lama dengan nama yang sama (jika ada)
+                $oldImageName = basename(parse_url($src, PHP_URL_PATH));
+                if (in_array($oldImageName, $oldImages)) {
+                    $filePathToDelete = $storagePath . '/' . $oldImageName;
+                    if (file_exists($filePathToDelete)) {
+                        \Storage::delete('public/fotoSejarah/' . $oldImageName);
+                    }
+                }
+            } else {
+                // Memasukkan gambar yang sudah ada ke dalam newImages
+                $newImages[] = basename(parse_url($src, PHP_URL_PATH));
+            }
+        }
+
+        // Menyaring gambar lama untuk dihapus
+        $imagesToDelete = array_diff($oldImages, $newImages);
+
+        foreach ($imagesToDelete as $image) {
+            $filePath = $storagePath . '/' . $image;
+            if (file_exists($filePath)) {
+                \Storage::delete('public/fotoSejarah/' . $image);
+            }
+        }
+
+        // Update sejarah
+        $sejarah->update([
+            'isi_sejarah' => $newDom->saveHTML(),
+        ]);
+        return redirect()->route('admin.sejarah')->with('success', 'Data Sejarah Anda berhasil diperbarui.');
+    }
 
     public function index_visimisi()
     {
@@ -36,18 +177,18 @@ class ProfilController extends Controller
         $visionMission = VisionMission::create($request->all());
         $visionMission->save();
 
-        return redirect(route('profiladmin.visimisi'))->with('success', 'data berhasil ditambahkan');
+        return redirect(route('admin.visimisi'))->with('success', 'data berhasil ditambahkan');
     }
 
     public function edit_visimisi($id)
     {
         $visionMission = VisionMission::findOrFail($id);
+        session()->forget('success');
         return view('admin.profil.visimisi.editVisiMisi', compact('visionMission'));
     }
 
     public function update_visimisi(Request $request, $id)
     {
-        // dd($request->all());
         $visionMission = VisionMission::findOrFail($id);
         $visionMission->update($request->all());
         $visionMission->save();
@@ -70,7 +211,6 @@ class ProfilController extends Controller
 
     public function store_struktur_organisasi(Request $request)
     {
-
         // aturan Validasi input
         $rules = [
             'foto_struktur_organisasi' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048', // validasi untuk gambar
@@ -85,7 +225,6 @@ class ProfilController extends Controller
 
         // Validasi request
         $validatedData = $request->validate($rules, $messages);
-
 
         // Cek apakah ada file yang diupload
         if ($request->hasFile('foto_struktur_organisasi')) {
@@ -109,6 +248,7 @@ class ProfilController extends Controller
     public function edit_struktur_organisasi($id)
     {
         $strukturOrganisasi = StrukturOrganisasi::findOrFail($id);
+        session()->forget('success');
         return view('admin.profil.strukturOrganisasi.editStrukturOrganisasi', compact('strukturOrganisasi'));
     }
 
@@ -160,9 +300,10 @@ class ProfilController extends Controller
     // untuk pengguna
     public function sejarah()
     {
+        $sejarah = Sejarah::first();
         $kontak = Kontak::first();
         $kontakExists = Kontak::exists();
-        $articles = Article::all();
+        $articles = Article::orderBy('created_at', 'desc')->paginate(5);
 
         // Menghitung total komentar utama dan balasan untuk setiap artikel
         $articlesWithComments = $articles->map(function ($article) {
@@ -182,7 +323,7 @@ class ProfilController extends Controller
             return $article;
         });
 
-        return view('user/profil.sejarah', compact('kontak', 'kontakExists', 'articles', 'articlesWithComments'));
+        return view('user/profil.sejarah', compact('kontak', 'kontakExists', 'articles', 'articlesWithComments', 'sejarah'));
     }
 
     public function visimisi()
@@ -191,7 +332,7 @@ class ProfilController extends Controller
         $kontakExists = Kontak::exists();
         $visiMisiExists = VisionMission::exists();
         $visionMission = VisionMission::first();
-        $articles = Article::all();
+        $articles = Article::orderBy('created_at', 'desc')->paginate(5);
 
         // Menghitung total komentar utama dan balasan untuk setiap artikel
         $articlesWithComments = $articles->map(function ($article) {
@@ -221,7 +362,7 @@ class ProfilController extends Controller
         $gambarStrukturOrganisasiExists = StrukturOrganisasi::exists();
         $strukturOrganisasi = StrukturOrganisasi::first();
         $divisis = divisi::all();
-        $articles = Article::all();
+        $articles = Article::orderBy('created_at', 'desc')->paginate(5);
 
         // Menghitung total komentar utama dan balasan untuk setiap artikel
         $articlesWithComments = $articles->map(function ($article) {

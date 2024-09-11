@@ -23,6 +23,18 @@
         overflow: hidden;
     }
 
+
+
+    /* Marker hijau untuk desa */
+    .marker-green {
+        background-color: transparent;
+    }
+
+    /* Marker biru untuk UMKM */
+    .marker-blue {
+        background-color: transparent;
+    }
+
     #map {
         height: 700px;
         width: auto;

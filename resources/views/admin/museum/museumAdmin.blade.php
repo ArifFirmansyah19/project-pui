@@ -2,19 +2,6 @@
 @section('title', 'halaman Edit konten Museum Geowisata Merangin')
 @section('content-admin')
 
-    {{-- allert berhasil simpan data artikel, update --}}
-    @if (session('success'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    title: 'Berhasil!',
-                    text: '{{ session('success') }}',
-                    icon: 'success'
-                });
-            });
-        </script>
-    @endif
-
     <!-- Content -->
     <main class="flex-1 bg-gray-100 p-4 sm:p-6 overflow-y-auto">
         <div id="content" class="transition-transform duration-500 ease-in-out">
@@ -32,7 +19,6 @@
                         <option value="all" {{ request('jenis_keragaman') == 'all' ? 'selected' : '' }}>Semua Jenis
                             Keragaman</option>
                         @foreach ($jenisKeragamans as $jenisKeragaman)
-                            {{-- <dd>{{ $jenisKeragaman }}</dd> --}}
                             <option value="{{ $jenisKeragaman->id }}"
                                 {{ request('jenis_keragaman') == $jenisKeragaman->id ? 'selected' : '' }}>
                                 {{ $jenisKeragaman->jenis_keragaman }}
@@ -71,12 +57,6 @@
 
                                 <td class="py-3 px-6 text-center">
                                     <div class="flex justify-center">
-                                        {{-- <a href="{{ route('admin.destroyJK', $jenisKeragaman->id) }}"> --}}
-                                        <a href="#">
-                                            <button class="mx-2 hover:text-gray-900">
-                                                <i class="fas fa-edit" style="color: #ea7434;"></i>
-                                            </button>
-                                        </a>
                                         <form class="delete-form"
                                             action="{{ route('admin.destroyJK', $jenisKeragaman->id) }}" method="POST">
                                             @csrf
@@ -117,13 +97,11 @@
                                     @if ($dataKeragaman->foto_keragaman)
                                         <!-- Jika ada gambar, tampilkan gambar -->
                                         <img src="{{ asset('storage/' . $dataKeragaman->foto_keragaman) }}"
-                                            alt="Foto Keragaman {{ $dataKeragaman->nama }}"
-                                            style="width:200px; height:200px" />
+                                            alt="Foto Keragaman {{ $dataKeragaman->nama }}" />
                                     @else
                                         <!-- Jika tidak ada gambar, isi foto Default -->
                                         <img src="{{ asset('img/gambarKosong.png') }}"
-                                            alt="Foto Keragaman {{ $dataKeragaman->nama }}"
-                                            style="width:200px; height:200px" />
+                                            alt="Foto Keragaman {{ $dataKeragaman->nama }}" />
                                     @endif
 
                                 </td>

@@ -4,12 +4,12 @@
 @section('content')
 
     <!-- Content -->
-    <main class="flex-1 bg-gray-100 p-4 sm:p-6 overflow-y-auto">
-        <div id="content" class="transition-transform duration-500 ease-in-out" style="margin-top: 90px" <!-- Bagian untuk
-            menampilkan data keragaman -->
-            <div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col mt-5 md:flex-row w-full">
+        <div id="content" class="transition-transform duration-500 ease-in-out" style="margin-top: 90px">
+            <!-- Bagian untuk menampilkan data keragaman -->
+            <div class="container mx-auto px-4 py-1">
                 <h2 class="text-3xl font-bold mb-6">Data {{ $jenisKeragaman->jenis_keragaman }}</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 gap-6 px-8 md:grid-cols-2">
                     @foreach ($jenisKeragaman->dataKeragaman as $dataKeragaman)
                         <a href="{{ route('detail-data-keragaman', $dataKeragaman->id) }}">
                             <div class="bg-white shadow-md rounded-lg p-6">
@@ -17,7 +17,7 @@
                                 <img src="{{ asset('storage/' . $dataKeragaman->foto_keragaman) }}"
                                     alt="gambar {{ $dataKeragaman->nama }}"
                                     class="mb-2 rounded-lg h-48 w-full object-cover" />
-                                <p class="text-gray-600 line-clamp">{!! $dataKeragaman->deskripsi !!}</p>
+                                <p class="text-gray-600 line-clamp-3">{!! $dataKeragaman->deskripsi !!}</p>
                                 <br>
                                 <p>Lokasi: {{ $dataKeragaman->lokasi }}</p>
                                 <p>Usia: {{ $dataKeragaman->umur }}</p>
@@ -26,9 +26,8 @@
                     @endforeach
                 </div>
             </div>
-
         </div>
-    </main>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

@@ -39,7 +39,6 @@ class AdminController extends Controller
             'email.regex' => 'Alamat email harus diakhiri dengan .com, .net, .org, .edu, .gov, .mil, atau .int',
         ]);
 
-
         $user = auth()->user();
 
         if ($request->hasFile('foto')) {
@@ -60,7 +59,7 @@ class AdminController extends Controller
             'foto' => $user->foto, // update foto jika ada perubahan
         ]);
 
-        return redirect()->route('dashboard.admin')->with('message', 'Profil admin berhasil diubah');
+        return redirect()->route('dashboard.admin')->with('success', 'Profil admin berhasil diubah');
     }
 
     // Menampilkan halaman edit password admin
@@ -79,7 +78,7 @@ class AdminController extends Controller
 
         if (Hash::check($request->password_lama, auth()->user()->password)) {
             auth()->user()->update(['password' => Hash::make($request->password)]);
-            return redirect()->route('dashboard.admin')->with('message', 'Password Anda berhasil diubah');
+            return redirect()->route('dashboard.admin')->with('success', 'Password Anda berhasil diubah');
         }
 
         throw ValidationException::withMessages([

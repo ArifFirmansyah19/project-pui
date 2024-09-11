@@ -2,19 +2,6 @@
 @section('title', 'halaman create Visi Misi admin')
 @section('content-admin')
 
-    {{-- allert berhasil simpan data artikel, update --}}
-    @if (session('success'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    title: 'Berhasil!',
-                    text: '{{ session('success') }}',
-                    icon: 'success'
-                });
-            });
-        </script>
-    @endif
-
     <!-- Content -->
     <main class="flex-1 bg-gray-100 p-4 sm:p-6 overflow-y-auto">
         <div id="content" class="transition-transform duration-500 ease-in-out">
@@ -47,7 +34,7 @@
             </div>
         </div>
 
-        {{-- Tombol untuk tambah misi / simpan --}}
+        <!-- Tombol untuk tambah misi / simpan -->
         <div class="button">
             <div class="flex justify-end m-5 pt-2">
                 <button type="button" onclick="addMissionField()"
@@ -55,7 +42,6 @@
                     style="margin-left: 20px; ">
                     Tambah
                 </button>
-                {{-- <button type="submit" id="updateButton" --}}
                 <button type="submit" id="updateButton"
                     class="fixed bottom-4 right-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                     Simpan
@@ -64,7 +50,7 @@
         </div>
         </form>
 
-        {{-- Tombol untuk kembali ke halaman awal visi Misi --}}
+        <!-- Tombol untuk kembali ke halaman awal visi Misi -->
         <a href="{{ route('admin.visimisi') }}">
             <button type="button"
                 class="fixed bottom-4 left-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"

@@ -1,114 +1,103 @@
-<div class="mb-4 p-4 bg-white rounded shadow">
-    <div class="flex items-center justify-between">
-        <!-- Profil dan Nama Pengguna -->
-        <div class="flex items-center">
-            <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-500">
-                <span class="font-bold">{{ strtoupper(substr($commentKegiatan->nama, 0, 1)) }}</span>
-            </div>
-            <div class="ml-4">
-                <div class="p-3">
-                    @if ($commentKegiatan->is_admin)
-                        <p class="font-bold text-green-500">Admin PUI GEMAR</p>
-                    @else
-                        <p class="font-bold">{{ $commentKegiatan->nama }}</p>
+<div class="comment">
+    <!-- Informasi Pengguna -->
+    <div class="flex items-center">
+        <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-500">
+            <span class="font-bold">{{ strtoupper(substr($comment->nama, 0, 1)) }}</span>
+        </div>
+        <div class="ml-4">
+            <div class="p-3">
+                @if ($comment->is_admin)
+                    <p class="font-bold text-green-500">Admin</p>
+                @else
+                    <p class="font-bold">{{ $comment->nama }}</p>
+                @endif
+                <p>{{ $comment->isi_komentar }}</p>
+
+                <!-- Tombol untuk menampilkan balasan -->
+                @if ($comment->replies->count() > 0)
+                    <button class="bg-blue-500 rounded text-white mt-2 p-1" onclick="toggleReplies({{ $comment->id }})">
+                        {{ $comment->replies->count() }} balasan
+                    </button>
+                @endif
+
+                <!-- Tombol Balas Komentar dan Hapus Komentar -->
+                <div class="flex items-center mt-2 space-x-2">
+                    <a href="javascript:void(0);" onclick="toggleReplyForm({{ $comment->id }});"
+                        class="text-blue-500">Balas Komentar</a>
+
+                    <!-- Logika tombol hapus -->
+                    @if (Auth::check() && Auth::user()->isAdmin())
+                        <form class="delete-form" method="POST"
+                            action="{{ route('admin.destroy.komentar-kegiatan', $comment->id) }}">
+                            @csrf
+                            <button type="button" data-id="{{ $comment->id }}" class="delete-button mx-2">
+                                <i class="fa-solid fa-trash text-red-600 hover:text-gray-900"></i>
+                            </button>
+                        </form>
                     @endif
-                    <p>{{ $commentKegiatan->isi_komentar }}</p>
-
-                    <!-- Tombol Balasan -->
-                    @if ($commentKegiatan->total_replies > 0)
-                        <button class="bg-blue-500 rounded text-white mt-2 p-1"
-                            onclick="toggleReplies({{ $commentKegiatan->id }})">
-                            {{ $commentKegiatan->total_replies }} balasan
-                        </button>
-                    @endif
-
-
-                    <!-- Form untuk membalas komentar utama -->
-                    <a href="javascript:void(0);" onclick="toggleReplyForm({{ $commentKegiatan->id }});"
-                        class="text-blue-500 mt-2 ">Balas Komentar</a>
-                    <form method="POST" action="{{ route('store.komentar-kegiatan') }}"
-                        id="reply-form-{{ $commentKegiatan->id }}" class="mt-2 hidden">
-                        @csrf
-                        <input type="hidden" name="kegiatan_id" value="{{ $commentKegiatan->kegiatan_id }}">
-                        <input type="hidden" name="parent_id" value="{{ $commentKegiatan->id }}">
-                        <div class="mb-2">
-                            <textarea name="isi_komentar" class="border rounded w-full py-2 px-3" placeholder="Your Reply"></textarea>
-                        </div>
-                        <input type="hidden" name="is_admin"
-                            value="{{ $commentKegiatan->is_admin ? 'true' : 'false' }}">
-                        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Reply</button>
-                    </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Balasan Komentar -->
-    @if ($commentKegiatan->replies->count() > 0)
-        <div id="replies-{{ $commentKegiatan->id }}" class="hidden ml-14 mt-2">
-            @foreach ($commentKegiatan->replies as $reply)
-                <div class="p-3 border-l-2">
-                    <label for="comment" class="block text-sm font-medium text-gray-700">
-                        <p>
-                            <strong class="{{ $reply->nama === 'Admin' ? 'text-green-500' : 'text-black' }}">
-                                {{ $reply->nama }}</strong> membalas <strong>{{ $commentKegiatan->nama }}</strong>:
-                        </p>
-                    </label>
-                    <input type="text" id="comment" name="comment" readonly required
-                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500"
-                        value="{{ $reply->isi_komentar }}" />
+    <!-- Form untuk membalas komentar -->
+    <form method="POST" action="{{ route('admin.store.komentar-kegiatan') }}" id="reply-form-{{ $comment->id }}"
+        class="mt-2 hidden">
+        @csrf
+        <input type="hidden" name="kegiatan_id" value="{{ $comment->kegiatan_id }}">
+        <input type="hidden" name="parent_id" value="{{ $comment->id }}">
+        <textarea name="isi_komentar" class="border rounded w-full py-2 px-3" placeholder="Your Reply"></textarea>
+        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Reply</button>
+    </form>
 
-                    <!-- Form untuk membalas balasan komentar -->
-                    <a href="javascript:void(0);" onclick="toggleReplyForm({{ $reply->id }});"
-                        class="text-blue-500 mt-2 inline-block">Balas Komentar</a>
-                    <form method="POST" action="{{ route('store.komentar-kegiatan') }}"
-                        id="reply-form-{{ $reply->id }}" class="mt-2 hidden">
-                        @csrf
-                        <input type="hidden" name="kegiatan_id" value="{{ $reply->kegiatan_id }}">
-                        <input type="hidden" name="parent_id" value="{{ $reply->id }}">
-                        <div class="mb-2">
-                            <textarea name="isi_komentar" class="border rounded w-full py-2 px-3" placeholder="Your Reply"></textarea>
-                        </div>
-                        <input type="hidden" name="is_admin" value="true">
-                        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Reply</button>
-                    </form>
-
-                    <!-- Nested replies -->
-                    @if ($reply->replies->count() > 0)
-                        @foreach ($reply->replies as $nestedReply)
-                            <div class="pt-3 pb-3">
-                                <label for="comment" class="block text-sm font-medium text-gray-700">
-                                    <p><strong
-                                            class="{{ $nestedReply->nama === 'Admin' ? 'text-green-500' : 'text-black' }}">
-                                            {{ $nestedReply->nama }}</strong>
-                                        membalas
-                                        <strong>{{ $reply->nama }}</strong>:
-                                    </p>
-                                </label>
-                                <input type="text" id="comment" name="comment" readonly required
-                                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500"
-                                    value="{{ $nestedReply->isi_komentar }}" />
-
-                                <!-- Form untuk membalas balasan nested -->
-                                <a href="javascript:void(0);" onclick="toggleReplyForm({{ $nestedReply->id }});"
-                                    class="text-blue-500 mt-2 inline-block">Balas Komentar</a>
-                                <form method="POST" action="{{ route('store.komentar-kegiatan') }}"
-                                    id="reply-form-{{ $nestedReply->id }}" class="mt-2 hidden">
-                                    @csrf
-                                    <input type="hidden" name="kegiatan_id" value="{{ $nestedReply->kegiatan_id }}">
-                                    <input type="hidden" name="parent_id" value="{{ $nestedReply->id }}">
-                                    <div class="mb-2">
-                                        <textarea name="isi_komentar" class="border rounded w-full py-2 px-3" placeholder="Your Reply"></textarea>
-                                    </div>
-                                    <input type="hidden" name="is_admin" value="true">
-                                    <button type="submit"
-                                        class="bg-blue-500 text-white py-2 px-4 rounded">Reply</button>
-                                </form>
-                            </div>
-                        @endforeach
-                    @endif
-                </div>
+    <!-- Tampilkan balasan (jika ada) -->
+    @if ($comment->replies->count() > 0)
+        <div id="replies-{{ $comment->id }}" class="hidden ml-14 mt-2">
+            @foreach ($comment->replies as $reply)
+                @include('admin.sumberdaya.kegiatan._comment', ['comment' => $reply])
             @endforeach
         </div>
     @endif
 </div>
+
+<script>
+    function toggleReplies(commentId) {
+        const replies = document.getElementById(`replies-${commentId}`);
+        if (replies.classList.contains('hidden')) {
+            replies.classList.remove('hidden');
+        } else {
+            replies.classList.add('hidden');
+        }
+    }
+
+    function toggleReplyForm(commentId) {
+        const form = document.getElementById(`reply-form-${commentId}`);
+        if (form.classList.contains('hidden')) {
+            form.classList.remove('hidden');
+        } else {
+            form.classList.add('hidden');
+        }
+    }
+
+    document.querySelectorAll('.delete-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const form = this.closest('form');
+            const kegiatanId = this.getAttribute('data-id');
+            event.preventDefault();
+
+            Swal.fire({
+                title: 'Apakah Anda yakin ingin menghapus?',
+                text: "Anda tidak akan dapat mengembalikan kegiatan ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Hapus!',
+                cancelButtonText: 'Batalkan'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>

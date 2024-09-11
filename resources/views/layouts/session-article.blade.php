@@ -1,13 +1,16 @@
 <!-- Artikel -->
-<div class="w-full min-h-full p-8 bg-gray-600 750:w-1/3 mt-10">
+<div class="w-full min-h-full p-8 bg-gray-600 md:w-1/3 mt-10">
     <h2 class="text-3xl font-semibold text-white mb-5 mt-10">Article</h2>
     <!-- Artikel -->
     @foreach ($articlesWithComments as $article)
         <div class="mb-4">
-            <h3 class="text-lg font-semibold text-white mb-0">{{ $article->judul }}</h3>
-            <p class="text-sm text-gray-300 mb-2">{{ $article->created_at }}</p>
-            <p class="text-sm text-white">
-                {!! $article->deskripsi !!}
+            <h3 class="text-lg font-semibold text-white mb-0">
+                <a href="{{ route('artikel', $article->id) }}">{{ $article->judul }}
+                </a>
+            </h3>
+            <p class="text-sm text-gray-300 mb-2">{{ $article->formatted_created_at }}</p>
+            <p class="text-sm text-black">
+                {{ implode("\n", array_slice(explode("\n", wordwrap(strip_tags($article->abstract), 150, "\n")), 0, 5)) }}
             </p>
             <a href="{{ route('artikel-detail', $article->id) }}"
                 class="block text-blue-500 font-semibold mt-2 hover:text-blue-300 transition duration-300">Baca
@@ -22,6 +25,9 @@
         </div>
         <hr class="border-gray-800 my-1" />
     @endforeach
+    <div class="mt-auto mb-0 px-3 flex justify-start">
+        {{ $articles->links() }}
+    </div>
 </div>
 
 <!-- Modal -->

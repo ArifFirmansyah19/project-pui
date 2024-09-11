@@ -17,7 +17,6 @@ class Kegiatan extends Model
         'foto_kegiatan',
         'deskripsi_kegiatan',
     ];
-
     // Accessor for formatted created_at
     public function getFormattedCreatedAtAttribute()
     {

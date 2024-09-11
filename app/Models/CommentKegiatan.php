@@ -9,7 +9,8 @@ class CommentKegiatan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['kegiatan_id', 'parent_id', 'nama', 'isi_komentar', 'is_admin'];
+    protected $fillable = ['kegiatan_id', 'parent_id', 'nama', 
+    'isi_komentar', 'is_admin'];
 
     public function replies()
     {
@@ -20,7 +21,6 @@ class CommentKegiatan extends Model
     {
         return $this->belongsTo(CommentKegiatan::class, 'parent_id');
     }
-
     // menghitung semua balasan
     public function countAllReplies()
     {

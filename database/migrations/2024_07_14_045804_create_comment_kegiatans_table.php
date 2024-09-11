@@ -15,11 +15,11 @@ return new class extends Migration
     {
         Schema::create('comment_kegiatans', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('kegiatan_id'); // ID kegiatan
-            $table->unsignedBigInteger('parent_id')->nullable(); // ID parent untuk balasan Komment 
-            $table->string('nama'); // Nama user yang membuat komentar
-            $table->text('isi_komentar'); // Isi komentar 
-            $table->boolean('is_admin')->default(false); // Menambahkan kolom is_admin untuk memeriksa apakah yang koment user website/admin         
+            $table->unsignedBigInteger('kegiatan_id');
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->string('nama');
+            $table->text('isi_komentar');
+            $table->boolean('is_admin')->default(false);
             $table->foreign('kegiatan_id')->references('id')->on('kegiatans')->onDelete('cascade');
             $table->foreign('parent_id')->references('id')->on('comment_kegiatans')->onDelete('cascade');
             $table->timestamps();

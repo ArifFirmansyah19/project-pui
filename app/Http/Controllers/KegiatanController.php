@@ -33,7 +33,7 @@ class KegiatanController extends Controller
     // Menampilkan halaman kegiatan untuk admin
     public function index_admin()
     {
-        $dataKegiatan = Kegiatan::all();
+        $dataKegiatan = Kegiatan::orderBy('created_at', 'desc')->paginate(10);
         return view('admin.sumberdaya.kegiatan.kegiatan', compact('dataKegiatan'));
     }
 
@@ -71,26 +71,22 @@ class KegiatanController extends Controller
                 $img->setAttribute('class', 'img-responsive');
             }
         }
-
         // Membuat kegiatan baru
         $kegiatan = Kegiatan::create([
             'nama_kegiatan' => $request->nama_kegiatan,
             'deskripsi_kegiatan' => $dom->saveHTML(),
         ]);
-
         // Menyimpan gambar kegiatan jika ada
         if ($request->hasFile('foto_kegiatan')) {
             // Hapus foto_kegiatan lama jika ada
             if ($kegiatan->foto_kegiatan && \Storage::exists('public/' . $kegiatan->foto_kegiatan)) {
                 \Storage::delete('public/' . $kegiatan->foto_kegiatan);
             }
-
             // Simpan foto_kegiatan baru
             $filePath = $request->file('foto_kegiatan')->store('fotoKegiatan', 'public');
             $kegiatan->foto_kegiatan = $filePath;
             $kegiatan->save();
         }
-
         // Menyimpan pesan sukses atau kesalahan di session flash
         if ($request->session()->has('errors')) {
             return redirect()->back()->withErrors($validatedData)->withInput();
@@ -117,7 +113,7 @@ class KegiatanController extends Controller
                 $oldImages[] = basename(parse_url($src, PHP_URL_PATH));
             }
         }
-
+        session()->forget('success');
         return view('admin.sumberdaya.kegiatan.editKegiatan', compact('kegiatan', 'oldImages'));
     }
 
@@ -226,7 +222,6 @@ class KegiatanController extends Controller
         }
     }
 
-
     // Menghapus data kegiatan
     public function destroy_kegiatan($id)
     {
@@ -268,30 +263,25 @@ class KegiatanController extends Controller
     // Menampilkan detail kegiatan untuk admin
     public function detail_kegiatan_admin($id)
     {
+        session()->forget('success');
+
         $kegiatan = Kegiatan::findOrFail($id);
-        $commentkegiatans = CommentKegiatan::where('kegiatan_id', $id)
-            ->whereNull('parent_id')
-            ->with([
-                'replies' => function ($query) {
-                    $query->orderBy('created_at', 'desc');
-                }
-            ])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $commentKegiatans = CommentKegiatan::where('kegiatan_id', $id)
+            ->whereNull('parent_id') // Hanya komentar utama yang tidak memiliki parent
+            ->withCount('replies') // Menghitung jumlah balasan untuk setiap komentar
+            ->orderBy('created_at', 'desc') // Mengurutkan komentar utama berdasarkan tanggal terbaru
+            ->paginate(10); // 
 
-        foreach ($commentkegiatans as $comment) {
-            $comment->load([
-                'replies.replies' => function ($query) {
-                    $query->orderBy('created_at', 'desc');
-                }
-            ]);
-        }
-
-        foreach ($commentkegiatans as $commentKegiatan) {
-            $commentKegiatan->total_replies = $commentKegiatan->countAllReplies();
-        }
-
-        return view('admin.sumberdaya.kegiatan.detailKegiatan', compact('kegiatan', 'commentkegiatans'));
+        // Memuat balasan untuk setiap komentar utama
+        $commentKegiatans->load([
+            'replies' => function ($query) {
+                $query->orderBy('created_at', 'desc'); // Mengurutkan balasan berdasarkan tanggal terbaru
+            },
+            'replies.replies' => function ($query) {
+                $query->orderBy('created_at', 'desc'); // Mengurutkan balasan nested berdasarkan tanggal terbaru
+            }
+        ]);
+        return view('admin.sumberdaya.kegiatan.detailKegiatan', compact('kegiatan', 'commentKegiatans'));
     }
 
     // Menyimpan komentar kegiatan
@@ -301,18 +291,16 @@ class KegiatanController extends Controller
             'kegiatan_id' => 'required|exists:kegiatans,id',
             'parent_id' => 'nullable|exists:comment_kegiatans,id',
             'isi_komentar' => 'required|string|max:5000',
+            'nama' => 'nullable|string|max:255' // Nama pengguna jika bukan admin
         ]);
-
         $is_admin = false;
 
         //Periksa apakah pengguna adalah admin atau bukan
         if (Auth::check() && Auth::user()->isAdmin()) {
             $is_admin = true;
         }
-
         //membuat nilai nama berdasarkan is admin
         $nama = $is_admin ? 'Admin' : $request->nama;
-
         CommentKegiatan::create([
             'kegiatan_id' => $request->kegiatan_id,
             'parent_id' => $request->parent_id,
@@ -320,17 +308,34 @@ class KegiatanController extends Controller
             'isi_komentar' => $request->isi_komentar,
             'is_admin' => $is_admin,
         ]);
-
-        return back();
+        return back()->with('success', 'Komentar berhasil ditambahkan');
     }
+
+    public function destroy_comment_kegiatan($id)
+    {
+        // Temukan komentar utama
+        $commentKegiatan = CommentKegiatan::findOrFail($id);
+
+        if (Auth::check() && Auth::user()->isAdmin()) {
+            $commentKegiatan->replies()->delete();
+            $commentKegiatan->delete();
+
+            return back()->with('success', 'Komentar dan balasan berhasil dihapus.');
+        } else {
+            return back()->with('error', 'Anda tidak memiliki izin untuk menghapus komentar ini.');
+        }
+    }
+
+
+
 
     // Menampilkan halaman kegiatan untuk pengguna
     public function index()
     {
         $kontak = Kontak::first();
         $kontakExists = Kontak::exists();
-        $articles = Article::all();
-        $kegiatans = Kegiatan::all();
+        $articles = Article::orderBy('created_at', 'desc')->paginate(10);
+        $kegiatans = Kegiatan::orderBy('created_at', 'desc')->paginate(10);
 
         // Menghitung total komentar utama dan balasan untuk setiap artikel
         $articlesWithComments = $articles->map(function ($article) {
@@ -377,10 +382,10 @@ class KegiatanController extends Controller
     {
         $kontak = Kontak::first();
         $kontakExists = Kontak::exists();
-        $articles = Article::all();
+        $articles = Article::orderBy('created_at', 'desc')->paginate(5);
 
         $kegiatan = Kegiatan::findOrFail($id);
-        $commentkegiatans = CommentKegiatan::where('kegiatan_id', $id)
+        $commentKegiatans = CommentKegiatan::where('kegiatan_id', $id)
             ->whereNull('parent_id')
             ->with([
                 'replies' => function ($query) {
@@ -390,7 +395,7 @@ class KegiatanController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        foreach ($commentkegiatans as $comment) {
+        foreach ($commentKegiatans as $comment) {
             $comment->load([
                 'replies.replies' => function ($query) {
                     $query->orderBy('created_at', 'desc');
@@ -398,7 +403,7 @@ class KegiatanController extends Controller
             ]);
         }
 
-        foreach ($commentkegiatans as $commentKegiatan) {
+        foreach ($commentKegiatans as $commentKegiatan) {
             $commentKegiatan->total_replies = $commentKegiatan->countAllReplies();
         }
 
@@ -420,6 +425,6 @@ class KegiatanController extends Controller
             return $article;
         });
 
-        return view('user.sumberdaya.kegiatan.detailKegiatan', compact('kontak', 'kontakExists', 'kegiatan', 'articles', 'commentkegiatans', 'articlesWithComments'));
+        return view('user.sumberdaya.kegiatan.detailKegiatan', compact('kontak', 'kontakExists', 'kegiatan', 'articles', 'commentKegiatans', 'articlesWithComments'));
     }
 }

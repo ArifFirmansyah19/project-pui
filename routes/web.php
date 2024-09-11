@@ -11,8 +11,10 @@ use App\Http\Controllers\{
   MuseumController,
   PersebaranUmkmController,
   ProfilController,
+  // SearchController,
   SumberDayaController,
-  TimController
+  TimController,
+  HKIController,
 };
 
 
@@ -55,6 +57,12 @@ Route::middleware('guest')->prefix('artikel')->group(function () {
   Route::post('/komentar-artikel/store', [ArticleController::class, 'store_comment_artikel'])->name('store.komentar-artikel');
 });
 
+// HKI
+Route::middleware('guest')->prefix('HKI')->group(function () {
+  Route::get('/', [HKIController::class, 'index_HKI'])->name('HKI');
+  Route::get('/detail-HKI/{id}', [HKIController::class, 'detail_HKI'])->name('HKI-detail');
+});
+
 // Kegiatan
 Route::prefix('kegiatan')->group(function () {
   Route::get('/', [KegiatanController::class, 'index'])->name('kegiatan');
@@ -80,7 +88,6 @@ Route::prefix('museum')->group(function () {
 Route::get('/kontak', [KontakController::class, 'index'])->name('kontak');
 
 
-
 // =====> Route Admin Website PUI GEMAR
 
 // Admin Dashboard and Profile Routes
@@ -95,7 +102,14 @@ Route::prefix('dashboard')->name('dashboard.')->middleware('auth')->group(functi
 
 // Admin Sejarah and Visi Misi Routes
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
-  Route::get('/sejarah', [ProfilController::class, 'index_admin'])->name('sejarah');
+  Route::prefix('sejarah')->group(function () {
+    Route::get('/', [ProfilController::class, 'index_sejarah'])->name('sejarah');
+    Route::get('/create', [ProfilController::class, 'create_sejarah'])->name('create-sejarah');
+    Route::post('/store', [ProfilController::class, 'store_sejarah'])->name('store-sejarah');
+    Route::get('/edit/{id}', [ProfilController::class, 'edit_sejarah'])->name('edit-sejarah');
+    Route::post('/update/{id}', [ProfilController::class, 'update_sejarah'])->name('update-sejarah');
+  });
+
   Route::prefix('visimisi')->group(function () {
     Route::get('/', [ProfilController::class, 'index_visimisi'])->name('visimisi');
     Route::get('/create', [ProfilController::class, 'create_visimisi'])->name('create-visimisi');
@@ -145,9 +159,20 @@ Route::prefix('admin/artikel')->name('admin.')->middleware('auth')->group(functi
   Route::post('/store', [ArticleController::class, 'store_artikel'])->name('store-artikel');
   Route::get('/detail/{id}', [ArticleController::class, 'detail_artikel_admin'])->name('detail-artikel');
   Route::post('/komentar/store', [ArticleController::class, 'store_comment_artikel'])->name('store.komentar-artikel');
+  Route::post('/komentar/destroy/{id}', [ArticleController::class, 'destroy_comment_artikel'])->name('destroy.komentar-artikel');
   Route::get('/edit/{id}', [ArticleController::class, 'edit_artikel'])->name('edit-artikel');
   Route::post('/update/{id}', [ArticleController::class, 'update_artikel'])->name('update-artikel');
   Route::post('/destroy/{id}', [ArticleController::class, 'destroy_artikel'])->name('destroy-artikel');
+});
+
+// Admin HKI Routes
+Route::prefix('admin/HKI')->name('admin.')->middleware('auth')->group(function () {
+  Route::get('/', [HKIController::class, 'index_HKI_admin'])->name('HKI');
+  Route::get('/create', [HKIController::class, 'create_HKI'])->name('create-HKI');
+  Route::post('/store', [HKIController::class, 'store_HKI'])->name('store-HKI');
+  Route::get('/edit/{id}', [HKIController::class, 'edit_HKI'])->name('edit-HKI');
+  Route::post('/update/{id}', [HKIController::class, 'update_HKI'])->name('update-HKI');
+  Route::post('/destroy/{id}', [HKIController::class, 'destroy_HKI'])->name('destroy-HKI');
 });
 
 // Admin Kegiatan Routes
@@ -157,6 +182,7 @@ Route::prefix('admin/kegiatan')->name('admin.')->middleware('auth')->group(funct
   Route::post('/store', [KegiatanController::class, 'store_kegiatan'])->name('store-kegiatan');
   Route::get('/detail/{id}', [KegiatanController::class, 'detail_kegiatan_admin'])->name('detail-kegiatan');
   Route::post('/komentar/store', [KegiatanController::class, 'store_comment_kegiatan'])->name('store.komentar-kegiatan');
+  Route::post('/komentar/destroy/{id}', [KegiatanController::class, 'destroy_comment_kegiatan'])->name('destroy.komentar-kegiatan');
   Route::get('/edit/{id}', [KegiatanController::class, 'edit_kegiatan'])->name('edit-kegiatan');
   Route::post('/update/{id}', [KegiatanController::class, 'update_kegiatan'])->name('update-kegiatan');
   Route::post('/destroy/{id}', [KegiatanController::class, 'destroy_kegiatan'])->name('destroy-kegiatan');

@@ -189,11 +189,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-
-
-
-
-
     // Event listener untuk menghapus sorotan ketika klik di luar kotak pencarian
     document.addEventListener("click", function(event) {
         if (!searchBox.contains(event.target) &&

@@ -7,45 +7,48 @@
 
         <!-- Menu untuk layar besar -->
         <div class="hidden lg:flex flex-col lg:flex-row justify-center items-center space-x-6" id="menu">
-            <!-- Menu 1 -->
-            <a href="/" class="menu-item text-white hover:text-gray-300 font-medium">
+
+            <a id="beranda" href="/" class="menu-item text-white hover:text-gray-300 font-medium">
                 Beranda
             </a>
-            <!-- Menu 2 -->
             <div class="relative">
-                <button class="menu-item text-white hover:text-gray-300 focus:outline-none font-medium">
+                <button id="profil" class="menu-item text-white hover:text-gray-300 focus:outline-none font-medium">
                     Profil
                     <i class="fas fa-caret-down ml-1" style="color: white"></i>
                 </button>
-                <!-- Submenu Menu 2 -->
                 <div class="submenu absolute left-0 mt-2 w-48 bg-indigo-900 shadow-lg rounded-lg py-2 hidden">
-                    <a href="{{ route('sejarah') }}" class="block px-4 py-2 text-white hover:bg-gray-700">Sejarah</a>
-                    <a href="{{ route('visimisi') }}" class="block px-4 py-2 text-white hover:bg-gray-700">Visi
+                    <a href="{{ route('sejarah') }}" id="sejarah"
+                        class="block px-4 py-2 text-white hover:bg-gray-700">Sejarah</a>
+                    <a href="{{ route('visimisi') }}" id="visi-misi"
+                        class="block px-4 py-2 text-white hover:bg-gray-700">Visi
                         Misi</a>
-                    <a href="{{ route('struktur-organisasi') }}"
+                    <a href="{{ route('struktur-organisasi') }}" id="struktur-organisasi"
                         class="block px-4 py-2 text-white hover:bg-gray-700">Struktur Organisasi</a>
-                    <a href="{{ route('tim') }}" class="block px-4 py-2 text-white hover:bg-gray-700">Tim</a>
+                    <a href="{{ route('tim') }}" id="tim"
+                        class="block px-4 py-2 text-white hover:bg-gray-700">Tim</a>
                 </div>
             </div>
-            <!-- Menu 3 -->
             <div class="relative">
-                <button class="menu-item text-white hover:text-gray-300 focus:outline-none font-medium border-b-2">
+                <button id="sumber-daya"
+                    class="menu-item text-white hover:text-gray-300 focus:outline-none font-medium border-b-2">
                     Sumber Daya
                     <i class="fas fa-caret-down ml-1" style="color: white"></i>
                 </button>
-                <!-- Submenu Menu 3 -->
                 <div class="submenu absolute left-0 mt-2 w-48 bg-indigo-900 shadow-lg rounded-lg py-2 hidden">
-                    <a href="{{ route('artikel') }}" class="block px-4 py-2 text-white hover:bg-gray-700">Artikel</a>
-                    <a href="{{ route('kegiatan') }}" class="block px-4 py-2 text-white hover:bg-gray-700">Kegiatan</a>
-                    <a href="{{ route('peta-persebaran') }}"
+                    <a href="{{ route('artikel') }}" id="artikel"
+                        class="block px-4 py-2 text-white hover:bg-gray-700">Artikel</a>
+                    <a href="{{ route('HKI') }}" id="HKI"
+                        class="block px-4 py-2 text-white hover:bg-gray-700">HKI</a>
+                    <a href="{{ route('kegiatan') }}" id="kegiatan"
+                        class="block px-4 py-2 text-white hover:bg-gray-700">Kegiatan</a>
+                    <a href="{{ route('peta-persebaran') }}" id="persebaran-umkm"
                         class="block px-4 py-2 text-white hover:bg-gray-700">Persebaran UMKM</a>
                 </div>
             </div>
-            <!-- Menu 4 -->
-            <a href="{{ route('museum') }}" class="menu-item text-white hover:text-gray-300 font-medium">
+            <a id="museum" href="{{ route('museum') }}" class="menu-item text-white hover:text-gray-300 font-medium">
                 Museum Digital
             </a>
-            <a href="#contact" class="menu-item text-white hover:text-gray-300 font-medium">
+            <a id="kontak" href="#contact" class="menu-item text-white hover:text-gray-300 font-medium">
                 Kontak
             </a>
         </div>

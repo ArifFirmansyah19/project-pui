@@ -131,10 +131,8 @@ class PersebaranUmkmController extends Controller
                 $filePath = $this->savePhoto($request->file('potensi_desa.' . $key . '.foto_potensi'), 'fotoPotensiDesa');
                 $potensiItem->foto_potensi = $filePath;
             }
-
             $potensiItem->save();
         }
-
         // Menyimpan pesan sukses atau kesalahan di session flash
         if ($request->session()->has('errors')) {
             return redirect()->back()->withErrors($validatedData)->withInput();
@@ -153,7 +151,6 @@ class PersebaranUmkmController extends Controller
     {
         // Mengambil data desa berdasarkan ID
         $desa = DesaPotensi::findOrFail($id);
-
         // Mengambil data potensi desa yang terkait dengan desa tersebut
         $potensiDesas = PotensiDesa::where('desa_potensi_id', $desa->id)->get();
 
@@ -164,6 +161,7 @@ class PersebaranUmkmController extends Controller
                 $oldFotos[$potensi->id] = 'fotoPotensiDesa/' . basename($potensi->foto_potensi);
             }
         }
+        session()->forget('success');
         return view('admin.sumberdaya.persebaranUMKM.editDesa', compact('desa', 'potensiDesas', 'oldFotos'));
     }
 
@@ -197,7 +195,6 @@ class PersebaranUmkmController extends Controller
                 $potensiItem = new PotensiDesa();
                 $potensiItem->desa_potensi_id = $desa->id;
             }
-
             $potensiItem->nama_potensi = $potensi_desa['nama_potensi'] ?? '';
             $potensiItem->deskripsi_potensi = $potensi_desa['deskripsi_potensi'] ?? '';
 
@@ -222,15 +219,11 @@ class PersebaranUmkmController extends Controller
                 // Jika tidak ada foto baru, periksa old_foto_potensi
                 $potensiItem->foto_potensi = $potensi_desa['old_foto_potensi'] ?? $potensiItem->foto_potensi;
             }
-
             $potensiItem->save();
         }
 
         // Hapus potensi desa yang tidak ada dalam inputan (telah dihapus oleh pengguna)
         $potensiToDelete = array_diff($existingPotensiIds, $inputPotensiIds);
-
-
-        // dd($inputPotensiIds);
         PotensiDesa::whereIn('id', $potensiToDelete)->delete();
 
         // Menyimpan pesan sukses atau kesalahan di session flash
@@ -273,7 +266,6 @@ class PersebaranUmkmController extends Controller
             $umkm->foto_umkm = $this->savePhoto($request->file('foto_umkm'), 'fotoUmkm');
             $umkm->save();
         }
-
         // Simpan produk terkait UMKM
         foreach ($request->input('produk_umkm', []) as $key => $produk_umkm) {
             $produkItem = new produkUmkm();
@@ -291,7 +283,6 @@ class PersebaranUmkmController extends Controller
             $produkItem->harga_tertinggi = $produk_umkm['harga_tertinggi'] ?? '';
             $produkItem->save();
         }
-
         // Menyimpan pesan sukses atau kesalahan di session flash
         if ($request->session()->has('errors')) {
             return redirect()->back()->withErrors($validatedData)->withInput();
@@ -312,14 +303,10 @@ class PersebaranUmkmController extends Controller
                 $oldFotos[$produk->id] = 'fotoProdukUMKM/' . basename($produk->foto_produk);
             }
         }
-
-        // Mengambil data desa untuk kebutuhan view
         $desas = DesaPotensi::all();
-
-        // Mengirim data ke view
+        session()->forget('success');
         return view('admin.sumberdaya.persebaranUMKM.editUmkm', compact('umkm', 'desas', 'oldFotos'));
     }
-
 
     public function update_umkm(Request $request, $id)
     {
@@ -379,7 +366,6 @@ class PersebaranUmkmController extends Controller
 
             // Tangani upload foto produk
             if ($request->hasFile('produk_umkm.' . $key . '.foto_produk')) {
-
                 $filePath = $this->savePhoto($request->file('produk_umkm.' . $key . '.foto_produk'), 'fotoProdukUmkm');
 
                 // Hapus foto lama jika ada
@@ -394,21 +380,10 @@ class PersebaranUmkmController extends Controller
                 // Jika tidak ada foto baru, gunakan foto lama jika ada
                 $produkItem->foto_produk = $produkData['old_foto_produk'] ?? $produkItem->foto_produk;
             }
-
             $produkItem->save();
         }
         // Hapus produk yang tidak ada di inputan
         $productsToDelete = array_diff($existingProductIds, $inputProductIds);
-        // if (!empty($productsToDelete)) {
-        //     foreach ($productsToDelete as $productId) {
-        //         $product = ProdukUMKM::findOrFail($productId);
-        //         // Hapus foto produk dari storage jika ada
-        //         if ($product->foto_produk && \Storage::exists('public/' . $product->foto_produk)) {
-        //             \Storage::delete('public/' . $product->foto_produk);
-        //         }
-        //         $product->delete();
-        //     }
-        // }
         ProdukUMKM::whereIn('id', $productsToDelete)->delete();
 
         // Menyimpan pesan sukses atau kesalahan di session flash
@@ -429,7 +404,6 @@ class PersebaranUmkmController extends Controller
 
     public function destroy_umkm($id)
     {
-        // Ambil UMKM berdasarkan ID
         $umkm = Umkm::with('produkUmkm')->findOrFail($id);
 
         // Hapus foto UMKM dari storage jika ada
@@ -443,14 +417,9 @@ class PersebaranUmkmController extends Controller
             if ($produk->foto_produk && \Storage::exists('public/' . $produk->foto_produk)) {
                 \Storage::delete('public/' . $produk->foto_produk);
             }
-
             $produk->delete();
         }
-
-        // Hapus UMKM dari database
         $umkm->delete();
-
-        // Redirect dengan pesan sukses
         return redirect()->route('admin.persebaran')->with('success', 'Data UMKM dan produk terkait berhasil dihapus');
     }
 }

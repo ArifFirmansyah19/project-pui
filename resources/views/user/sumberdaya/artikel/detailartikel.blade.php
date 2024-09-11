@@ -24,9 +24,55 @@
                         @endif
                         <br>
                         <p class="text-gray-800 leading-relaxed text-justify">
-                            {!! $article->deskripsi !!}
+                            {!! $article->abstract !!}
                         </p>
-                        <br />
+                        <br>
+
+                        @if ($article->file_path)
+                            <!-- Container untuk PDF -->
+                            <div id="pdf-container">
+                                <!-- Loading indicator -->
+                                <p>Loading PDF...</p>
+                            </div>
+
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    var pdfUrl = "{{ $article->file_path }}";
+                                    var container = document.getElementById('pdf-container');
+
+                                    // Cek apakah URL PDF dapat diakses
+                                    fetch(pdfUrl, {
+                                            method: 'HEAD'
+                                        })
+                                        .then(response => {
+                                            if (response.ok) {
+                                                // Jika PDF dapat diakses, tampilkan di iframe
+                                                container.innerHTML = `
+                                                <iframe src="${pdfUrl}" type="application/pdf" width="100%" height="700px">
+                                                    Your browser does not support PDFs. <a href="${pdfUrl}">Link Ke File Article yang Dimaksud</a>.
+                                                </iframe>
+                                            `;
+                                            } else {
+                                                // Jika PDF tidak dapat diakses, tampilkan link
+                                                container.innerHTML = `
+                                                <a href="${pdfUrl}" target="_blank" class="text-blue-500 underline">
+                                                    Link Ke File Article yang Dimaksud
+                                                </a>
+                                            `;
+                                            }
+                                        })
+                                        .catch(() => {
+                                            // Jika ada kesalahan dalam permintaan fetch, tampilkan link
+                                            container.innerHTML = `
+                                            <a href="${pdfUrl}" target="_blank" class="text-blue-500 underline">
+                                                Link Ke File Article yang Dimaksud
+                                            </a>
+                                        `;
+                                        });
+                                });
+                            </script>
+                        @endif
+                        <br>
                     </div>
                 </div>
             </div>

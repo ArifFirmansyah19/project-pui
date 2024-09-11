@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('judul');
             $table->string('penulis');
             $table->string('foto_artikel')->nullable();
-            $table->longText('deskripsi');
+            $table->longText('abstract');
+            $table->string('file_path')->nullable();
             $table->timestamps();
         });
     }

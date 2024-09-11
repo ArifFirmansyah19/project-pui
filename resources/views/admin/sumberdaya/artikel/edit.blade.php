@@ -53,14 +53,26 @@
                     @enderror
                 </div>
 
-                <!-- Deskripsi Artikel -->
+                <!-- File Path -->
                 <div>
-                    <label for="deskripsi" class="block text-sm font-medium text-gray-700">Isi Artikel</label>
-                    <textarea name="deskripsi" id="summernote"
+                    <label for="file_path" class="block text-sm font-medium text-gray-700">Link Artikel</label>
+                    <input type="url" id="file_path" name="file_path" placeholder="Masukkan nama file_path artikel"
+                        required
+                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500"
+                        value="{{ old('file_path', $article->file_path) }}" />
+                    @error('file_path')
+                        <div class="text-red-500 mt-2 text-sm">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Abstract Artikel -->
+                <div>
+                    <label for="abstract" class="block text-sm font-medium text-gray-700">Isi Artikel</label>
+                    <textarea name="abstract" id="summernote"
                         class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                        {!! old('deskripsi', $article->deskripsi) !!}
+                        {!! old('abstract', $article->abstract) !!}
                     </textarea>
-                    @error('deskripsi')
+                    @error('abstract')
                         <div class="text-red-500 mt-2 text-sm">{{ $message }}</div>
                     @enderror
                 </div>

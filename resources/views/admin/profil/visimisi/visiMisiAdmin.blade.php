@@ -2,19 +2,6 @@
 @section('title', 'halaman Visi Misi admin')
 @section('content-admin')
 
-    {{-- allert berhasil simpan data artikel, update --}}
-    @if (session('success'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    title: 'Berhasil!',
-                    text: '{{ session('success') }}',
-                    icon: 'success'
-                });
-            });
-        </script>
-    @endif
-
     <!-- Content -->
     <main class="flex-1 bg-gray-100 p-4 sm:p-6">
         @if (!$visiMisiExists)
@@ -81,7 +68,7 @@
 
         <button
             class="fixed bottom-4 right-4 bg-yellow-500 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
-            aria-label="Tambah Tim">
+            aria-label="Edit Visi Misi">
             <a href="{{ route('admin.edit-visimisi', $visionMission->id) }}">
                 <i class="fas fa-edit" style="color: #ffffff;"></i>
             </a>

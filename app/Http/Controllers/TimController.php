@@ -38,7 +38,6 @@ class TimController extends Controller
     public function index_admin()
     {
         $divisis = divisi::all();
-        // $jabatans = jabatan::select('nama_jabatan')->distinct()->get();
         $jabatans = jabatan::with('divisi')->orderBy('created_at', 'asc')->select('id', 'nama_jabatan', 'divisi_id', 'deskripsi_jabatan')
             ->groupBy('nama_jabatan', 'id', 'divisi_id', 'deskripsi_jabatan')
             ->get();
@@ -90,9 +89,9 @@ class TimController extends Controller
         $tim = tim::findOrFail($id);
         $divisis = divisi::all();
         $jabatans = jabatan::all();
+        session()->forget('success');
         return view('admin.profil.tim.editTim', compact('tim', 'divisis', 'jabatans'));
     }
-
 
     public function update_tim(Request $request, $id)
     {
@@ -130,7 +129,6 @@ class TimController extends Controller
         }
     }
 
-
     public function destroy_tim($id)
     {
         $tim = tim::findOrFail($id);
@@ -141,8 +139,6 @@ class TimController extends Controller
         $tim->delete();
         return redirect(route('admin.tim'))->with('success', 'Data Anggota Berhasil di hapus');
     }
-
-
 
     public function create_divisi()
     {
@@ -192,7 +188,7 @@ class TimController extends Controller
         $divisis = divisi::all();
         $jabatans = jabatan::select('nama_jabatan')->distinct()->get();
         $dataTimPui = tim::with('divisi', 'jabatan')->get();
-        $articles = Article::all();
+        $articles = Article::orderBy('created_at', 'desc')->paginate(10);
 
         // Mengelompokkan data tim berdasarkan nama divisi
         $groupedTims = $dataTimPui->groupBy(function ($dataTim) {
@@ -227,7 +223,7 @@ class TimController extends Controller
         $divisis = divisi::all();
         $jabatans = jabatan::select('nama_jabatan')->distinct()->get();
         $tim = tim::with(['divisi', 'jabatan'])->where('id', $id)->firstOrFail();
-        $articles = Article::all();
+        $articles = Article::orderBy('created_at', 'desc')->paginate(3);
 
         // Menghitung total komentar utama dan balasan untuk setiap artikel
         $articlesWithComments = $articles->map(function ($article) {

@@ -16,7 +16,8 @@ class Article extends Model
         'judul',
         'penulis',
         'foto_artikel',
-        'deskripsi',
+        'abstract',
+        'file_path',
     ];
 
     // Accessor for formatted created_at

@@ -17,38 +17,45 @@ class LoginController extends Controller
     {
         // Menghapus input sebelumnya dengan mengosongkan data 'old'
         $request->session()->flash('old', []);
-
         return view('admin/login.login', [
             'title' => 'Login',
             'active' => 'Login'
         ]);
     }
+
     public function authenticate(Request $request)
     {
-        // dd(session('status'));
+        // dd($request->all());
+        // Validasi input
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        // Periksa apakah checkbox "Remember me" dicentang
+        $remember = $request->filled('remember');
+
+        // Coba untuk melakukan otentikasi
+        if (Auth::attempt($credentials, $remember)) {
+            // Jika otentikasi berhasil, regenerasi sesi dan alihkan pengguna
             $request->session()->regenerate();
-            return redirect()->intended('/dashboard')->with('status', 'Login Anda berhasil!');
+            return redirect()->intended('/dashboard')->with('success', 'Login Anda berhasil!');
         }
 
+        // Jika otentikasi gagal, kembalikan dengan error
         return back()->withErrors([
             'email' => 'Email / password tidak sesuai.',
             'password' => 'Password salah.',
-        ])->withInput(); // Menyimpan input sebelumnya agar user tidak perlu mengisi ulan
+        ])->withInput(); // Menyimpan input sebelumnya agar user tidak perlu mengisi ulang
     }
 
     public function logout(Request $request)
     {
         Auth::logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login');
+
+        return redirect('/login')->with('success', 'Anda telah berhasil logout.');
     }
 
     public function forgot_password()

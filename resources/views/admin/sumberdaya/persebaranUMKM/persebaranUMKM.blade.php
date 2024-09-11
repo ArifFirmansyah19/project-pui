@@ -2,21 +2,6 @@
 @section('title', 'halaman Persebaran UMKM admin')
 @section('content-admin')
 
-    {{-- allert berhasil simpan data artikel, update --}}
-    @if (session('success'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    title: 'Berhasil!',
-                    text: '{{ session('success') }}',
-                    icon: 'success'
-                });
-                //  Menghapus session 'success' agar tidak muncul lagi ketika menekan tombol kembali
-                window.history.replaceState({}, document.title, window.location.pathname);
-            });
-        </script>
-    @endif
-
     <!-- Content -->
     <main class="flex-1 bg-gray-100 p-4 sm:p-6">
         <div id="content" class="transition-transform duration-500 ease-in-out">
@@ -42,7 +27,7 @@
                         </li>
                     @else
                         <li style="list-style-type: none;">
-                            <a href="{{ route('detail-potensi-desa', $desa->id) }}"
+                            <a href="{{ route('admin.detail-desa', $desa->id) }}"
                                 class="text-blue-500 hover:text-blue-700">Potensi Alam Desa
                                 {{ $desa->nama_desa }}</a>
                         </li>
@@ -62,7 +47,7 @@
                     @else
                         @foreach ($desa->umkm as $umkm)
                             <li style="list-style-type: none;">
-                                <a href="{{ route('detail-umkm', $umkm->id) }}"
+                                <a href="{{ route('admin.detail-umkm', $umkm->id) }}"
                                     class="text-blue-500 hover:text-blue-700">{{ $umkm->nama_umkm }}</a>
                             </li>
                             <div class="flex">

@@ -16,7 +16,7 @@
                 </a>
 
                 <div class="bg-gray-300 shadow-md rounded-lg px-8 py-0">
-                    <h1 class="text-4xl font-bold text-indigo-900 mb-0 mt-20">
+                    <h1 class="text-4xl font-bold text-indigo-900">
                         {{ $article->judul }}
                     </h1>
 
@@ -29,24 +29,75 @@
                         @else
                         @endif
                         <p class="text-gray-800 p-5 leading-relaxed">
-                            {!! $article->deskripsi !!}
+                            {!! $article->abstract !!}
                             <br>
                         </p>
-                    </div>
+                        <br>
 
+                        @if ($article->file_path)
+                            <!-- Container untuk PDF -->
+                            <div id="pdf-container">
+                                <!-- Loading indicator -->
+                                <p>Loading PDF...</p>
+                            </div>
+
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    var pdfUrl = "{{ $article->file_path }}";
+                                    var container = document.getElementById('pdf-container');
+
+                                    // Cek apakah URL PDF dapat diakses
+                                    fetch(pdfUrl, {
+                                            method: 'HEAD'
+                                        })
+                                        .then(response => {
+                                            if (response.ok) {
+                                                // Jika PDF dapat diakses, tampilkan di iframe
+                                                container.innerHTML = `
+                                                <iframe src="${pdfUrl}" type="application/pdf" width="100%" height="700px">
+                                                    Your browser does not support PDFs. <a href="${pdfUrl}">Link Ke File Article yang Dimaksud</a>.
+                                                </iframe>
+                                            `;
+                                            } else {
+                                                // Jika PDF tidak dapat diakses, tampilkan link
+                                                container.innerHTML = `
+                                                <a href="${pdfUrl}" target="_blank" class="text-blue-500 underline">
+                                                    Link Ke File Article yang Dimaksud
+                                                </a>
+                                            `;
+                                            }
+                                        })
+                                        .catch(() => {
+                                            // Jika ada kesalahan dalam permintaan fetch, tampilkan link
+                                            container.innerHTML = `
+                                            <a href="${pdfUrl}" target="_blank" class="text-blue-500 underline">
+                                                Link Ke File Article yang Dimaksud
+                                            </a>
+                                        `;
+                                        });
+                                });
+                            </script>
+                        @endif
+                        <br>
+                        <br>
+
+                    </div>
                 </div>
-                {{-- testing Komentar --}}
+
+                {{--  Komentar --}}
                 <div class="container mx-auto">
                     <h2 class="text-2xl font-bold mb-4">Comments</h2>
 
-                    {{-- munculin komentarkegiatan --}}
+                    {{-- Tampilkan komentar utama --}}
                     @foreach ($commentArticles as $commentArticle)
-                        @include('admin.sumberdaya.artikel._comment', [
-                            'commentArticle' => $commentArticle,
-                        ])
+                        <div class="mb-4 p-4 bg-white rounded shadow">
+                            <!-- Tampilkan komentar utama terlebih dahulu -->
+                            @include('admin.sumberdaya.artikel._comment', [
+                                'comment' => $commentArticle,
+                            ])
+                        </div>
                     @endforeach
                 </div>
-
             </div>
         </div>
     </div>
@@ -55,22 +106,23 @@
 
 @section('scripts')
     <script>
-        function toggleReplies(id) {
-            var repliesElement = document.getElementById('replies-' + id);
-            if (repliesElement.classList.contains('hidden')) {
-                repliesElement.classList.remove('hidden');
+        function toggleReplies(commentId) {
+            const replies = document.getElementById(`replies-${commentId}`);
+            if (replies.classList.contains('hidden')) {
+                replies.classList.remove('hidden');
             } else {
-                repliesElement.classList.add('hidden');
+                replies.classList.add('hidden');
             }
         }
 
-        function toggleReplyForm(id) {
-            var formElement = document.getElementById('reply-form-' + id);
-            if (formElement.classList.contains('hidden')) {
-                formElement.classList.remove('hidden');
+        function toggleReplyForm(commentId) {
+            const form = document.getElementById(`reply-form-${commentId}`);
+            if (form.classList.contains('hidden')) {
+                form.classList.remove('hidden');
             } else {
-                formElement.classList.add('hidden');
+                form.classList.add('hidden');
             }
         }
     </script>
+
 @endsection

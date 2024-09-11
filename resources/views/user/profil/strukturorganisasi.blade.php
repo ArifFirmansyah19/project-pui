@@ -20,17 +20,21 @@
                 </div>
             </div>
             <div class="max-w-full p-12">
-                <h1 class="text-2xl font-bold text-indigo-900 mb-15">Divisi</h1>
+                @if (!$gambarStrukturOrganisasiExists)
+                @else
+                    <h1 class="text-2xl font-bold text-indigo-900 mb-15">Divisi</h1>
+                    <p class="text-gray-800 mt-6 leading-relaxed">
+                        @foreach ($divisis as $divisi)
+                            <li class="text-justify">
+                                <strong>{{ $divisi->nama_divisi }}</strong> :
+                                {{ $divisi->deskripsi_divisi }}
+                            </li>
+                        @endforeach
+                    </p>
+                @endif
 
-                <p class="text-gray-800 mt-6 leading-relaxed">
-                    @foreach ($divisis as $divisi)
-                        <li class="text-justify">
-                            <strong>{{ $divisi->nama_divisi }}</strong> :
-                            {{ $divisi->deskripsi_divisi }}
-                        </li>
-                    @endforeach
-                </p>
             </div>
+
         </div>
         @include('layouts.session-article')
     </div>

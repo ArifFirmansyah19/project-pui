@@ -12,29 +12,33 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 class ArticleController extends Controller
 {
-
-
     protected function validateArticle(Request $request)
     {
         return $request->validate([
             'judul' => 'required|string|max:255',
             'penulis' => 'required|string|max:255',
             'foto_artikel' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:1000',
-            'deskripsi' => 'required|string',
+            'abstract' => 'required|string',
+            'file_path' => ['nullable', 'url', function ($attribute, $value, $fail) {
+                if (!str_starts_with($value, 'https://')) {
+                    $fail('URL file harus diawali dengan https://.');
+                }
+            }],
         ], [
             'judul.required' => 'Judul artikel wajib diisi.',
             'penulis.required' => 'Penulis artikel wajib diisi.',
             'foto_artikel.image' => 'File yang diunggah harus berupa gambar.',
             'foto_artikel.mimes' => 'Gambar artikel harus dalam format jpg, jpeg, png, atau webp.',
             'foto_artikel.max' => 'Ukuran gambar artikel tidak boleh lebih dari 1 MB.',
-            'deskripsi.required' => 'Deskripsi artikel wajib diisi.',
+            'abstract.required' => 'Deskripsi artikel wajib diisi.',
+            'file_path.url' => 'URL file yang dimasukkan tidak valid.',
         ]);
     }
 
     // untuk admin
     public function index_admin()
     {
-        $articles = Article::all();
+        $articles = Article::orderBy('created_at', 'desc')->paginate(10);
         return view('admin.sumberdaya.artikel.artikelAdmin', compact('articles'));
     }
 
@@ -45,32 +49,15 @@ class ArticleController extends Controller
 
     public function store_artikel(Request $request)
     {
-        // Aturan validasi
-        $rules = [
-            'judul' => 'required|string|max:255',
-            'penulis' => 'required|string|max:255',
-            'foto_artikel' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:1000',
-            'deskripsi' => 'required|string',
-        ];
-
-        // Pesan kesalahan khusus
-        $messages = [
-            'judul.required' => 'Judul artikel wajib diisi.',
-            'penulis.required' => 'Penulis artikel wajib diisi.',
-            'foto_artikel.image' => 'File yang diunggah harus berupa gambar.',
-            'foto_artikel.mimes' => 'Gambar artikel harus dalam format jpg, jpeg, png, atau webp.',
-            'foto_artikel.max' => 'Ukuran gambar artikel tidak boleh lebih dari 1 MB.',
-            'deskripsi.required' => 'Deskripsi artikel wajib diisi.',
-        ];
-
+        // dd($request->all());
         // Validasi request
         $validatedData = $this->validateArticle($request);
 
-        // Mengolah deskripsi dan gambar dalam summernote
+        // Mengolah abstract dan gambar dalam summernote
         $storagePath = storage_path('app/public/fotoArtikel');
         $dom = new \DOMDocument();
         libxml_use_internal_errors(true);
-        $dom->loadHTML($request->deskripsi, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
+        $dom->loadHTML($request->abstract, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
         libxml_clear_errors();
 
         $images = $dom->getElementsByTagName('img');
@@ -93,7 +80,9 @@ class ArticleController extends Controller
         $article = Article::create([
             'judul' => $request->judul,
             'penulis' => $request->penulis,
-            'deskripsi' => $dom->saveHTML(),
+            'file_path' => $request->file_path,
+            'abstract' => $dom->saveHTML(),
+
         ]);
 
         // Menyimpan gambar artikel jika ada
@@ -117,10 +106,10 @@ class ArticleController extends Controller
     {
         $article = Article::findOrFail($id);
 
-        // Mengolah deskripsi lama untuk mendapatkan gambar
+        // Mengolah abstract lama untuk mendapatkan gambar
         $oldDom = new \DOMDocument();
         libxml_use_internal_errors(true);
-        $oldDom->loadHTML($article->deskripsi, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
+        $oldDom->loadHTML($article->abstract, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
         libxml_clear_errors();
         $oldImages = [];
         foreach ($oldDom->getElementsByTagName('img') as $img) {
@@ -129,6 +118,7 @@ class ArticleController extends Controller
                 $oldImages[] = basename(parse_url($src, PHP_URL_PATH));
             }
         }
+        session()->forget('success');
         return view('admin.sumberdaya.artikel.edit', compact('article', 'oldImages'));
     }
 
@@ -143,10 +133,10 @@ class ArticleController extends Controller
         // Path penyimpanan gambar
         $storagePath = storage_path('app/public/fotoArtikel');
 
-        // Mengolah deskripsi lama dalam summernote
+        // Mengolah abstract lama dalam summernote
         $oldDom = new \DOMDocument();
         libxml_use_internal_errors(true);
-        $oldDom->loadHTML($article->deskripsi, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
+        $oldDom->loadHTML($article->abstract, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
         libxml_clear_errors();
         $oldImages = [];
         foreach ($oldDom->getElementsByTagName('img') as $img) {
@@ -163,10 +153,10 @@ class ArticleController extends Controller
         }
         $oldImages = array_merge($oldImages, $oldImagesFromRequest);
 
-        // Mengolah deskripsi baru dengan gambar baru
+        // Mengolah abstract baru dengan gambar baru
         $newDom = new \DOMDocument();
         libxml_use_internal_errors(true);
-        $newDom->loadHTML($request->deskripsi, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
+        $newDom->loadHTML($request->abstract, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
         libxml_clear_errors();
         $newImages = [];
         foreach ($newDom->getElementsByTagName('img') as $img) {
@@ -225,7 +215,8 @@ class ArticleController extends Controller
         $article->update([
             'judul' => $request->judul,
             'penulis' => $request->penulis,
-            'deskripsi' => $newDom->saveHTML(),
+            'file_path' => $request->file_path,
+            'abstract' => $newDom->saveHTML(),
         ]);
 
         // Menyimpan pesan sukses atau kesalahan di session flash
@@ -236,7 +227,6 @@ class ArticleController extends Controller
         }
     }
 
-
     public function destroy_artikel($id)
     {
         $article = Article::findOrFail($id);
@@ -246,10 +236,10 @@ class ArticleController extends Controller
             \Storage::delete('public/' . $article->foto_artikel);
         }
 
-        // Hapus gambar dari deskripsi
+        // Hapus gambar dari abstract
         $dom = new \DOMDocument();
         libxml_use_internal_errors(true);
-        $dom->loadHTML($article->deskripsi, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
+        $dom->loadHTML($article->abstract, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
         libxml_clear_errors();
 
         $images = $dom->getElementsByTagName('img');
@@ -266,48 +256,38 @@ class ArticleController extends Controller
                 }
             }
         }
-
-        // Hapus artikel
         $article->delete();
-
         return redirect(route('admin.artikel'))->with('success', 'Data artikel berhasil dihapus');
     }
 
 
     public function show()
     {
-        $article = Article::all();
+        $article = Article::orderBy('created_at', 'desc')->paginate(10);
         return view('user.sumberdaya.artikel.artikelUser', compact('article'));
     }
 
     public function detail_artikel_admin($id)
     {
+        session()->forget('success');
         $article = Article::findOrFail($id);
 
-        // Mengambil komentar utama untuk artikel dan balasan nested
+        // Mengambil komentar utama untuk artikel dengan jumlah balasan
         $commentArticles = CommentArticle::where('article_id', $id)
             ->whereNull('parent_id') // Hanya komentar utama yang tidak memiliki parent
-            ->with([
-                'replies' => function ($query) {
-                    $query->orderBy('created_at', 'desc'); // Mengurutkan balasan berdasarkan tanggal terbaru
-                }
-            ])
+            ->withCount('replies') // Menghitung jumlah balasan untuk setiap komentar
             ->orderBy('created_at', 'desc') // Mengurutkan komentar utama berdasarkan tanggal terbaru
-            ->get();
+            ->paginate(10); // Menggunakan pagination untuk membatasi jumlah komentar yang ditampilkan
 
-        // Mengambil balasan nested untuk setiap balasan
-        foreach ($commentArticles as $comment) {
-            $comment->load([
-                'replies.replies' => function ($query) {
-                    $query->orderBy('created_at', 'desc'); // Mengurutkan balasan nested berdasarkan tanggal terbaru
-                }
-            ]);
-        }
-
-        // Menghitung jumlah balasan total untuk setiap komentar
-        foreach ($commentArticles as $commentArticle) {
-            $commentArticle->total_replies = $commentArticle->countAllReplies();
-        }
+        // Memuat balasan untuk setiap komentar utama
+        $commentArticles->load([
+            'replies' => function ($query) {
+                $query->orderBy('created_at', 'desc'); // Mengurutkan balasan berdasarkan tanggal terbaru
+            },
+            'replies.replies' => function ($query) {
+                $query->orderBy('created_at', 'desc'); // Mengurutkan balasan nested berdasarkan tanggal terbaru
+            }
+        ]);
 
         return view('admin.sumberdaya.artikel.detailArtikel', compact('article', 'commentArticles'));
     }
@@ -315,22 +295,25 @@ class ArticleController extends Controller
 
     public function store_comment_artikel(Request $request)
     {
+        // Validasi input dari form
         $request->validate([
             'article_id' => 'required|exists:articles,id',
             'parent_id' => 'nullable|exists:comment_articles,id',
             'isi_komentar' => 'required|string|max:4000',
+            'nama' => 'nullable|string|max:255' // Nama pengguna jika bukan admin
         ]);
 
         $is_admin = false;
 
-        //Periksa apakah pengguna adalah admin atau bukan
+        // Periksa apakah pengguna adalah admin atau bukan
         if (Auth::check() && Auth::user()->isAdmin()) {
             $is_admin = true;
         }
 
-        //membuat nilai nama berdasarkan is admin
+        // Membuat nilai nama berdasarkan apakah admin atau bukan
         $nama = $is_admin ? 'Admin' : $request->nama;
 
+        // Simpan komentar baru ke database
         CommentArticle::create([
             'article_id' => $request->article_id,
             'parent_id' => $request->parent_id,
@@ -339,15 +322,34 @@ class ArticleController extends Controller
             'is_admin' => $is_admin,
         ]);
 
-        return back();
+        // Redirect kembali ke halaman sebelumnya dengan pesan sukses
+        return back()->with('success', 'Komentar berhasil ditambahkan');
     }
+
+
+
+    public function destroy_comment_artikel($id)
+    {
+        // Temukan komentar utama
+        $commentArticle = CommentArticle::findOrFail($id);
+
+        if (Auth::check() && Auth::user()->isAdmin()) {
+            $commentArticle->replies()->delete();
+            $commentArticle->delete();
+
+            return back()->with('success', 'Komentar dan balasan berhasil dihapus.');
+        } else {
+            return back()->with('error', 'Anda tidak memiliki izin untuk menghapus komentar ini.');
+        }
+    }
+
 
     // untuk pengguna
     public function index()
     {
         $kontak = Kontak::first();
         $kontakExists = Kontak::exists();
-        $articles = Article::all();
+        $articles = Article::orderBy('created_at', 'desc')->paginate(5);
 
         // Menghitung total komentar utama dan balasan untuk setiap artikel
         $articlesWithComments = $articles->map(function ($article) {

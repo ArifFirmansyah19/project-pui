@@ -39,6 +39,9 @@
                 <a href="{{ route('admin.artikel') }}" class="block px-4 py-2 text-sm text-white hover:bg-gray-600">
                     Artikel
                 </a>
+                <a href="{{ route('admin.HKI') }}" class="block px-4 py-2 text-sm text-white hover:bg-gray-600">
+                    HKI
+                </a>
                 <a href="{{ route('admin.kegiatan') }}" class="block px-4 py-2 text-sm text-white hover:bg-gray-600">
                     Kegiatan
                 </a>
@@ -49,12 +52,13 @@
         </div>
         <div class="relative">
             <a href="#" id="museumSubMenuToggle"
-                class="block px-4 py-2 text-sm text-white hover:bg-gray-600 flex items-center">
-                Museum <i class="fas fa-caret-down ml-2"></i>
+                class="block px-4 py-2 text-sm text-white hover:bg-gray-600 flex items-center"> Museum <i
+                    class="fas fa-caret-down ml-2"></i>
             </a>
             <div id="museumSubMenu" class="ml-4 hidden">
-                <a href="{{ route('admin.museum') }}" class="block px-4 py-2 text-sm text-white hover:bg-gray-600">Edit
-                    Museum</a>
+                <a href="{{ route('admin.museum') }}" class="block px-4 py-2 text-sm text-white hover:bg-gray-600">
+                    Edit Museum
+                </a>
             </div>
         </div>
 
@@ -65,8 +69,9 @@
                 Kontak <i class="fas fa-caret-down ml-2"></i>
             </a>
             <div id="kontakSubMenu" class="ml-4 hidden">
-                <a href="{{ route('admin.kontak') }}" class="block px-4 py-2 text-sm text-white hover:bg-gray-600">Edit
-                    Kontak</a>
+                <a href="{{ route('admin.kontak') }}" class="block px-4 py-2 text-sm text-white hover:bg-gray-600">
+                    Edit Kontak
+                </a>
             </div>
         </div>
     </nav>
@@ -87,17 +92,16 @@
                 </div>
                 <div class="flex items-center ml-3">
                     <div class="relative">
-
                         <!-- Profile Button -->
                         <button id="profile-menu-button">
-                            <div class="relative">
+                            <div class="relative mt-3">
                                 @if (Auth::user()->foto)
                                     <img src="{{ asset('storage/' . Auth::user()->foto) }}"
                                         alt="{{ Auth::user()->name }}"
-                                        class="mt-3 h-10 w-10 object-cover rounded-full mx-auto mb-4" />
+                                        class="h-10 w-10 object-cover rounded-full mx-auto mb-4" />
                                 @else
                                     <div
-                                        class="h-10 mt-3 w-10 flex items-center justify-center bg-indigo-500 text-white rounded-full mx-auto mb-4 text-3xl">
+                                        class="h-10 w-10 flex items-center justify-center bg-indigo-500 text-white rounded-full mx-auto mb-4 text-3xl">
                                         {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                                     </div>
                                 @endif
@@ -132,3 +136,22 @@
             </div>
         </div>
     </nav>
+
+    <script>
+        document.getElementById('logoutButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent form submission
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: 'Anda akan keluar dari akses sebagai admin!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yakin!',
+                cancelButtonText: 'Batalkan',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logoutForm').submit();
+                }
+            });
+        });
+    </script>

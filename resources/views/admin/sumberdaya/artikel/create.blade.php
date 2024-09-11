@@ -38,7 +38,7 @@
                 <!-- Foto (Gambar) -->
                 <div>
                     <label for="gambar_artikel" class="block text-sm font-medium text-gray-700">
-                        Foto (unggah gambar) : Opsional
+                        Foto Artikel (unggah gambar) : Opsional
                     </label>
                     <input type="file" id="foto_artikel" name="foto_artikel" {{-- accept="foto_artikel/*" --}}
                         class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500"
@@ -56,20 +56,39 @@
                     @enderror
                 </div>
 
-
-                <!-- Isi Artikel -->
+                <!-- File_path -->
                 <div>
-                    <label for="isi_artikel" class="block text-sm font-medium text-gray-700">
-                        Isi Artikel
+                    <label for="file_path" class="block text-sm font-medium text-gray-700">
+                        Masukkan Link Artikel
                     </label>
-                    <textarea name="deskripsi" id="summernote"></textarea>
+                    <input type="url" id="file_path" name="file_path" placeholder="Masukkan link artikel" required
+                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500"
+                        @error('file_path')
+                    is-invalid
+                @enderror
+                        value="{{ old('file_path') }}" />
+                    @error('file_path')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
 
-                    @error('deskripsi')
+
+                <!-- Abstract -->
+                <div>
+                    <label for="abstract" class="block text-sm font-medium text-gray-700">
+                        Abstract
+                    </label>
+                    <textarea name="abstract" id="summernote"></textarea>
+
+                    @error('abstract')
                         <div class="text-danger">
                             {{ $message }}
                         </div>
                     @enderror
                 </div>
+
 
 
                 <!-- Tombol Submit -->

@@ -12,7 +12,7 @@
         <!-- Produk Produk -->
         <div class="mb-8">
             <h3 class="text-2xl font-semibold text-indigo-900 mb-4">Produk</h3>
-            <div class="grid grid-cols-2 gap-6 px-8 md:grid-cols-3">
+            <div class="grid grid-cols-1 gap-6 px-8 md:grid-cols-2">
                 @foreach ($umkm->produkUmkm as $produk)
                     <div class="bg-white rounded-md shadow-md overflow-hidden">
                         <img src="{{ asset('storage/' . $produk->foto_produk) }}" alt="{{ $produk->nama_produk }}"
@@ -38,6 +38,7 @@
                     </div>
                 @endforeach
             </div>
+
         </div>
 
         <!-- Kontak UMKM -->

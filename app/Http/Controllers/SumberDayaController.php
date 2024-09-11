@@ -10,21 +10,13 @@ use App\Models\CommentArticle;
 
 class SumberDayaController extends Controller
 {
-    public function artikel()
-    {
-        $kontak = Kontak::first();
-        $kontakExists = Kontak::exists();
-        return view('user.sumberdaya.artikel.artikelUser', compact('kontak', 'kontakExists'));
-    }
-
-
     public function peta_persebaran()
     {
         $kontak = Kontak::first();
         $kontakExists = Kontak::exists();
         $umkms = umkm::all();
         $desas = desaPotensi::with(['umkm', 'potensiDesa'])->get();
-        $articles = Article::all();
+        $articles = Article::orderBy('created_at', 'desc')->paginate(5);
 
         // Menghitung total komentar utama dan balasan untuk setiap artikel
         $articlesWithComments = $articles->map(function ($article) {

@@ -21,7 +21,6 @@ class CommentArticle extends Model
         return $this->belongsTo(CommentArticle::class, 'parent_id');
     }
 
-    // menghitung semua balasan
     public function countAllReplies()
     {
         $count = $this->replies()->count();
@@ -30,9 +29,4 @@ class CommentArticle extends Model
         }
         return $count;
     }
-
-    // public function allReplies()
-    // {
-    //     return $this->replies()->with('allReplies');
-    // }
 }

@@ -30,9 +30,9 @@ class DashboardController extends Controller
         $divisis = divisi::all();
         $jabatans = jabatan::select('nama_jabatan')->distinct()->get();
         $dataTimPui = tim::with('divisi', 'jabatan')->get();
-        $articles = Article::all();
+        $articles = Article::latest()->limit(3)->get();
         $tims = tim::all();
-        $kegiatans = Kegiatan::all();
+        $kegiatans = Kegiatan::latest()->limit(10)->get();
         $umkms = umkm::all();
         $desas = DesaPotensi::with('potensiDesa')->get();
 

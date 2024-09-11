@@ -2,19 +2,6 @@
 @section('title', 'halaman Kegiatan PUI admin')
 @section('content-admin')
 
-    {{-- allert berhasil simpan data artikel, update --}}
-    @if (session('success'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    title: 'Berhasil!',
-                    text: '{{ session('success') }}',
-                    icon: 'success'
-                });
-            });
-        </script>
-    @endif
-
     <!-- Content -->
     <main class="flex-1 bg-gray-100 p-4 sm:p-6">
         <div id="content" class="transition-transform duration-500 ease-in-out">
@@ -40,7 +27,7 @@
                 </div>
             @else
                 @foreach ($dataKegiatan as $kegiatan)
-                    <!-- Kegiatan 1 -->
+                    <!-- Data Kegiatan -->
                     <div
                         class="mx-10 mb-8 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
                         <h2 class="text-lg font-semibold text-indigo-900 mb-2 mt-14">
@@ -54,7 +41,8 @@
                                 class="mb-2 rounded-lg h-96 w-full object-cover" />
                         @endif
                         <p class="text-gray-800 leading-relaxed">
-                            {!! $kegiatan->deskripsi_kegiatan !!}
+                            {{ implode("\n", array_slice(explode("\n", wordwrap(strip_tags($kegiatan->deskripsi_kegiatan), 150, "\n")), 0, 7)) }}
+                            ...........
                         </p>
                         <a href="{{ route('admin.detail-kegiatan', $kegiatan->id) }}"
                             class="block text-blue-500 font-semibold mt-2 hover:text-blue-300 transition duration-300">
@@ -79,6 +67,9 @@
                         </div>
                     </div>
                 @endforeach
+                <div class="mt-auto mb-0 px-3 flex justify-start">
+                    {{ $dataKegiatan->links() }}
+                </div>
             @endif
 
             <!-- Floating Action Button -->
