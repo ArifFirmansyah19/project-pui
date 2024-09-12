@@ -9,8 +9,8 @@
                 Form Edit Data HKI PUI GEMAR
             </h2>
 
-            <form action="{{ route('admin.update-HKI', $HKI->id) }}" method="POST" enctype="multipart/form-data"
-                class="space-y-4">
+            <form id="updateForm" action="{{ route('admin.update-HKI', $HKI->id) }}" method="POST"
+                enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 <!-- Judul HKI -->
                 <div>
@@ -48,7 +48,7 @@
                         </a>
 
                         <!-- Field input tipe hidden untuk menyimpan path file lama -->
-                        <input type="hidden" name="old_file_path" value="{{ basename($HKI->file_path) }}">
+                        <input type="hidden" name="old_file_path" value="{{ $HKI->file_path }}">
                     @endif
 
                     <!-- Input untuk mengunggah file PDF baru -->
@@ -56,11 +56,9 @@
                         class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
                 </div>
 
-
-
                 <!-- Tombol Submit -->
                 <div class="flex justify-end">
-                    <button type="submit"
+                    <button type="submit" id="updateButton"
                         class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700">
                         Update
                     </button>
@@ -68,5 +66,25 @@
             </form>
         </div>
     </main>
+
+    <script>
+        document.getElementById('updateButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: 'Pastikan data yang diinput sudah benar!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yakin!',
+                cancelButtonText: 'Batalkan',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('updateForm').submit(); // Submit the form
+                }
+            });
+        });
+    </script>
 
 @endsection

@@ -12,18 +12,28 @@ class HKIController extends Controller
 {
     // Untuk Controller HKI bagian Admin website
 
-    protected function validateHKI(Request $request)
+    protected function validateHKI(Request $request, $isUpdate = false)
     {
-        return $request->validate([
+        $rules = [
             'judul' => 'required|string|max:255',
             'nama' => 'required|string|max:255',
             'deskripsi' => 'required|string',
-            'file_path' => 'required|file|mimes:pdf|max:2048', // hanya file PDF yang diizinkan, maksimal 2MB
-        ], [
+        ];
+
+        // Tambahkan validasi file_path sesuai kondisi store atau update
+        if ($isUpdate) {
+            // Jika update, file_path boleh nullable
+            $rules['file_path'] = 'nullable|file|mimes:pdf|max:2048';
+        } else {
+            // Jika store, file_path wajib diupload
+            $rules['file_path'] = 'required|file|mimes:pdf|max:2048';
+        }
+
+        return $request->validate($rules, [
             'judul.required' => 'Judul HKI wajib diisi.',
-            'nama.required' => 'nama pemilik HKI wajib diisi.',
+            'nama.required' => 'Nama pemilik HKI wajib diisi.',
             'deskripsi.required' => 'Deskripsi HKI wajib diisi.',
-            'file_path.required' => 'File PDF wajib diunggah.',
+            'file_path.required' => 'File HKI wajib diupload.',
             'file_path.file' => 'Input harus berupa file.',
             'file_path.mimes' => 'File harus berupa PDF.',
             'file_path.max' => 'Ukuran file maksimal 2MB.',
@@ -40,12 +50,13 @@ class HKIController extends Controller
 
     public function create_HKI()
     {
+        session()->forget('success');
         return view('admin.sumberdaya.HKI.createHKI');
     }
 
     public function store_HKI(Request $request)
     {
-        $validatedData = $this->validateHKI($request);
+        $validatedData = $this->validateHKI($request, false);
 
         // Mengunggah file PDF ke storage 'public/hkiFiles'
         if ($request->hasFile('file_path')) {
@@ -71,53 +82,43 @@ class HKIController extends Controller
 
     public function edit_HKI($id)
     {
+        session()->forget('success');
         $HKI = HKI::findOrFail($id);
         return view('admin.sumberdaya.HKI.editHKI', compact('HKI'));
     }
 
-
     public function update_HKI(Request $request, $id)
     {
-        // Validasi data jika diperlukan
-        $validatedData = $this->validateHKI($request);
-
-        // Temukan data HKI berdasarkan ID
+        $validatedData = $this->validateHKI($request, true);
         $HKI = HKI::findOrFail($id);
 
-        // Ambil path file lama dari database
-        $oldFilePath = $HKI->file_path;
-        // dd($request->all());
+        // Ambil nilai old_file_path dari request (hidden input)
+        $oldFilePath = $request->input('old_file_path');
 
-        // Variabel untuk menyimpan path file yang baru
-        $newFilePath = $oldFilePath;
-
-        // Jika ada file baru yang diupload
+        // Cek apakah ada file baru yang diunggah
         if ($request->hasFile('file_path')) {
-            // Simpan file baru ke storage dan ambil path-nya
-            $newFilePath = $request->file('file_path')->store('hkiFiles', 'public');
+            $newFile = $request->file('file_path');
 
-            // Hapus file lama dari storage jika ada
-            if ($oldFilePath) {
-                // Path file lama untuk storage
-                $oldFilePathForStorage = str_replace('storage/', 'public/', $oldFilePath);
+            // Simpan file baru ke storage dan dapatkan path-nya
+            $newFilePath = $newFile->store('hkiFiles', 'public');
 
-                // Cek apakah file lama ada di storage
-                if (\Storage::exists($oldFilePathForStorage)) {
-                    // Hapus file lama
-                    \Storage::delete($oldFilePathForStorage);
-                }
+            // Hapus file lama jika ada file baru
+            if ($oldFilePath && \Storage::exists('public/' . $oldFilePath)) {
+                \Storage::delete('public/' . $oldFilePath);
             }
 
-            // Ubah path file baru agar bisa diakses publik
-            $newFilePath = str_replace('public/', 'storage/', $newFilePath);
+            // Simpan path file baru ke database
+            $HKI->file_path = $newFilePath;
+        } else {
+            // Jika tidak ada file baru, gunakan nilai dari old_file_path (hidden input)
+            $HKI->file_path = $oldFilePath;
         }
 
-        // Update data HKI di database
+        // Update data lainnya
         $HKI->update([
             'judul' => $request->judul,
             'nama' => $request->nama,
             'deskripsi' => $request->deskripsi,
-            'file_path' => $newFilePath,
         ]);
 
         if ($request->session()->has('errors')) {
@@ -126,9 +127,6 @@ class HKIController extends Controller
             return redirect()->route('admin.HKI')->with('success', 'Data HKI Berhasil Diupdate.');
         }
     }
-
-
-
 
 
     public function destroy_HKI($id)
