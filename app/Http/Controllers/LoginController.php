@@ -15,8 +15,7 @@ class LoginController extends Controller
 {
     public function index(Request $request)
     {
-        // Menghapus input sebelumnya dengan mengosongkan data 'old'
-        $request->session()->flash('old', []);
+
         return view('admin/login.login', [
             'title' => 'Login',
             'active' => 'Login'
@@ -31,9 +30,7 @@ class LoginController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
-
-        // Periksa apakah checkbox "Remember me" dicentang
-        $remember = $request->filled('remember');
+        $remember = $request->has('remember');
 
         // Coba untuk melakukan otentikasi
         if (Auth::attempt($credentials, $remember)) {

@@ -35,7 +35,7 @@ Route::middleware('guest')->group(function () {
 });
 
 // Logout
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth', 'web');
 
 // Profil Pengguna
 Route::middleware('guest')->prefix('profil')->group(function () {
@@ -91,7 +91,7 @@ Route::get('/kontak', [KontakController::class, 'index'])->name('kontak');
 // =====> Route Admin Website PUI GEMAR
 
 // Admin Dashboard and Profile Routes
-Route::prefix('dashboard')->name('dashboard.')->middleware('auth')->group(function () {
+Route::prefix('dashboard')->name('dashboard.')->middleware('auth', 'web')->group(function () {
   Route::get('/', [DashboardController::class, 'index_admin'])->name('admin');
   Route::get('/profil-admin', [AdminController::class, 'profile_admin'])->name('profiladmin');
   Route::get('/edit-profil-admin', [AdminController::class, 'edit_profile_admin'])->name('editprofil');
@@ -101,7 +101,7 @@ Route::prefix('dashboard')->name('dashboard.')->middleware('auth')->group(functi
 });
 
 // Admin Sejarah and Visi Misi Routes
-Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware('auth', 'web')->group(function () {
   Route::prefix('sejarah')->group(function () {
     Route::get('/', [ProfilController::class, 'index_sejarah'])->name('sejarah');
     Route::get('/create', [ProfilController::class, 'create_sejarah'])->name('create-sejarah');
@@ -120,7 +120,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 });
 
 // Admin Struktur Organisasi Routes
-Route::prefix('admin/struktur-organisasi')->name('admin.')->middleware('auth')->group(function () {
+Route::prefix('admin/struktur-organisasi')->name('admin.')->middleware('auth', 'web')->group(function () {
   Route::get('/', [ProfilController::class, 'index_struktur_organisasi'])->name('SO');
   Route::get('/create', [ProfilController::class, 'create_struktur_organisasi'])->name('create-SO');
   Route::post('/store', [ProfilController::class, 'store_struktur_organisasi'])->name('store-SO');
@@ -129,7 +129,7 @@ Route::prefix('admin/struktur-organisasi')->name('admin.')->middleware('auth')->
 });
 
 // Admin Tim Routes
-Route::prefix('admin/tim')->name('admin.')->middleware('auth')->group(function () {
+Route::prefix('admin/tim')->name('admin.')->middleware('auth', 'web')->group(function () {
   Route::get('/', [TimController::class, 'index_admin'])->name('tim');
   Route::get('/create', [TimController::class, 'create_tim'])->name('create-tim');
   Route::post('/store', [TimController::class, 'store_tim'])->name('store-tim');
@@ -139,21 +139,21 @@ Route::prefix('admin/tim')->name('admin.')->middleware('auth')->group(function (
 });
 
 // Admin Divisi Routes
-Route::prefix('admin/divisi')->name('admin.')->middleware('auth')->group(function () {
+Route::prefix('admin/divisi')->name('admin.')->middleware('auth', 'web')->group(function () {
   Route::get('/create', [TimController::class, 'create_divisi'])->name('create-divisi');
   Route::post('/store', [TimController::class, 'store_divisi'])->name('store-divisi');
   Route::post('/destroy/{id}', [TimController::class, 'destroy_divisi'])->name('destroy-divisi');
 });
 
 // Admin Jabatan Routes
-Route::prefix('admin/jabatan')->name('admin.')->middleware('auth')->group(function () {
+Route::prefix('admin/jabatan')->name('admin.')->middleware('auth', 'web')->group(function () {
   Route::get('/create', [TimController::class, 'create_jabatan'])->name('create-jabatan');
   Route::post('/store', [TimController::class, 'store_jabatan'])->name('store-jabatan');
   Route::post('/destroy/{id}', [TimController::class, 'destroy_jabatan'])->name('destroy-jabatan');
 });
 
 // Admin Artikel Routes
-Route::prefix('admin/artikel')->name('admin.')->middleware('auth')->group(function () {
+Route::prefix('admin/artikel')->name('admin.')->middleware('auth', 'web')->group(function () {
   Route::get('/', [ArticleController::class, 'index_admin'])->name('artikel');
   Route::get('/create', [ArticleController::class, 'create_artikel'])->name('create-artikel');
   Route::post('/store', [ArticleController::class, 'store_artikel'])->name('store-artikel');
@@ -166,7 +166,7 @@ Route::prefix('admin/artikel')->name('admin.')->middleware('auth')->group(functi
 });
 
 // Admin HKI Routes
-Route::prefix('admin/HKI')->name('admin.')->middleware('auth')->group(function () {
+Route::prefix('admin/HKI')->name('admin.')->middleware('auth', 'web')->group(function () {
   Route::get('/', [HKIController::class, 'index_HKI_admin'])->name('HKI');
   Route::get('/create', [HKIController::class, 'create_HKI'])->name('create-HKI');
   Route::post('/store', [HKIController::class, 'store_HKI'])->name('store-HKI');
@@ -176,7 +176,7 @@ Route::prefix('admin/HKI')->name('admin.')->middleware('auth')->group(function (
 });
 
 // Admin Kegiatan Routes
-Route::prefix('admin/kegiatan')->name('admin.')->middleware('auth')->group(function () {
+Route::prefix('admin/kegiatan')->name('admin.')->middleware('auth', 'web')->group(function () {
   Route::get('/', [KegiatanController::class, 'index_admin'])->name('kegiatan');
   Route::get('/create', [KegiatanController::class, 'create_kegiatan'])->name('create-kegiatan');
   Route::post('/store', [KegiatanController::class, 'store_kegiatan'])->name('store-kegiatan');
@@ -189,7 +189,7 @@ Route::prefix('admin/kegiatan')->name('admin.')->middleware('auth')->group(funct
 });
 
 // Admin - Persebaran UMKM
-Route::prefix('admin/persebaran')->middleware('auth')->group(function () {
+Route::prefix('admin/persebaran')->middleware('auth', 'web')->group(function () {
   Route::get('/', [PersebaranUmkmController::class, 'index_admin'])->name('admin.persebaran');
 
   // Desa dan Potensinya
@@ -213,7 +213,7 @@ Route::prefix('admin/persebaran')->middleware('auth')->group(function () {
 });
 
 // Admin Museum Routes
-Route::prefix('admin/museum')->name('admin.')->middleware('auth')->group(function () {
+Route::prefix('admin/museum')->name('admin.')->middleware('auth', 'web')->group(function () {
   Route::get('/', [MuseumController::class, 'index_museum'])->name('museum');
   Route::get('/create_jenisKeragaman', [MuseumController::class, 'create_jenis_keragaman'])->name('createJK');
   Route::post('/store_jenisKeragaman', [MuseumController::class, 'store_jenis_keragaman'])->name('storeJK');
@@ -226,7 +226,7 @@ Route::prefix('admin/museum')->name('admin.')->middleware('auth')->group(functio
 });
 
 // Admin - Kontak
-Route::prefix('admin/kontak')->middleware('auth')->group(function () {
+Route::prefix('admin/kontak')->middleware('auth', 'web')->group(function () {
   Route::get('/', [KontakController::class, 'index_admin'])->name('admin.kontak');
   Route::get('create', [KontakController::class, 'create_kontak'])->name('admin.create-kontak');
   Route::post('store', [KontakController::class, 'store_kontak'])->name('admin.store-kontak');
