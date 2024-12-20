@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('HKIs', function (Blueprint $table) {
             $table->id();
-            $table->string('judul');
-            $table->string('nama');
-            $table->longText('deskripsi');
-            $table->string('file_path')->nullable();
+            $table->string('judul', 255);
+            $table->string('nama', 255);
+            $table->mediumText('deskripsi');
+            $table->text('file_path')->nullable();
             $table->timestamps();
         });
     }

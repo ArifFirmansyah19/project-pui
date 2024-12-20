@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
-use App\Models\umkm;
+use App\Models\Umkm;
 
-class produkUmkm extends Model
+class ProdukUmkm extends Model
 {
     use HasFactory;
 
@@ -22,6 +22,6 @@ class produkUmkm extends Model
 
     public function umkm()
     {
-        return $this->belongsTo(umkm::class);
+        return $this->belongsTo(Umkm::class);
     }
 }

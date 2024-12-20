@@ -1,57 +1,53 @@
 @extends('layouts.app-admin')
 @section('title', 'halaman Create HKI admin')
 @section('content-admin')
-
-
     <!-- Content -->
-    <main class="flex-1 bg-gray-100 p-4 sm:p-6 overflow-y-auto">
+    <main class="flex-1 bg-gray-50 p-4 sm:p-6 overflow-y-auto">
         <div id="content" class="transition-transform duration-500 ease-in-out">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">
-                Form Tambah HKI PUI GEMAR
-            </h2>
+            <div class="text-left mb-4 mr-16 pl-12">
+                <form action="{{ route('admin.store-HKI') }}" method="POST" enctype="multipart/form-data"
+                    class="max-w-4xl mx-auto">
+                    @csrf
+                    <h1 class="text-2xl sm:text-3xl font-bold mb-4 mt-3 text-indigo-800">
+                        Tambah HKI
+                    </h1>
+                    <div class="mb-4">
+                        <label for="judul" class="block text-gray-700 text-md font-bold mb-2">
+                            Judul
+                        </label>
+                        <input type="text" id="judul" name="judul" placeholder="Masukkan Judul HKI" required
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="nama" class="block text-gray-700 text-md font-bold mb-2">
+                            Nama Pencipta
+                        </label>
+                        <input type="text" id="nama" name="nama" placeholder="Masukkan Nama Pencipta" required
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="deskripsi" class="block text-gray-700 text-md font-bold mb-2">
+                            Deskripsi Singkat HKI
+                        </label>
+                        <!-- Summernote Editor -->
+                        <textarea name="deskripsi" placeholder="Masukkan deskripsi dari HKI" required class="summernote"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="file_path" class="block text-gray-700 text-md font-bold mb-2">
+                            Dokumen (PDF)
+                        </label>
+                        <input type="file" id="file_path" name="file_path" accept=".pdf"
+                            class="w-full border border-gray-300 bg-gray-50 p-2 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                    </div>
 
-            <form action="{{ route('admin.store-HKI') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
-                @csrf
-                <!-- Judul HKI -->
-                <div>
-                    <label for="judul" class="block text-sm font-medium text-gray-700">Judul HKI</label>
-                    <input type="text" id="judul" name="judul" placeholder="Masukkan judul HKI" required
-                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                </div>
-
-                <!-- Nama Pemilik HKI -->
-                <div>
-                    <label for="nama" class="block text-sm font-medium text-gray-700">Nama Pemilik HKI</label>
-                    <input type="text" id="nama" name="nama" placeholder="Masukkan nama pemilik HKI" required
-                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                </div>
-
-
-                <!-- deskripsi HKI -->
-                <div>
-                    <label for="deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi HKI</label>
-                    <textarea id="deskripsi" name="deskripsi" placeholder="Masukkan deskripsi dari HKI" required
-                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500"></textarea>
-                </div>
-
-
-                <!-- File_path HKI -->
-                <div>
-                    <label for="file_path" class="block text-sm font-medium text-gray-700">File HKI (Pdf)</label>
-                    <input type="file" id="file_path" name="file_path" accept="application/pdf" required
-                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                </div>
-
-
-
-                <!-- Tombol Submit -->
-                <div class="flex justify-end">
-                    <button type="submit"
-                        class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700">
-                        Tambah
-                    </button>
-                </div>
-            </form>
+                    <div class="flex justify-end">
+                        <button type="submit"
+                            class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Tambah
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </main>
 

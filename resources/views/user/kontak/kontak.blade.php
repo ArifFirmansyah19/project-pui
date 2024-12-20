@@ -27,21 +27,16 @@
                                 <a href="mailto:wordpress@example.com">
                                     <p class="text-black mb-3 font-roboto">Email: {{ $kontak->email }}</p>
                                 </a>
-                                {{-- <a href="https://www.yelp.com"><p class="text-black mb-3 font-roboto">Yelp: yelp</p></a> --}}
                             </div>
                             <div class="p-6 rounded-lg">
                                 <h3 class="text-lg font-bold text-black mb-3">Media Sosial</h3>
                                 <div class="flex items-center space-x-4">
                                     <a href="{{ $kontak->facebook }}" class="text-black hover:text-indigo-600"><i
                                             class="fab fa-facebook-f"></i></a>
-                                    {{-- <a href="https://twitter.com/wordpress" class="text-black hover:text-indigo-600"><i
-                                        class="fab fa-twitter"></i></a> --}}
                                     <a href="{{ $kontak->instagram }}" class="text-black hover:text-indigo-600"><i
                                             class="fab fa-instagram"></i></a>
                                     <a href="{{ $kontak->youtube }}" class="text-black hover:text-indigo-600"><i
                                             class="fab fa-youtube"></i></a>
-                                    {{-- <a href="#" class="text-black hover:text-indigo-600"><i
-                                        class="fab fa-linkedin-in"></i></a> --}}
                                 </div>
                             </div>
                     @endif

@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('produk_umkms', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_produk');
-            $table->string('foto_produk')->nullable();
-            $table->string('deskripsi_produk');
+            $table->string('nama_produk', 50);
+            $table->string('foto_produk', 100)->nullable();
+            $table->string('deskripsi_produk', 255);
             $table->decimal('harga_terendah', 10, 2);
             $table->decimal('harga_tertinggi', 10, 2);
             $table->foreignId('umkm_id')->constrained('umkm')->onDelete('cascade');

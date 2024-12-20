@@ -24,8 +24,6 @@ class LoginController extends Controller
 
     public function authenticate(Request $request)
     {
-        // dd($request->all());
-        // Validasi input
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
@@ -38,7 +36,6 @@ class LoginController extends Controller
             $request->session()->regenerate();
             return redirect()->intended('/dashboard')->with('success', 'Login Anda berhasil!');
         }
-
         // Jika otentikasi gagal, kembalikan dengan error
         return back()->withErrors([
             'email' => 'Email / password tidak sesuai.',
@@ -99,7 +96,6 @@ class LoginController extends Controller
         }
         return view('admin/login.validasi-token', compact('token'));
     }
-
 
     public function validasi_forgot_password_act(Request $request)
     {

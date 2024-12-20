@@ -9,13 +9,13 @@
 </head>
 
 <body class="bg-indigo-900">
-    <div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="min-h-screen flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
             <img class="mx-auto h-24 w-auto" src="{{ asset('img/logo.png') }}" alt="Logo" />
             <h2 class="mt-6 text-center text-3xl font-extrabold text-white mb-5">
                 Login
             </h2>
-            <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <div class="bg-white py-8 px-4 shadow rounded-lg sm:rounded-lg sm:px-10">
                 <div class="text-sm mb-4 text-center">
                     Mau ke Beranda Website?
                     <a href="{{ route('dashboard-website') }}"
@@ -56,10 +56,11 @@
                                 class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
                             <label for="remember-me" class="ml-2 block text-sm text-gray-900">Remember me</label>
                         </div>
-                        <div class="text-sm">
-                            <a href="{{ route('forgot-password') }}"
-                                class="font-medium text-indigo-600 hover:text-indigo-500">Forgot your password?</a>
-                        </div>
+                        {{-- <div class="text-sm">
+                            <a href="{{ route('password.request') }}"
+                                class="font-medium text-indigo-600 hover:text-indigo-500">
+                                Forgot your password?</a>
+                        </div> --}}
                     </div>
                     <div>
                         <button type="submit"
@@ -68,10 +69,8 @@
                         </button>
                     </div>
                 </form>
-
             </div>
         </div>
-    </div>
 </body>
 
 </html>

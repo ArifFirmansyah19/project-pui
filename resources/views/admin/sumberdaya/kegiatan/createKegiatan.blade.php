@@ -2,61 +2,49 @@
 @section('title', 'halaman create Kegiatan PUI GEMAR')
 @section('content-admin')
 
-    <!-- Content -->
     <main class="flex-1 bg-gray-100 p-4 sm:p-6 overflow-y-auto">
         <div id="content" class="transition-transform duration-500 ease-in-out">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">
-                Form Tambah Kegiatan PUI GEMAR
-            </h2>
+            <div class="text-left mb-4 mr-16 pl-12">
+                <!-- Tambahkan tombol edit disini -->
+                <form action="{{ route('admin.store-kegiatan') }}" method="POST" enctype="multipart/form-data"
+                    class="max-w-4xl mx-auto">
+                    @csrf
+                    <h1 class="text-3xl font-bold mb-4 mt-3 text-indigo-800">
+                        Tambah Kegiatan
+                    </h1>
+                    <div class="mb-4">
+                        <label for="nama_kegiatan" class="block text-gray-700 text-md font-bold mb-2">Judul</label>
+                        <input type="text" id="nama_kegiatan" name="nama_kegiatan" placeholder="Masukkan judul kegiatan"
+                            required
+                            class="shadow appearance-none border rounded w-full py-2 px-3 bg-gray-50 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                    </div>
 
-            <form action="{{ route('admin.store-kegiatan') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
-                @csrf
-                <!-- Nama_Kegiatan -->
-                <div>
-                    <label for="nama_kegiatan" class="block text-sm font-medium text-gray-700">Nama Kegiatan</label>
-                    <input type="text" id="nama_kegiatan" name="nama_kegiatan"
-                        placeholder="Masukkan nama kegiatan lengkap" required
-                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                </div>
+                    <div class="mb-4">
+                        <label for="foto_kegiatan" class="block text-gray-700 text-md font-bold mb-2">Gambar/Video utama
+                            kegiatan</label>
+                        <input type="file" id="foto_kegiatan" name="foto_kegiatan"
+                            accept="image/*,video/mp4,video/avi,video/mov" multiple
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-50 leading-tight focus:outline-none focus:shadow-outline" />
+                        <p class="text-gray-600 text-sm mt-1">
+                            *Gambar/Video tidak wajib diunggah. <br />
+                            *Format yang didukung: JPG, PNG Ukuran file maksimal: 2MB.
+                        </p>
+                    </div>
 
-                <!-- foto_kegiatan (Gambar) Kegiatan -->
-                <div>
-                    <label for="foto_kegiatan" class="block text-sm font-medium text-gray-700">foto Kegiatan</label>
-                    <input type="file" id="foto_kegiatan" name="foto_kegiatan" {{-- accept="image/*" --}}
-                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                    <p class="text-xs text-gray-500 mt-1">
-                        Format yang didukung: JPG, PNG Ukuran file maksimal: 2MB.
-                    </p>
-                </div>
-
-                <div>
-                    <label for="deskripsi_kegiatan" class="block text-sm font-medium text-gray-700">Deskripsi
-                        Kegiatan</label>
-                    <p class="text-xs text-gray-500 mt-1">
-                        Usahakan deskripsi kegiatan tidak mengandung gambar.
-                    </p>
-                    <textarea name="deskripsi_kegiatan" id="summernote"></textarea>
-                </div>
-
-                <!-- Tombol Submit -->
-                <div class="flex justify-end">
-                    <button type="submit"
-                        class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700">
-                        Tambah
-                    </button>
-                </div>
-            </form>
+                    <div class="mb-4">
+                        <label for="deskripsi_kegiatan" class="block text-gray-700 text-md font-bold mb-2">Kegiatan</label>
+                        <textarea name="deskripsi_kegiatan" id="deskripsi_kegiatan"
+                            class="summernote bg-white border border-gray-300 rounded-lg p-4"></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit"
+                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Tambah
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </main>
-
-
-    {{-- <!-- Floating Action Button -->
-    <a href="{{ route('admin.kegiatan') }}">
-        <button
-            class="fixed bottom-4 left-4 bg-yellow-500 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
-            aria-label="Kembali">
-            <i class="fa-solid fa-arrow-left"></i>
-        </button>
-    </a> --}}
 
 @endsection

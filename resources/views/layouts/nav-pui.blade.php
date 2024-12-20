@@ -1,4 +1,4 @@
-<nav class="bg-indigo-900 py-4 fixed-navbar w-full top-0 z-50">
+<nav class="bg-indigo-900 py-4 fixed-navbar w-full sticky top-0 z-50">
     <div class="mx-auto flex justify-between items-center">
         <!-- Logo di sebelah kiri -->
         <div class="flex items-center">
@@ -17,32 +17,32 @@
                     <i class="fas fa-caret-down ml-1" style="color: white"></i>
                 </button>
                 <div class="submenu absolute left-0 mt-2 w-48 bg-indigo-900 shadow-lg rounded-lg py-2 hidden">
-                    <a href="{{ route('sejarah') }}" id="sejarah"
-                        class="block px-4 py-2 text-white hover:bg-gray-700">Sejarah</a>
-                    <a href="{{ route('visimisi') }}" id="visi-misi"
-                        class="block px-4 py-2 text-white hover:bg-gray-700">Visi
+                    <a href="{{ route('sejarah') }}" class="block px-4 py-2 text-white hover:bg-gray-700"
+                        data-parent="profil">Sejarah</a>
+                    <a href="{{ route('visimisi') }}" class="block px-4 py-2 text-white hover:bg-gray-700"
+                        data-parent="profil">Visi
                         Misi</a>
-                    <a href="{{ route('struktur-organisasi') }}" id="struktur-organisasi"
-                        class="block px-4 py-2 text-white hover:bg-gray-700">Struktur Organisasi</a>
-                    <a href="{{ route('tim') }}" id="tim"
-                        class="block px-4 py-2 text-white hover:bg-gray-700">Tim</a>
+                    <a href="{{ route('struktur-organisasi') }}" class="block px-4 py-2 text-white hover:bg-gray-700"
+                        data-parent="profil">Struktur Organisasi</a>
+                    <a href="{{ route('tim') }}" class="block px-4 py-2 text-white hover:bg-gray-700"
+                        data-parent="profil">Tim</a>
                 </div>
             </div>
             <div class="relative">
                 <button id="sumber-daya"
-                    class="menu-item text-white hover:text-gray-300 focus:outline-none font-medium border-b-2">
+                    class="menu-item text-white hover:text-gray-300 focus:outline-none font-medium">
                     Sumber Daya
                     <i class="fas fa-caret-down ml-1" style="color: white"></i>
                 </button>
                 <div class="submenu absolute left-0 mt-2 w-48 bg-indigo-900 shadow-lg rounded-lg py-2 hidden">
-                    <a href="{{ route('artikel') }}" id="artikel"
-                        class="block px-4 py-2 text-white hover:bg-gray-700">Artikel</a>
-                    <a href="{{ route('HKI') }}" id="HKI"
-                        class="block px-4 py-2 text-white hover:bg-gray-700">HKI</a>
-                    <a href="{{ route('kegiatan') }}" id="kegiatan"
-                        class="block px-4 py-2 text-white hover:bg-gray-700">Kegiatan</a>
-                    <a href="{{ route('peta-persebaran') }}" id="persebaran-umkm"
-                        class="block px-4 py-2 text-white hover:bg-gray-700">Persebaran UMKM</a>
+                    <a href="{{ route('artikel') }}" class="block px-4 py-2 text-white hover:bg-gray-700"
+                        data-parent="sumber-daya">Artikel</a>
+                    <a href="{{ route('peta-persebaran') }}" class="block px-4 py-2 text-white hover:bg-gray-700"
+                        data-parent="sumber-daya">Persebaran UMKM</a>
+                    <a href="{{ route('kegiatan') }}" class="block px-4 py-2 text-white hover:bg-gray-700"
+                        data-parent="sumber-daya">Kegiatan</a>
+                    <a href="{{ route('HKI') }}" class="block px-4 py-2 text-white hover:bg-gray-700"
+                        data-parent="sumber-daya">HKI</a>
                 </div>
             </div>
             <a id="museum" href="{{ route('museum') }}" class="menu-item text-white hover:text-gray-300 font-medium">
@@ -77,7 +77,7 @@
     <!-- Menu dropdown untuk layar kecil -->
     <div id="menuDropdown" class="hidden lg:hidden flex-col mt-4 space-y-2">
         <!-- Menu Items -->
-        <a href="/" class="menu-item text-white hover:text-gray-300 font-medium pl-4">
+        <a id="beranda" href="/" class="menu-item text-white hover:text-gray-300 font-medium pl-4">
             Beranda
         </a>
         <div class="relative pl-4">
@@ -86,7 +86,7 @@
                 <i class="fas fa-caret-down ml-1" style="color: white"></i>
             </button>
             <div class="submenu mt-2 bg-indigo-900 shadow-lg rounded-lg py-2 hidden">
-                <a href="{{ route('sejarah') }}" class="block px-4 py-2 text-white hover:bg-gray-700">
+                <a id="sejarah" href="{{ route('sejarah') }}" class="block px-4 py-2 text-white hover:bg-gray-700">
                     Sejarah
                 </a>
                 <a href="{{ route('visimisi') }}" class="block px-4 py-2 text-white hover:bg-gray-700">
@@ -104,15 +104,14 @@
                 <i class="fas fa-caret-down ml-1" style="color: white"></i>
             </button>
             <div class="submenu mt-2 bg-indigo-900 shadow-lg rounded-lg py-2 hidden">
-                <a href="{{ route('artikel') }}" class="block px-4 py-2 text-white hover:bg-gray-700">
-                    Artikel
-                </a>
-                <a href="{{ route('kegiatan') }}" class="block px-4 py-2 text-white hover:bg-gray-700">
-                    Kegiatan
-                </a>
-                <a href="{{ route('peta-persebaran') }}" class="block px-4 py-2 text-white hover:bg-gray-700">
-                    Persebaran UMKM
-                </a>
+                <a href="{{ route('artikel') }}" class="block px-4 py-2 text-white hover:bg-gray-700"
+                    data-parent="sumber-daya">Artikel</a>
+                <a href="{{ route('peta-persebaran') }}" class="block px-4 py-2 text-white hover:bg-gray-700"
+                    data-parent="sumber-daya">Persebaran UMKM</a>
+                <a href="{{ route('kegiatan') }}" class="block px-4 py-2 text-white hover:bg-gray-700"
+                    data-parent="sumber-daya">Kegiatan</a>
+                <a href="{{ route('HKI') }}" class="block px-4 py-2 text-white hover:bg-gray-700"
+                    data-parent="sumber-daya">HKI</a>
             </div>
         </div>
         <div class="relative pl-4">

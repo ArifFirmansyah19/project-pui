@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* Impor file scrollbar kustom */
+@import "./custom-scrollbar.css";
+/* Gaya scrollbar untuk browser WebKit */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 3px; /* Lebar scrollbar */
+}
+
+/* Gaya track (jalur) scrollbar */
+::-webkit-scrollbar-track {
+  background: transparent; /* Warna jalur scrollbar */
+}
+
+/* Gaya thumb (pemegang) scrollbar */
+::-webkit-scrollbar-thumb {
+  background: #888; /* Warna thumb scrollbar */
+  border-radius: 10px; /* Sudut radius thumb */
+}
+
+/* Gaya thumb ketika dihover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Warna thumb saat dihover */
+}

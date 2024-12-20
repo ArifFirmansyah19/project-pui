@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\tim;
+use App\Models\Tim;
 use App\Models\Article;
-use App\Models\divisi;
-use App\Models\jabatan;
-use App\Models\kontak;
+use App\Models\Divisi;
+use App\Models\Kontak;
 use App\Models\CommentArticle;
 
 class TimController extends Controller
@@ -16,10 +15,10 @@ class TimController extends Controller
     protected function validateTimPuiGemar(Request $request)
     {
         return $request->validate([
-            'nama' => 'required|string|max:255',
+            'nama' => 'required|string|max:100',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'divisi_id' => 'required|exists:divisis,id',
-            'jabatan_id' => 'required|exists:jabatans,id',
+            'jabatan' => 'required|string|max:100',
             'bidang_keahlian' => 'required|string|max:255',
         ], [
             'nama.required' => 'Nama tim wajib diisi.',
@@ -28,8 +27,7 @@ class TimController extends Controller
             'foto.max' => 'Ukuran gambar tidak boleh lebih dari 2 MB.',
             'divisi_id.required' => 'Divisi wajib diisi.',
             'divisi_id.exists' => 'Divisi yang dipilih tidak valid.',
-            'jabatan_id.required' => 'Jabatan wajib diisi.',
-            'jabatan_id.exists' => 'Jabatan yang dipilih tidak valid.',
+            'jabatan.required' => 'Jabatan wajib diisi.',
             'bidang_keahlian.required' => 'Bidang keahlian wajib diisi.',
         ]);
     }
@@ -37,41 +35,45 @@ class TimController extends Controller
     // untuk admin
     public function index_admin()
     {
-        $divisis = divisi::all();
-        $jabatans = jabatan::with('divisi')->orderBy('created_at', 'asc')->select('id', 'nama_jabatan', 'divisi_id', 'deskripsi_jabatan')
-            ->groupBy('nama_jabatan', 'id', 'divisi_id', 'deskripsi_jabatan')
-            ->get();
-        $dataTimPui = tim::with('divisi', 'jabatan')->get();
+        $divisis = Divisi::all();
+        // $jabatans = jabatan::with('divisi')->orderBy('created_at', 'asc')->select('id', 'nama_jabatan', 'divisi_id', 'deskripsi_jabatan')
+        //     ->groupBy('nama_jabatan', 'id', 'divisi_id', 'deskripsi_jabatan')
+        //     ->get();
+        // $jabatans = jabatan::with('divisi')->orderBy('created_at', 'asc')->select('id', 'nama_jabatan', 'divisi_id')
+        //     ->groupBy('nama_jabatan', 'id', 'divisi_id')
+        //     ->get();
+        $dataTimPui = Tim::with('divisi')->orderBy('divisi_id')->get();
 
         // Mengelompokkan data tim berdasarkan nama divisi
         $groupedTims = $dataTimPui->groupBy(function ($dataTim) {
             return $dataTim->divisi->nama_divisi;
         });
-        return view('admin.profil.tim.timAdmin', compact('divisis', 'jabatans', 'dataTimPui', 'groupedTims'));
+        return view('admin.profil.tim.timAdmin', compact('divisis', 'dataTimPui', 'groupedTims'));
+    }
+
+    public function detailtim_admin($id)
+    {
+        $tim = Tim::find($id);
+        return view('admin.profil.tim.detailtimadmin', compact('tim'));
     }
 
     public function create_tim()
     {
-        $divisis = divisi::all();
-        $jabatans = jabatan::all();
-        return view('admin.profil.tim.tambahTim', compact('divisis', 'jabatans'));
+        $divisis = Divisi::all();
+        return view('admin.profil.tim.tambahTim', compact('divisis'));
     }
 
     public function store_tim(Request $request)
     {
-        // Validasi request
         $validatedData = $this->validateTimPuiGemar($request);
-
-        // Membuat artikel baru
-        $tim = tim::create([
+        $tim = Tim::create([
             'nama' => $request->nama,
             'divisi_id' => $request->divisi_id,
-            'jabatan_id' => $request->jabatan_id,
+            'jabatan' => $request->jabatan,
             'bidang_keahlian' => $request->bidang_keahlian,
         ]);
 
         if ($request->hasFile('foto')) {
-            // Simpan foto baru
             $filePath = $request->file('foto')->store('fotoTim', 'public');
             $tim->foto = $filePath;
             $tim->save();
@@ -86,31 +88,26 @@ class TimController extends Controller
 
     public function edit_tim($id)
     {
-        $tim = tim::findOrFail($id);
-        $divisis = divisi::all();
-        $jabatans = jabatan::all();
+        $tim = Tim::findOrFail($id);
+        $divisis = Divisi::all();
         session()->forget('success');
-        return view('admin.profil.tim.editTim', compact('tim', 'divisis', 'jabatans'));
+        return view('admin.profil.tim.editTim', compact('tim', 'divisis'));
     }
 
     public function update_tim(Request $request, $id)
     {
-        // Validasi request
         $validatedData = $this->validateTimPuiGemar($request);
-
-        // Temukan tim yang akan diperbarui
         $tim = Tim::findOrFail($id);
 
         // Update data tim
         $tim->update([
             'nama' => $request->nama,
             'divisi_id' => $request->divisi_id,
-            'jabatan_id' => $request->jabatan_id,
+            'jabatan' => $request->jabatan,
             'bidang_keahlian' => $request->bidang_keahlian,
         ]);
 
         if ($request->hasFile('foto')) {
-            // Hapus foto lama jika ada
             if ($tim->foto && \Storage::exists('public/' . $tim->foto)) {
                 \Storage::delete('public/' . $tim->foto);
             }
@@ -131,8 +128,7 @@ class TimController extends Controller
 
     public function destroy_tim($id)
     {
-        $tim = tim::findOrFail($id);
-        // Hapus foto jika ada
+        $tim = Tim::findOrFail($id);
         if ($tim->foto && \Storage::exists('public/' . $tim->foto)) {
             \Storage::delete('public/' . $tim->foto);
         }
@@ -140,44 +136,20 @@ class TimController extends Controller
         return redirect(route('admin.tim'))->with('success', 'Data Anggota Berhasil di hapus');
     }
 
-    public function create_divisi()
-    {
-        return view('admin.profil.tim.tambahDivisi');
-    }
 
     public function store_divisi(Request $request)
     {
-        $divisis = divisi::create($request->all());
-        $divisis->save();
-        return redirect(route('admin.tim'))->with('success', 'data berhasil di simpan');
+        $request->validate([
+            'nama_divisi' => 'required|string|max:255',
+        ]);
+
+        Divisi::create([
+            'nama_divisi' => $request->nama_divisi,
+        ]);
+
+        return redirect()->back()->with('success', 'Divisi berhasil ditambahkan.');
     }
 
-    public function destroy_divisi($id)
-    {
-        $divisis = divisi::findOrFail($id);
-        $divisis->delete();
-        return redirect(route('admin.tim'))->with('success', 'data divisi berhasil dihapus');
-    }
-
-    public function create_jabatan()
-    {
-        $divisis = divisi::all();
-        return view('admin.profil.tim.tambahJabatan', compact('divisis'));
-    }
-
-    public function store_jabatan(Request $request)
-    {
-        $jabatans = jabatan::create($request->all());
-        $jabatans->save();
-        return redirect(route('admin.tim'))->with('success', 'data berhasil di simpan');
-    }
-
-    public function destroy_jabatan($id)
-    {
-        $jabatans = jabatan::findOrFail($id);
-        $jabatans->delete();
-        return redirect(route('admin.tim'))->with('success', 'data jabatan berhasil dihapus');
-    }
 
 
     // untuk pengguna
@@ -185,45 +157,29 @@ class TimController extends Controller
     {
         $kontak = Kontak::first();
         $kontakExists = Kontak::exists();
-        $divisis = divisi::all();
-        $jabatans = jabatan::select('nama_jabatan')->distinct()->get();
-        $dataTimPui = tim::with('divisi', 'jabatan')->get();
-        $articles = Article::orderBy('created_at', 'desc')->paginate(10);
-
-        // Mengelompokkan data tim berdasarkan nama divisi
+        $divisis = Divisi::all();
+        // $jabatans = jabatan::select('nama_jabatan')->distinct()->get();
+        $dataTimPui = Tim::with('divisi')->get();
         $groupedTims = $dataTimPui->groupBy(function ($dataTim) {
             return $dataTim->divisi->nama_divisi;
         });
 
-        // Menghitung total komentar utama dan balasan untuk setiap artikel
-        $articlesWithComments = $articles->map(function ($article) {
-            // Menghitung jumlah komentar utama
-            $totalMainComments = CommentArticle::where('article_id', $article->id)
-                ->whereNull('parent_id')
-                ->count();
+        $articles = Article::withCount([
+            'comments as totalMainComments' => fn($query) => $query->whereNull('parent_id'),
+            'comments as totalReplies' => fn($query) => $query->whereNotNull('parent_id')
+        ])->paginate(10);
 
-            // Menghitung jumlah balasan
-            $totalReplies = CommentArticle::where('article_id', $article->id)
-                ->whereNotNull('parent_id')
-                ->count();
-
-            // Menjumlahkan komentar utama dan balasan
-            $article->totalComments = $totalMainComments + $totalReplies;
-
-            return $article;
-        });
-
-        return view('user/profil.team', compact('kontak', 'kontakExists', 'divisis', 'jabatans', 'articles', 'groupedTims', 'articlesWithComments'));
+        return view('user/profil.team', compact('kontak', 'kontakExists', 'divisis', 'articles', 'groupedTims'));
     }
 
     public function detail_tim($id)
     {
         $kontak = Kontak::first();
         $kontakExists = Kontak::exists();
-        $divisis = divisi::all();
-        $jabatans = jabatan::select('nama_jabatan')->distinct()->get();
-        $tim = tim::with(['divisi', 'jabatan'])->where('id', $id)->firstOrFail();
-        $articles = Article::orderBy('created_at', 'desc')->paginate(3);
+        $divisis = Divisi::all();
+        // $jabatans = jabatan::select('nama_jabatan')->distinct()->get();
+        $tim = Tim::with(['divisi'])->where('id', $id)->firstOrFail();
+        $articles = Article::orderBy('created_at', 'desc')->paginate(2);
 
         // Menghitung total komentar utama dan balasan untuk setiap artikel
         $articlesWithComments = $articles->map(function ($article) {
@@ -243,6 +199,6 @@ class TimController extends Controller
             return $article;
         });
 
-        return view('user.profil.detailteam', compact('kontak', 'kontakExists', 'divisis', 'jabatans', 'tim', 'articles', 'articlesWithComments'));
+        return view('user.profil.detailteam', compact('kontak', 'kontakExists', 'divisis', 'tim', 'articles', 'articlesWithComments'));
     }
 }

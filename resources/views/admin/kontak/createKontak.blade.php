@@ -2,99 +2,122 @@
 @section('title', 'halaman tambah kontak admin')
 @section('content-admin')
 
-    <!-- Content -->
     <main class="flex-1 bg-gray-100 p-4 sm:p-6 overflow-y-auto">
         <div id="content" class="transition-transform duration-500 ease-in-out">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">
-                Tambah Kontak PUI GEMAR UNJA
-            </h2>
+            <div class="text-left mb-4 mr-16">
+                <h1 class="text-3xl font-bold mb-4 mt-3 text-indigo-800">
+                    Tambah Kontak
+                </h1>
 
-            <form action="{{ route('admin.store-kontak') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
-                @csrf
+                <!-- Form Tambah Kontak disini -->
+                <form action="{{ route('admin.store-kontak') }}" method="POST" enctype="multipart/form-data"
+                    class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-md">
+                    @csrf
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="alamat">Alamat:</label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="alamat" type="text" name="alamat" />
+                    </div>
 
-                <!-- alamat -->
-                <div>
-                    <label for="alamat" class="block text-sm font-medium text-gray-700">Alamat</label>
-                    <input type="text" id="alamat" name="alamat" placeholder="Masukkan Alamat PUI GEMAR"
-                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500" />
-                </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="telepon">Telepon:</label>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Peringatan: Ketikkan nomor dari 62.
+                        </p>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="telepon" type="text" name="telepon" />
+                    </div>
 
-                <!-- email -->
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <p class="text-xs text-gray-500 mt-1">
-                        Peringatan: Masukkan format email yang benar.
-                    </p>
-                    <input type="text" id="email" name="email" placeholder="Masukkan email PUI GEMAR"
-                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500" />
-                </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="email">Email:</label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="email" type="email" name="email" />
+                    </div>
 
-                <!-- No_telepon -->
-                <div>
-                    <label for="telepon" class="block text-sm font-medium text-gray-700">No. Telepon</label>
-                    <input type="text" id="telepon" name="telepon" placeholder="Masukkan No telepon lengkap"
-                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="facebook">Facebook
+                            URL:</label>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Peringatan: isi dengan link URL Facebook PUI GEMAR yang aktif.
+                        </p>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="facebook" type="text" name="facebook" />
+                    </div>
 
-                {{-- facebook (opsional) --}}
-                <div>
-                    <label for="facebook" class="block mb-1">Facebook (opsional):</label>
-                    <p class="text-xs text-gray-500 mt-1">
-                        Petunjuk Pengisian: isi dengan link facebook yang aktif.
-                    </p>
-                    <input type="text" id="facebook" name="facebook"
-                        class="w-full border border-gray-300 rounded px-3 py-2" />
-                </div>
-
-                {{-- twitter (opsional) --}}
-                <div>
-                    <label for="twitter" class="block mb-1">Twitter (opsional):</label>
-                    <p class="text-xs text-gray-500 mt-1">
-                        Petunjuk Pengisian: isi dengan link twitter yang aktif.
-                    </p>
-                    <input type="text" id="twitter" name="twitter"
-                        class="w-full border border-gray-300 rounded px-3 py-2" />
-                </div>
-
-                {{-- instagram (opsional) --}}
-                <div>
-                    <label for="instagram" class="block mb-1">Instagram (opsional):</label>
-                    <p class="text-xs text-gray-500 mt-1">
-                        Petunjuk Pengisian: isi dengan link instagram yang aktif.
-                    </p>
-                    <input type="text" id="instagram" name="instagram"
-                        class="w-full border border-gray-300 rounded px-3 py-2" />
-                </div>
-
-                {{-- youtube (opsional) --}}
-                <div>
-                    <label for="youtube" class="block mb-1">YouTube (opsional):</label>
-                    <p class="text-xs text-gray-500 mt-1">
-                        Petunjuk Pengisian: isi dengan link youtube yang aktif.
-                    </p>
-                    <input type="text" id="youtube" name="youtube"
-                        class="w-full border border-gray-300 rounded px-3 py-2" />
-                </div>
-
-                {{-- tiktok (opsional) --}}
-                <div>
-                    <label for="tiktok" class="block mb-1">Tiktok (opsional):</label>
-                    <p class="text-xs text-gray-500 mt-1">
-                        Petunjuk Pengisian: isi dengan link tiktok yang aktif.
-                    </p>
-                    <input type="text" id="tiktok" name="tiktok"
-                        class="w-full border border-gray-300 rounded px-3 py-2" />
-                </div>
-
-                <!-- Tombol Submit -->
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                    SIMPAN
-                </button>
-            </form>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="instagram">Instagram
+                            URL:</label>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Peringatan: isi dengan link URL Instagram PUI GEMAR yang aktif.
+                        </p>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="instagram" type="text" name="instagram" />
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="tiktok">Tiktok URL:</label>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Peringatan: isi dengan link URL Tiktok PUI GEMAR yang aktif.
+                        </p>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="tiktok" type="text" name="tiktok" />
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="youtube">Youtube URL:</label>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Peringatan: isi dengan link URL Youtube PUI GEMAR yang aktif.
+                        </p>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="youtube" type="text" name="youtube" />
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="twitter">Twitter URL:</label>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Peringatan: isi dengan link URL Twitter PUI GEMAR yang aktif.
+                        </p>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="twitter" type="text" name="twitter" />
+                    </div>
+                    <button type="submit"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        SIMPAN
+                    </button>
+                </form>
+            </div>
         </div>
     </main>
-    </div>
-    </div>
+
+
+    <script>
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const form = this.closest('form'); // Temukan formulir terdekat dari tombol
+                const articleId = this.getAttribute('data-id');
+                event.preventDefault(); // Cegah tindakan default
+
+                Swal.fire({
+                    title: 'Apakah Anda yakin ingin menghapus?',
+                    text: "Data Kontak yang Dihapus Akan Hilang!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Hapus!',
+                    cancelButtonText: 'Batalkan'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit(); // Kirim formulir penghapusan
+                    }
+                });
+            });
+        });
+    </script>
 
 
 @endsection

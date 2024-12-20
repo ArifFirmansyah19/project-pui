@@ -4,73 +4,72 @@
 
     <main class="flex-1 bg-gray-100 p-4 sm:p-6 overflow-y-auto">
         <div id="content" class="transition-transform duration-500 ease-in-out">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">
-                Halaman Edit Kegiatan TIM PUI GEMAR
-            </h2>
+            <div class="text-left mb-4 mr-16 pl-12">
+                <!-- Tambahkan tombol edit disini -->
+                <form id="updateForm" action="{{ route('admin.update-kegiatan', $kegiatan->id) }}" method="POST"
+                    enctype="multipart/form-data" class="max-w-4xl mx-auto">
+                    @csrf
+                    <h1 class="text-3xl font-bold mb-4 mt-3 text-indigo-800">
+                        Edit kegiatan
+                    </h1>
 
-            <form id="updateForm" action="{{ route('admin.update-kegiatan', $kegiatan->id) }}" method="POST"
-                enctype="multipart/form-data" class="space-y-4">
-                @csrf
+                    <!-- Nama_Kegiatan -->
+                    <div class="mb-4">
+                        <label for="nama_kegiatan" class="block text-gray-700 text-md font-bold mb-2">Judul</label>
+                        <input type="text" id="nama_kegiatan" name="nama_kegiatan" placeholder="Masukkan judul kegiatan"
+                            required value="{{ old('nama_kegiatan', $kegiatan->nama_kegiatan) }}"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                    </div>
 
-                <!-- Nama_Kegiatan -->
-                <div>
-                    <label for="nama_kegiatan" class="block text-sm font-medium text-gray-700">Nama Kegiatan</label>
-                    <input type="text" id="nama_kegiatan" name="nama_kegiatan"
-                        placeholder="Masukkan nama kegiatan lengkap" required
-                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500"
-                        value="{{ old('nama_kegiatan', $kegiatan->nama_kegiatan) }}" />
-                    @error('nama_kegiatan')
-                        <div class="text-red-500 mt-2 text-sm">{{ $message }}</div>
-                    @enderror
-                </div>
+                    <!-- Foto_Kegiatan -->
+                    <div class="mb-4">
+                        <label for="foto_kegiatan" class="block text-gray-700 text-md font-bold mb-2">Gambar utama
+                            kegiatan</label>
+                        @if ($kegiatan->foto_kegiatan)
+                            <input type="hidden" name="old_foto_kegiatan" value="{{ $kegiatan->foto_kegiatan }}">
+                            <div class="mb-4">
+                                @if (Str::endsWith($kegiatan->foto_kegiatan, ['jpg', 'jpeg', 'png', 'webp']))
+                                    <!-- Menampilkan Gambar -->
+                                    <img src="{{ asset('storage/' . $kegiatan->foto_kegiatan) }}"
+                                        alt="Gambar Kegiatan {{ $kegiatan->nama_kegiatan }}"
+                                        class="mb-2 rounded-lg h-96 w-full object-cover" />
+                                @elseif (Str::endsWith($kegiatan->foto_kegiatan, ['mp4', 'avi', 'mov']))
+                                    <!-- Menampilkan Video -->
+                                    <video controls class="mb-2 rounded-lg h-96 w-full object-cover">
+                                        <source src="{{ asset('storage/' . $kegiatan->foto_kegiatan) }}"
+                                            type="video/{{ pathinfo($kegiatan->foto_kegiatan, PATHINFO_EXTENSION) }}">
+                                        Browser Anda tidak mendukung pemutar video.
+                                    </video>
+                                @endif
+                            </div>
+                        @endif
+                        <input type="file" id="foto_kegiatan" name="foto_kegiatan"
+                            accept="image/*,video/mp4,video/avi,video/mov" multiple
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-50 leading-tight focus:outline-none focus:shadow-outline" />
+                        <p class="text-gray-600 text-sm mt-1">
+                            *Gambar tidak wajib diunggah. <br />
+                            *Format yang didukung: JPG, PNG, WebP. Ukuran file maksimal: 2MB.
+                        </p>
+                    </div>
 
-                <!-- Foto Kegiatan -->
-                <div>
-                    <label for="foto_kegiatan" class="block text-sm font-medium text-gray-700">Foto Kegiatan
-                        (Opsional)</label>
-                    @if ($kegiatan->foto_kegiatan)
-                        <input type="hidden" name="old_foto_kegiatan" value="{{ $kegiatan->foto_kegiatan }}">
-                        <div class="mb-4">
-                            <img src="{{ asset('storage/' . $kegiatan->foto_kegiatan) }}" height="150px" width="150px"
-                                alt="foto {{ $kegiatan->nama_kegiatan }}" class="object-cover">
-                        </div>
-                    @endif
-                    <input type="file" id="foto_kegiatan" name="foto_kegiatan"
-                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                    <p class="text-xs text-gray-500 mt-1">
-                        Format yang didukung: JPG, PNG, WebP. Ukuran file maksimal: 2MB.
-                    </p>
-                    @error('foto_kegiatan')
-                        <div class="text-red-500 mt-2 text-sm">{{ $message }}</div>
-                    @enderror
-                </div>
+                    <!-- Deskripsi_Kegiatan -->
+                    <div class="mb-4">
+                        <label for="deskripsi_kegiatan" class="block text-gray-700 text-md font-bold mb-2">Kegiatan</label>
+                        <p class="text-gray-600 text-sm mt-1">
+                            *Anda bisa menambahkan banyak gambar dan narasi di sini.
 
-                <!-- Deskripsi Kegiatan -->
-                <div>
-                    <label for="deskripsi_kegiatan" class="block text-sm font-medium text-gray-700">Deskripsi
-                        Kegiatan</label>
-                    <p class="text-xs text-gray-500 mt-1">
-                        Usahakan deskripsi kegiatan tidak mengandung gambar.
-                    </p>
-                    <textarea name="deskripsi_kegiatan" id="summernote"
-                        class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                        {!! old('deskripsi_kegiatan', $kegiatan->deskripsi_kegiatan) !!}
-                    </textarea>
-                    @error('deskripsi_kegiatan')
-                        <div class="text-red-500 mt-2 text-sm">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Tombol Submit -->
-                <div class="flex justify-end">
-                    <button type="submit" id="updateButton"
-                        class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700">
-                        Update
-                    </button>
-                </div>
-            </form>
-
-
+                        </p>
+                        <textarea name="deskripsi_kegiatan" id="deskripsi_kegiatan"
+                            class="summernote bg-white border border-gray-300 rounded-lg p-4">{!! old('deskripsi_kegiatan', $kegiatan->deskripsi_kegiatan) !!}</textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" id="updateButton"
+                            class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </main>
 
@@ -97,7 +96,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var oldImages = @json($oldImages);
-            var summernote = document.getElementById('summernote');
+            var summernote = document.getElementsByClassName('summernote');
 
             // Tambahkan input hidden untuk setiap gambar lama
             oldImages.forEach(function(image) {

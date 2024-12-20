@@ -70,6 +70,7 @@ module.exports = {
         },
     },
     plugins: [
+        require('tailwind-scrollbar-hide'),
         function({ addComponents }) {
             addComponents({
                 '.modal': {
@@ -112,7 +113,5 @@ module.exports = {
                 },
             });
         },
-
-
     ],
 }

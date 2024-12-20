@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\jenisKeragaman;
+use App\Models\JenisKeragaman;
 use Illuminate\Support\Facades\File;
 
 
-class dataKeragaman extends Model
+class DataKeragaman extends Model
 {
     use HasFactory;
     protected $table = 'data_keragamans';
@@ -24,6 +24,6 @@ class dataKeragaman extends Model
 
     public function jenisKeragaman()
     {
-        return $this->belongsTo(jenisKeragaman::class);
+        return $this->belongsTo(JenisKeragaman::class, 'jenis_keragaman_id');
     }
 }

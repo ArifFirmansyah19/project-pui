@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\desaPotensi;
+// use App\Models\desaPotensi;
+use App\Models\Kecamatan;
 
 
 class PotensiDesa extends Model
@@ -13,13 +14,21 @@ class PotensiDesa extends Model
 
     protected $fillable = [
         'nama_potensi',
-        'foto_potensi',
+        'longitude',
+        'latitude',
+        // 'foto_potensi',
         'deskripsi_potensi',
-        'desa_potensi_id'
+        'alamat',
+        'kecamatan_id'
     ];
 
-    public function desaPotensi()
+    public function kecamatan()
     {
-        return $this->belongsTo(desaPotensi::class);
+        return $this->belongsTo(Kecamatan::class);
+    }
+
+    public function fotoPotensi()
+    {
+        return $this->hasMany(FotoPotensi::class, 'potensi_desas_id');
     }
 }

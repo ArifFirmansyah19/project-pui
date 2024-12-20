@@ -2,46 +2,39 @@
 @section('title', 'HKI PUI GEMAR')
 
 @section('content')
+    <div class="flex flex-col md:flex-row w-full">
+        <div class="bg-white mt-5 shadow-md rounded-lg p-4 md:w-2/3 px-10">
+            <h3 class="inline-block text-2xl font-bold text-indigo-900 mb-4  border-b-2 border-indigo-900">
+                Hak Kekayaan Intelektual (HKI)
+            </h3>
 
-    <div class="flex justify-center min-h-screen bg-gray-600">
-        <div class="max-w-4xl w-full py-8 px-4 bg-gray-300">
-            <div class="max-w-4xl w-full py-8 px-4 bg-gray-300">
-                <div class="bg-gray-300 shadow-md rounded-lg px-8 py-6">
-                    <h1 class="text-4xl font-bold text-indigo-900 mb-8 mt-10">
-                        Daftar HKI PUI GEMAR
-                    </h1>
-                    <hr class="border-gray-800 my-1" />
+            <!-- Konten HKI -->
+            <div class="grid grid-cols-1 gap-6 mt-12">
+                @foreach ($HKIs as $HKI)
+                    <div class="bg-white rounded-lg shadow-lg flex overflow-hidden">
+                        <!-- PDF Viewer (Iframe) -->
+                        <iframe
+                            src="{{ $HKI->file_path ? asset('storage/' . $HKI->file_path) : asset('img/hki-placeholder.pdf') }}"
+                            class="w-1/3 sm:w-1/3 md:w-1/3 h-[300px] object-cover" title="Sertifikat HKI">
+                        </iframe>
 
-                    @foreach ($HKIs as $HKI)
-                        <!-- HKI -->
-                        <div class="mb-4 mt-2">
-                            <a href="{{ route('HKI-detail', $HKI->id) }}"
-                                class="block text-xl font-semibold text-indigo-900 mb-0">Judul HKI : {{ $HKI->judul }}
-                            </a>
-                            <p class="text-gray-800 leading-relaxed">Pemilik HKI : {{ $HKI->nama }}</p>
-                            <br>
-                            <p class="text-gray-800 leading-relaxed line-clamp">{{ $HKI->deskripsi }}
+                        <!-- Deskripsi (Kontainer deskripsi) -->
+                        <div class="p-4 flex flex-col justify-between w-2/3 sm:w-2/3 md:w-2/3">
+                            <h2 class="text-xl font-semibold text-indigo-700">
+                                <a href="{{ $HKI->file_path ? asset('storage/' . $HKI->file_path) : asset('img/hki-placeholder.pdf') }}"
+                                    target="_blank" class="hover:underline">
+                                    {{ $HKI->judul }}
+                                </a>
+                            </h2>
+                            <p class="text-gray-700 mt-2">
+                                {!! $HKI->deskripsi !!}
                             </p>
-                            <br>
-                            <p class="text-gray-800 leading-relaxed">
-                                Link File HKI:
-                                @if ($HKI->file_path)
-                                    <a href="{{ asset('storage/' . $HKI->file_path) }}" target="_blank"
-                                        class="text-blue-500 underline">
-                                        {{ $HKI->judul }}.Pdf
-                                    </a>
-                                @endif
-                            </p>
-
-
                         </div>
-                        <hr class="border-gray-800 my-1" />
-                    @endforeach
-                    <div class="mt-auto mb-0 px-3 flex justify-start">
-                        {{ $HKIs->links() }}
                     </div>
-
-                </div>
+                @endforeach
             </div>
+        </div>
+        @include('layouts.session-article')
+    </div>
 
-        @endsection
+@endsection

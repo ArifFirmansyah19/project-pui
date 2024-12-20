@@ -1,8 +1,8 @@
 <div class="mb-4 p-4 bg-white rounded shadow">
-    <div class="flex items-center justify-between">
-        <div class="flex items-center">
+    <div class="flex items-start justify-between">
+        <div class="flex items-start">
             <!-- Kotak profil kosong -->
-            <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-500">
+            <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white">
                 <!-- Placeholder initial -->
                 <span class="font-bold">{{ strtoupper(substr($commentKegiatan->nama, 0, 1)) }}</span>
             </div>
@@ -14,10 +14,9 @@
                 @endif
                 <p>{{ $commentKegiatan->isi_komentar }}</p>
 
-
                 <!-- Tombol Balasan -->
                 @if ($commentKegiatan->total_replies > 0)
-                    <button class="bg-blue-500 rounded text-white mt-2 p-1"
+                    <button class="bg-indigo-600 rounded text-white mt-2 p-1"
                         onclick="toggleReplies({{ $commentKegiatan->id }})">
                         {{ $commentKegiatan->total_replies }} balasan
                     </button>
@@ -26,28 +25,28 @@
         </div>
     </div>
 
+    <!-- Tombol untuk balas, sejajar di bawah komentar -->
+    <div class="mt-2">
+        <a href="javascript:void(0);" onclick="toggleReplyForm({{ $commentKegiatan->id }});"
+            class="text-indigo-600 inline-block">Balas</a>
+    </div>
 
-
-    <a href="javascript:void(0);" onclick="toggleReplyForm({{ $commentKegiatan->id }});"
-        class="text-blue-500 mt-2 inline-block">Balas Komentar</a>
+    <!-- Form balasan tersembunyi -->
     <form method="POST" action="{{ route('store.komentar-kegiatan') }}" id="reply-form-{{ $commentKegiatan->id }}"
         class="mt-2 hidden">
         @csrf
         <input type="hidden" name="kegiatan_id" value="{{ $commentKegiatan->kegiatan_id }}">
         <input type="hidden" name="parent_id" value="{{ $commentKegiatan->id }}">
         <div class="mb-2">
-            <input type="text" name="nama" class="border rounded w-full py-2 px-3" placeholder="Your Name">
+            <input type="text" name="nama" class="border rounded w-full py-2 px-3" placeholder="Nama Anda">
         </div>
         <div class="mb-2">
-            <textarea name="isi_komentar" class="border rounded w-full py-2 px-3" placeholder="Your Reply"></textarea>
+            <textarea name="isi_komentar" class="border rounded w-full py-2 px-3" placeholder="Tulis Balasan..."></textarea>
         </div>
         <input type="hidden" name="is_admin" value="false">
-        <!-- Atur sesuai kebutuhan, true jika admin -->
-        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Reply</button>
+        <button type="submit" class="bg-indigo-600 text-white py-2 px-4 rounded">Kirim Balasan</button>
     </form>
-
 </div>
-
 
 {{-- tampilkan balasan komentar --}}
 @if ($commentKegiatan->replies->count() > 0)
@@ -65,8 +64,10 @@
                     value="{{ $reply->isi_komentar }}" />
 
                 <!-- Form untuk membalas balasan komentar -->
-                <a href="javascript:void(0);" onclick="toggleReplyForm({{ $reply->id }});"
-                    class="text-blue-500 mt-2 inline-block">Balas Komentar</a>
+                <div class="mt-2">
+                    <a href="javascript:void(0);" onclick="toggleReplyForm({{ $reply->id }});"
+                        class="text-indigo-600 inline-block">Balas</a>
+                </div>
                 <form method="POST" action="{{ route('store.komentar-kegiatan') }}"
                     id="reply-form-{{ $reply->id }}" class="mt-2 hidden">
                     @csrf
@@ -77,12 +78,11 @@
                             placeholder="Your Name">
                     </div>
                     <div class="mb-2">
-                        <textarea name="isi_komentar" class="border rounded w-full py-2 px-3" placeholder="Your Reply"></textarea>
+                        <textarea name="isi_komentar" class="border rounded w-full py-2 px-3" placeholder="Tulis Balasan..."></textarea>
                     </div>
                     <input type="hidden" name="is_admin" value="false">
-                    <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Reply</button>
+                    <button type="submit" class="bg-indigo-600 text-white py-2 px-4 rounded">Kirim Balasan</button>
                 </form>
-
 
                 <!-- Nested replies -->
                 @if ($reply->replies->count() > 0)
@@ -101,18 +101,21 @@
                                 value="{{ $nestedReply->isi_komentar }}" />
 
                             <!-- Form untuk membalas balasan nested -->
-                            <a href="javascript:void(0);" onclick="toggleReplyForm({{ $nestedReply->id }});"
-                                class="text-blue-500 mt-2 inline-block">Balas Komentar</a>
+                            <div class="mt-2">
+                                <a href="javascript:void(0);" onclick="toggleReplyForm({{ $nestedReply->id }});"
+                                    class="text-indigo-600 inline-block">Balas</a>
+                            </div>
                             <form method="POST" action="{{ route('store.komentar-kegiatan') }}"
                                 id="reply-form-{{ $nestedReply->id }}" class="mt-2 hidden">
                                 @csrf
                                 <input type="hidden" name="kegiatan_id" value="{{ $nestedReply->kegiatan_id }}">
                                 <input type="hidden" name="parent_id" value="{{ $nestedReply->id }}">
                                 <div class="mb-2">
-                                    <textarea name="isi_komentar" class="border rounded w-full py-2 px-3" placeholder="Your Reply"></textarea>
+                                    <textarea name="isi_komentar" class="border rounded w-full py-2 px-3" placeholder="Tulis Balasan..."></textarea>
                                 </div>
                                 <input type="hidden" name="is_admin" value="false">
-                                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Reply</button>
+                                <button type="submit" class="bg-indigo-600 text-white py-2 px-4 rounded">Kirim
+                                    Balasan</button>
                             </form>
                         </div>
                     @endforeach

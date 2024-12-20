@@ -15,14 +15,14 @@ return new class extends Migration
     {
         Schema::create('kontaks', function (Blueprint $table) {
             $table->id();
-            $table->string('alamat');
-            $table->string('email');
-            $table->string('telepon');
-            $table->string('facebook');
-            $table->string('twitter');
-            $table->string('instagram');
-            $table->string('youtube');
-            $table->string('tiktok');
+            $table->string('alamat', 100);
+            $table->string('email', 50);
+            $table->string('telepon', 20);
+            $table->string('facebook', 100);
+            $table->string('twitter', 100);
+            $table->string('instagram', 100);
+            $table->string('youtube', 100);
+            $table->string('tiktok', 100);
             $table->timestamps();
         });
     }

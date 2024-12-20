@@ -1,4 +1,4 @@
-<div class="mb-4 p-4 bg-grey-900 rounded shadow">
+{{-- <div class="mb-4 p-4 bg-grey-900 rounded shadow">
     <div class="flex items-center justify-between">
         <div class="flex items-center">
             <div class="w-10 h-10 bg-blue-300 rounded-full flex items-center justify-center text-gray-500">
@@ -43,7 +43,8 @@
         <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Reply</button>
     </form>
 
-    {{-- tampilkan balasan komentar --}}
+
+    <!--  tampilkan balasan komentar -->
     @if ($commentArticle->replies->count() > 0)
         <div id="replies-{{ $commentArticle->id }}" class="hidden ml-14 mt-2">
             @foreach ($commentArticle->replies as $reply)
@@ -116,4 +117,4 @@
             @endforeach
         </div>
     @endif
-</div>
+</div> --}}

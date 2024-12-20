@@ -1,0 +1,370 @@
+Tambahkan kode CSS berikut
+
+
+.fixed-navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999; /* Make sure it's above other elements */
+}
+/* Gaya scrollbar untuk browser WebKit */
+::-webkit-scrollbar {
+  width: 5px; 
+  height: 3px;/* Lebar scrollbar */
+}
+
+li {
+  list-style: none; /* Menghapus tanda bullet pada <li> */
+  margin-left: 0; /* Menghapus margin bawaan pada <li> */
+  padding-left: 0; /* Menghapus padding bawaan pada <li> */
+}
+
+
+/* Gaya track (jalur) scrollbar */
+::-webkit-scrollbar-track {
+  background: transparent; /* Warna jalur scrollbar */
+}
+
+/* Gaya thumb (pemegang) scrollbar */
+::-webkit-scrollbar-thumb {
+  background: #888; /* Warna thumb scrollbar */
+  border-radius: 10px; /* Sudut radius thumb */
+}
+
+/* Gaya thumb ketika dihover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Warna thumb saat dihover */
+}
+
+
+
+/* menu navbar*/
+.menu-item {
+  position: relative;
+}
+
+.menu-item::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background-color: transparent;
+  transition: background-color 0.3s ease;
+}
+
+.menu-item.selected {
+  border-bottom: 2px solid white; /* garis bawah berwarna putih */
+}
+
+.menu-item:hover::after {
+  background-color: white;
+}
+
+.line-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  /* Ubah angka ini untuk menyesuaikan jumlah baris */
+  overflow: hidden;
+}
+
+#map {
+  height: 300px;
+  width: 90%;
+  position: relative;
+  z-index: 1;
+}
+
+.leaflet-top,
+.leaflet-right {
+  z-index: 30;
+}
+
+
+/* Kelas CSS untuk tombol Cancel */
+.swal2-cancel {
+  background-color: #9c1722;
+  /* Ganti warna sesuai kebutuhan */
+  color: white;
+}
+
+/* konfigurasi summernote tertentu */
+.note-editor ul,
+.note-editor ol {
+  padding-left: 40px;
+  list-style-type: disc;
+}
+
+.note-editor ol {
+  list-style: decimal;
+}
+
+.note-editor h1 {
+  font-size: 2.5em;
+}
+
+.note-editor h2 {
+  font-size: 2em;
+}
+
+.note-editor h3 {
+  font-size: 1.75em;
+}
+
+.note-editor h4 {
+  font-size: 1.5em;
+}
+
+.note-editor h5 {
+  font-size: 1.25em;
+}
+
+.note-editor h6 {
+  font-size: 1em;
+}
+
+.note-editor table {
+  border-collapse: collapse;
+}
+
+.note-editor table th,
+.note-editor table td,
+.note-editor table tr,
+.note-editor table tbody {
+  border: 2px solid #3498db;
+  padding: 8px;
+  text-align: left;
+}
+
+.note-editor .note-editable img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.note-editable {
+  height: 500px;
+}
+
+.note-editable a {
+  color: blue !important;
+}
+
+.note-editable table {
+  margin: 0 auto;
+}
+
+
+/* pengaturan untuk hasil summernote */
+ul,
+ol {
+  padding-left: 40px;
+  list-style-type: disc;
+}
+
+ol {
+  list-style: decimal;
+}
+
+h1 {
+  font-size: 2.5em;
+}
+
+h2 {
+  font-size: 2em;
+}
+
+h3 {
+  font-size: 1.75em;
+}
+
+h4 {
+  font-size: 1.5em;
+}
+
+h5 {
+  font-size: 1.25em;
+}
+
+h6 {
+  font-size: 1em;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,
+td,
+tr,
+tbody {
+  border: 2px solid #3498db;
+  padding: 8px;
+  text-align: left;
+}
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+table {
+  margin: 0 auto;
+}
+
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* animasi tulisan konten pertama
+@tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+@keyframes slideInFromBottom {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-bottom {
+  animation: slideInFromBottom 3s ease-out;
+}
+
+
+/* @media (-ms-high-contrast: active), (-ms-high-contrast: none) { */
+  /* Pengaturan khusus untuk mode kontras tinggi */
+/* } */
+
+/* Ganti dengan Forced Colors Mode */
+/* @media (prefers-color-scheme: forced) { */
+  /* Pengaturan khusus untuk mode kontras tinggi */
+/* } */
+
+@media (min-width: 640px) {
+  .sm\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+    /* Untuk tampilan di bawah 640px */
+    @media (max-width: 640px) {
+        #carouselWrapper {
+            overflow: hidden; /* Menyembunyikan bagian yang melebihi lebar layar */
+        }
+
+        #carouselWrapper .relative {
+            min-width: 100%; /* Pastikan setiap item menempati 100% lebar layar */
+        }
+
+        /* Pastikan gambar di carousel menyesuaikan dengan lebar layar */
+        #carouselWrapper img {
+            width: 100%; /* Mengubah gambar agar mengikuti lebar layar */
+        }
+
+        /* Menyembunyikan tombol navigasi jika ada ruang yang tidak cukup */
+        #prevBtn, #nextBtn {
+            display: none;
+        }
+    }
+
+
+
+
+@media (max-width: 768px) {
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:flex {
+    display: flex;
+  }
+
+  .lg\:hidden {
+    display: none;
+  }
+
+  .lg\:grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .lg\:flex-row {
+    flex-direction: row;
+  }
+
+
+
+
+
+  @media (max-width: 700px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .responsive-img {
+      width: 80%; /* Mengatur lebar gambar menjadi 80% dari kontainer */
+      height: auto; /* Mengatur tinggi gambar agar proporsional dengan lebarnya */
+      margin: 0 auto; /* Menambahkan margin otomatis agar gambar berada di tengah */
+  }
+
+    .container .w-1/2 {
+        width: 100%;
+        order: 2;
+        margin-left: 0;
+    }
+
+    .container .w-2/5 {
+        width: 100%;
+        order: 1;
+        margin-left: 0;
+    }
+
+    .container h2 {
+        margin: 20px 0 10px 0;
+    }
+
+    .container p, .container a {
+        margin-left: 0;
+    }
+
+  .comment {
+    @apply p-4 mb-4 border border-gray-200 rounded-lg bg-gray-50;
+  }
+  .comment .author {
+    @apply font-semibold text-indigo-700;
+  }
+  .comment .text {
+    @apply mt-2 text-gray-800;
+  }
+  .comment .reply-button {
+    @apply text-indigo-600 mt-2 cursor-pointer hover:underline;
+  }
+  .reply-form {
+    @apply mt-4 p-4 border border-gray-300 rounded-lg bg-gray-50;
+  }
+
+  .reply-form button {
+    @apply mt-2 bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700;
+  }
+  
+}
+
+.font-poppins {
+  font-family: Poppins, sans-serif;
+}

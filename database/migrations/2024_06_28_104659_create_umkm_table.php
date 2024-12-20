@@ -15,18 +15,18 @@ return new class extends Migration
     {
         Schema::create('umkm', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_umkm');
-            $table->string('nama_pemilik');
-            $table->string('alamat_umkm');
-            $table->string('latitude');
-            $table->string('longitude');
-            $table->string('foto_umkm')->nullable();
-            $table->longText('deskripsi_umkm');
-            $table->string('kontak');
-            $table->string('whatsapp');
-            $table->string('email');
-            $table->string('instagram');
-            $table->foreignId('desa_potensi_id')->constrained('desa_potensis')->onDelete('cascade');
+            $table->string('nama_umkm', 50);
+            $table->string('nama_pemilik', 50);
+            $table->string('alamat_umkm', 255);
+            $table->decimal('latitude', 9, 6);
+            $table->decimal('longitude', 9, 6);
+            // $table->string('foto_umkm', 100)->nullable();
+            $table->mediumText('deskripsi_umkm');
+            $table->string('kontak', 100);
+            $table->string('whatsapp', 100);
+            $table->string('email', 100);
+            $table->string('instagram', 100);
+            $table->foreignId('kecamatan_id')->constrained('kecamatans')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -2,17 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Article;
 use App\Models\Tim;
 use App\Models\Kegiatan;
 use App\Models\Umkm;
 use App\Models\Divisi;
-use App\Models\Jabatan;
 use App\Models\Kontak;
-use App\Models\CommentArticle;
-// use App\Models\CommentArticle;
-use App\Models\desaPotensi;
+use App\Models\PotensiDesa;
 
 class DashboardController extends Controller
 {
@@ -28,33 +24,18 @@ class DashboardController extends Controller
         $kontak = Kontak::first();
         $kontakExists = Kontak::exists();
         $divisis = divisi::all();
-        $jabatans = jabatan::select('nama_jabatan')->distinct()->get();
-        $dataTimPui = tim::with('divisi', 'jabatan')->get();
+        $dataTimPui = Tim::with('divisi')->get();
         $articles = Article::latest()->limit(3)->get();
-        $tims = tim::all();
+        $tims = Tim::all();
         $kegiatans = Kegiatan::latest()->limit(10)->get();
-        $umkms = umkm::all();
-        $desas = DesaPotensi::with('potensiDesa')->get();
+        $umkms = Umkm::all();
+        $potensis = PotensiDesa::all();
 
+        $articles = Article::withCount([
+            'comments as totalMainComments' => fn($query) => $query->whereNull('parent_id'),
+            'comments as totalReplies' => fn($query) => $query->whereNotNull('parent_id')
+        ])->paginate(5);
 
-        // Menghitung total komentar utama dan balasan untuk setiap artikel
-        $articlesWithComments = $articles->map(function ($article) {
-            // Menghitung jumlah komentar utama
-            $totalMainComments = CommentArticle::where('article_id', $article->id)
-                ->whereNull('parent_id')
-                ->count();
-
-            // Menghitung jumlah balasan
-            $totalReplies = CommentArticle::where('article_id', $article->id)
-                ->whereNotNull('parent_id')
-                ->count();
-
-            // Menjumlahkan komentar utama dan balasan
-            $article->totalComments = $totalMainComments + $totalReplies;
-
-            return $article;
-        });
-
-        return view('index', compact('articles', 'desas', 'kontak', 'kontakExists', 'divisis', 'jabatans', 'dataTimPui', 'tims', 'kegiatans', 'umkms', 'articlesWithComments'));
+        return view('index', compact('articles', 'potensis', 'kontak', 'kontakExists', 'divisis', 'dataTimPui', 'tims', 'kegiatans', 'umkms'));
     }
 }

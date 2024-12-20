@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use App\Models\CommentKegiatan;
 
 class Kegiatan extends Model
 {
@@ -17,6 +18,12 @@ class Kegiatan extends Model
         'foto_kegiatan',
         'deskripsi_kegiatan',
     ];
+
+    public function comments()
+    {
+        return $this->hasMany(CommentKegiatan::class, 'kegiatan_id');
+    }
+
     // Accessor for formatted created_at
     public function getFormattedCreatedAtAttribute()
     {

@@ -12,8 +12,4 @@ class VisionMission extends Model
         'vision',
         'missions',
     ];
-
-    protected $casts = [
-        'missions' => 'array',
-    ];
 }

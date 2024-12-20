@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\dataKeragaman;
+use App\Models\DataKeragaman;
 
-class jenisKeragaman extends Model
+class JenisKeragaman extends Model
 {
     use HasFactory;
     protected $table = 'jenis_keragamans';
@@ -18,6 +18,6 @@ class jenisKeragaman extends Model
 
     public function dataKeragaman()
     {
-        return $this->hasMany(dataKeragaman::class);
+        return $this->hasMany(DataKeragaman::class, 'jenis_keragaman_id');
     }
 }

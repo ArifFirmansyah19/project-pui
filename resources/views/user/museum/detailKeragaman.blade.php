@@ -1,4 +1,4 @@
-@extends('layouts.app-user')
+{{-- @extends('layouts.app-user')
 @section('title', 'Detail Kegiatan PUI GEMAR')
 
 @section('content')
@@ -61,4 +61,4 @@
         });
     </script>
 
-@endsection
+@endsection --}}

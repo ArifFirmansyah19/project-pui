@@ -15,7 +15,9 @@ return new class extends Migration
     {
         Schema::create('struktur_organisasis', function (Blueprint $table) {
             $table->id();
-            $table->string('foto_struktur_organisasi');
+            $table->string('judul', 50);
+            $table->string('foto_struktur_organisasi', 100);
+            $table->text('isi_konten');
             $table->timestamps();
         });
     }

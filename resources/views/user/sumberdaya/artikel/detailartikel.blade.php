@@ -8,7 +8,7 @@
         <div class="max-w-4xl w-full py-8 px-2 bg-gray-300">
             <div class="max-w-4xl w-full py-8 bg-gray-300">
                 <div class="bg-gray-300 shadow-md rounded-lg px-8 py-0">
-                    <h1 class="text-4xl font-bold text-indigo-900 mb-0 mt-20">
+                    <h1 class="text-4xl font-bold text-indigo-900">
                         {{ $article->judul }}
                     </h1>
                     <!-- Detail Artikel -->

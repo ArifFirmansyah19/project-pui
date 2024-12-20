@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\kontak;
+use App\Models\Kontak;
 
 class KontakController extends Controller
 {
@@ -20,6 +20,7 @@ class KontakController extends Controller
     {
         $kontakExists = Kontak::exists();
         $kontak = Kontak::first();
+        session()->forget('success');
         return view('admin.kontak.kontak', compact('kontak', 'kontakExists'));
     }
 
@@ -36,23 +37,14 @@ class KontakController extends Controller
         }
         $kontak = Kontak::create($request->all());
         $kontak->save();
-
         return redirect(route('admin.kontak'))->with('success', 'data berhasil ditambahkan');
-    }
-
-    public function edit_kontak($id)
-    {
-        $kontak = Kontak::findOrFail($id);
-        session()->forget('success');
-        return view('admin.kontak.editKontak', compact('kontak'));
     }
 
     public function update_kontak(Request $request, $id)
     {
-        $kontak = kontak::findOrFail($id);
+        $kontak = Kontak::findOrFail($id);
         $kontak->update($request->all());
         $kontak->save();
-
         return redirect(route('admin.kontak'))->with('success', 'kontak diupdate');
     }
 

@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\jabatan;
-use App\Models\tim;
+// use App\Models\jabatan;
+use App\Models\Tim;
 
-class divisi extends Model
+class Divisi extends Model
 {
     use HasFactory;
 
@@ -15,16 +15,16 @@ class divisi extends Model
     protected $primaryKey = "id";
     protected $fillable = [
         'nama_divisi',
-        'deskripsi_divisi',
+        // 'deskripsi_divisi',
     ];
 
-    public function jabatan()
-    {
-        return $this->hasMany(jabatan::class);
-    }
+    // public function jabatan()
+    // {
+    //     return $this->hasMany(jabatan::class);
+    // }
 
     public function tim()
     {
-        return $this->hasMany(tim::class);
+        return $this->hasMany(Tim::class);
     }
 }

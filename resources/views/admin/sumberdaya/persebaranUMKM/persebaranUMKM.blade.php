@@ -10,54 +10,95 @@
             </h3>
             <div class="bg-gray-100 p-2">
                 <div id="map" class="h-50 p-2"></div>
+                <p class="text-sm mt-2 text-indigo-900">
+                    *klik marker untuk melihat detail potensi/umkm
+                </p>
             </div>
         </div>
 
         <div class="bg-gray-200 p-4">
-            @foreach ($desas as $desa)
-                <div class="flex items-center justify-between mb-1 cursor-pointer"
-                    onclick="toggleDropdown('{{ $desa->nama_desa }}')">
-                    <h2 class="text-lg font-semibold">{{ $desa->nama_desa }}</h2>
-                    <i class="fas fa-chevron-down text-gray-600"></i>
+            @foreach ($kecamatans as $kecamatan)
+                <div class="flex items-start justify-between mb-1 cursor-pointer" id="kecamatan-{{ $kecamatan->id }}"
+                    onclick="toggleDropdown('{{ $kecamatan->nama_kecamatan }}')">
+                    <!-- Kolom untuk Nama Kecamatan dan Tombol Edit/Hapus -->
+                    <div class="flex flex-col">
+                        <h2 class="text-lg font-semibold">{{ $kecamatan->nama_kecamatan }}</h2>
+                        <div class="flex mt-1">
+                            <button class="text-yellow-500 mx-1 hover:text-blue-700 text-sm"
+                                onclick="openEditKecamatanModal('{{ $kecamatan->id }}', '{{ $kecamatan->nama_kecamatan }}'); event.stopPropagation();">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <!-- Tombol Hapus -->
+                            <form action="{{ route('admin.delete-kecamatan', $kecamatan->id) }}" method="POST"
+                                class="text-red-500 mx-1 hover:text-red-700" onclick="event.stopPropagation();">
+                                @csrf
+                                <button type="submit" class="delete-button mx-2 text-gray-600 hover:text-gray-900">
+                                    <i class="fa-solid fa-trash text-red-600 hover:text-gray-900"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Kolom untuk Chevron -->
+                    <div class="ml-auto">
+                        <i class="fas fa-chevron-down text-gray-600"></i>
+                    </div>
                 </div>
-                <ul class="ml-2" id="{{ $desa->nama_desa }}" style="display: none">
-                    @if ($desa->potensiDesa->isEmpty())
+
+                <ul id="{{ $kecamatan->nama_kecamatan }}" style="display: none">
+                    @if ($kecamatan->potensiDesa->isEmpty())
                         <li style="list-style-type: none;">
                             <p class="text-black-500">Desa ini Tidak Memiliki Potensi Persebaran</p>
                         </li>
                     @else
-                        <li style="list-style-type: none;">
-                            <a href="{{ route('admin.detail-desa', $desa->id) }}"
-                                class="text-blue-500 hover:text-blue-700">Potensi Alam Desa
-                                {{ $desa->nama_desa }}</a>
-                        </li>
-                        <div class="flex">
-                            <a href="{{ route('admin.edit-desa', $desa->id) }}">
-                                <button class="mx-2 text-gray-600 hover:text-gray-900">
-                                    <i class="fas fa-edit" style="color: #ea7434;"></i>
-                                </button>
-                            </a>
-                        </div>
+                        @foreach ($kecamatan->potensiDesa as $potensi)
+                            <li style="list-style-type: none;">
+                                <a href="{{ route('admin.detail-potensi', ['kecamatan_id' => $kecamatan->id, 'potensi_id' => $potensi->id]) }}"
+                                    class="text-blue-500 hover:text-blue-700">Potensi {{ $potensi->nama_potensi }}</a>
+
+                                <!-- Tombol Edit -->
+                                <div class="flex">
+                                    <a href="{{ route('admin.edit-potensi', ['kecamatan_id' => $kecamatan->id, 'potensi_id' => $potensi->id]) }}"
+                                        class="text-yellow-500 hover:text-yellow-700 ml-4">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <!-- Tombol Hapus -->
+                                    <form
+                                        action="{{ route('admin.delete-potensi', ['kecamatan_id' => $kecamatan->id, 'potensi_id' => $potensi->id]) }}"
+                                        method="POST" class="inline-block ml-2">
+                                        @csrf
+                                        <button type="submit" onclick="return false;"
+                                            class="delete-button text-red-500 hover:text-red-700"
+                                            data-id="{{ $potensi->id }}">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </li>
+                        @endforeach
                     @endif
 
-                    @if ($desa->umkm->isEmpty())
+                    @if ($kecamatan->umkm->isEmpty())
                         <li style="list-style-type: none;">
                             <p class="text-black-500">UMKM di Desa ini Kosong</p>
                         </li>
                     @else
-                        @foreach ($desa->umkm as $umkm)
+                        @foreach ($kecamatan->umkm as $umkm)
                             <li style="list-style-type: none;">
-                                <a href="{{ route('admin.detail-umkm', $umkm->id) }}"
-                                    class="text-blue-500 hover:text-blue-700">{{ $umkm->nama_umkm }}</a>
+                                <a href="{{ route('admin.detail-umkm', ['umkm_id' => $umkm->id, 'kecamatan_id' => $kecamatan->id]) }}"
+                                    class="text-blue-500 hover:text-blue-700">UMKM {{ $umkm->nama_umkm }}</a>
                             </li>
                             <div class="flex">
-                                <a href="{{ route('admin.edit-umkm', $umkm->id) }}">
+                                <a
+                                    href="{{ route('admin.edit-umkm', ['umkm_id' => $umkm->id, 'kecamatan_id' => $kecamatan->id]) }}">
                                     <button class="mx-2 text-gray-600 hover:text-gray-900">
                                         <i class="fas fa-edit" style="color: #ea7434;"></i>
                                     </button>
                                 </a>
-                                <form action="{{ route('admin.destroy-umkm', $umkm->id) }}" method="POST"
-                                    class="text-red-500 mx-1 hover:text-red-700">
+                                <form
+                                    action="{{ route('admin.destroy-umkm', ['umkm_id' => $umkm->id, 'kecamatan_id' => $kecamatan->id]) }}"
+                                    method="POST" class="text-red-500 mx-1 hover:text-red-700">
                                     @csrf
                                     <button type="submit" class="delete-button mx-2 text-gray-600 hover:text-gray-900">
                                         <i class="fa-solid fa-trash text-red-600 hover:text-gray-900"></i>
@@ -66,18 +107,96 @@
                             </div>
                         @endforeach
                     @endif
+
+                    <!-- Tombol Tambah (potensi / umkml) -->
+                    <li class="flex justify-end">
+                        <a href="#" class="text-green-500 mx-1 hover:text-green-700"
+                            onclick="openAddModal('{{ $kecamatan->id }}')">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                    </li>
                 </ul>
             @endforeach
         </div>
 
-
+        <div class="flex">
+            <a href="#" class="text-green-500 mx-1 hover:text-green-700" onclick="openAddKecamatanModal()">
+                <i class="fas fa-plus"></i> Tambah List Kecamatan
+            </a>
         </div>
 
-        <button id="tambahButton"
-            class="add-button fixed bottom-4 right-4 bg-yellow-500 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
-            aria-label="Tambah Tim">
-            <i class="fa-solid fa-plus"></i>
-        </button>
+        <!-- Modal untuk menambahkan kecamatan baru -->
+        <div id="addKecamatanModal"
+            class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                <h2 class="text-xl font-bold mb-4">Tambah Kecamatan Baru</h2>
+                <!-- Form untuk menambahkan kecamatan -->
+                <form action="{{ route('admin.store-kecamatan') }}" method="POST" id="addKecamatanForm">
+                    @csrf
+                    <input type="text" name="nama_kecamatan" id="nama_kecamatan" placeholder="Nama Kecamatan"
+                        class="border p-2 mb-4 w-full" required />
+
+                    <div class="flex justify-start">
+                        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                            Tambah
+                        </button>
+                        <button type="button" onclick="closeAddKecamatanModal()"
+                            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-2">
+                            Batal
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- Modal Untuk Tambah data -->
+        <div id="addModal" class="hidden fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 z-50">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                <h2 class="text-xl font-bold mb-4">Pilih Jenis Tambahan</h2>
+                <a id="addPotensiLink" href="#">
+                    <button class="block w-full text-left py-2 px-4 mb-2 hover:bg-green-200">
+                        Potensi Alam
+                    </button>
+                </a>
+                <a id="addUmkmLink" href="#">
+                    <button class="block w-full text-left py-2 px-4 mb-2 hover:bg-blue-200">
+                        UMKM
+                    </button>
+                </a>
+                <button onclick="closeAddModal()"
+                    class="block w-full text-center py-2 px-4 bg-red-200 hover:bg-gray-300 rounded-lg text-gray-700 font-semibold">
+                    Batal
+                </button>
+            </div>
+        </div>
+
+
+
+        <!-- Modal untuk Mengedit Kecamatan -->
+        <div id="editKecamatanModal"
+            class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                <h2 class="text-xl font-bold mb-4">Edit Kecamatan</h2>
+
+                <!-- Form Edit Kecamatan -->
+                <form id="editKecamatanForm" method="POST">
+                    @csrf
+                    <input type="text" name="nama_kecamatan" id="editKecamatanName" class="border p-2 mb-4 w-full"
+                        value="{{ old('nama_kecamatan', $kecamatan->nama_kecamatan) }}" required />
+
+                    <div class="flex justify-end">
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                            Simpan
+                        </button>
+                        <button type="button" onclick="closeEditKecamatanModal()"
+                            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-2">
+                            Batal
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </main>
     <br>
 
@@ -111,45 +230,60 @@
                 }).addTo(map);
             });
 
-        // Buat ikon marker hijau khusus untuk desa
-        var desaIcon = L.icon({
+        // Buat ikon marker hijau khusus untuk potensi
+        var potensiIcon = L.icon({
             iconUrl: '../icon-marker/markergreen.png', // Ganti dengan path ikon Anda
             iconSize: [22, 34], // Ukuran ikon
             iconAnchor: [16, 32], // Titik anchor (bagian bawah tengah ikon)
             popupAnchor: [0, -32] // Titik anchor popup
         });
-        // Data lokasi desa dari controller
-        var desas = @json($desas);
 
-        // Tambahkan marker dengan ikon hijau untuk setiap desa
-        desas.forEach(function(desa) {
+        // Data lokasi potensi dari controller
+        var potensis = @json($potensis);
+
+        // Membuat array untuk LatLngBounds
+        var bounds = new L.LatLngBounds();
+
+        // Tambahkan marker dengan ikon hijau untuk setiap potensi
+        potensis.forEach(function(potensi) {
             var popupContent =
-                '<div> <a href="persebaran/desa/detailDesa/' + desa.id + '">' +
-                '<strong> <center>Data Potensi </center>' + desa
-                .nama_desa + '</strong> </a> </div>';
+                '<div>' +
+                '<a href="/admin/persebaran/potensi/kecamatan/' + potensi.kecamatan_id + '/potensi/' + potensi.id +
+                '/detail">' +
+                '<strong><center>Data Potensi</center>' + potensi.nama_potensi + '</strong></a>' +
+                '</div>';
 
-            var marker = L.marker([desa.latitude, desa.longitude], {
-                    icon: desaIcon
+            var marker = L.marker([potensi.latitude, potensi.longitude], {
+                    icon: potensiIcon
                 })
                 .addTo(map)
                 .bindPopup(popupContent);
+
+            // Tambahkan marker ke LatLngBounds
+            bounds.extend([potensi.latitude, potensi.longitude]);
         });
 
-
-        //Data UMKM dari controller
+        // Data UMKM dari controller
         var umkms = @json($umkms);
 
         // Tambahkan marker untuk setiap lokasi UMKM
         umkms.forEach(function(umkm) {
             var popupContent =
-                '<div> <a href="/admin/persebaran/umkm/detailUMKM/' + umkm.id + '">' + umkm.nama_umkm +
-                '<br>' + umkm
-                .deskripsi_umkm + '</a></div>'
+                '<div>' +
+                '<a href="/admin/persebaran/umkm/' + umkm.id + '/kecamatan/' + umkm.kecamatan_id + '/detail">' +
+                umkm.nama_umkm + '<br>' + umkm.deskripsi_umkm + '</a>' +
+                '</div>';
 
             var marker = L.marker([umkm.latitude, umkm.longitude])
                 .addTo(map)
                 .bindPopup(popupContent);
+
+            // Tambahkan marker ke LatLngBounds
+            bounds.extend([umkm.latitude, umkm.longitude]);
         });
+
+        // Fokus peta pada semua marker
+        map.fitBounds(bounds);
 
         // Buat ikon khusus
         var customIcon = L.icon({
@@ -158,6 +292,8 @@
             iconAnchor: [16, 32], // Titik anchor (bagian bawah tengah ikon)
             popupAnchor: [0, -32] // Titik anchor popup
         });
+
+        var marker; // Deklarasi marker di luar event click
 
         map.on('click', function(e) {
             var lat = e.latlng.lat;
@@ -169,55 +305,75 @@
             }
 
             // Tambahkan marker pada lokasi yang diklik
-            marker = L.marker([lat, lng]), {
+            marker = L.marker([lat, lng], {
                     icon: customIcon
-                }
+                })
                 .addTo(map);
         });
+    </script>
 
+
+    <script>
         function toggleDropdown(id) {
             const list = document.getElementById(id);
             list.style.display = list.style.display === "none" ? "block" : "none";
         }
 
-        // pop up untuk memunculkan menu create desa, create UMKM dan create Produk UMKM dari tombol tambahButton
-        document.getElementById('tambahButton').addEventListener('click', function() {
-            Swal.fire({
-                title: 'Pilih yang Ingin Ditambahkan',
-                showCancelButton: true,
-                showDenyButton: false,
-                showConfirmButton: false,
-                showCloseButton: true,
-                buttonsStyling: false,
-                customClass: {
-                    confirmButton: 'bg-blue-500 text-white px-4 py-2 rounded',
-                    cancelButton: 'bg-red-500 text-white px-4 py-2 rounded',
-                    denyButton: 'bg-yellow-500 text-white px-4 py-2 rounded'
-                },
-                html: `
-            <div class="container-button-option mt-2">
-                <button onclick="location.href='{{ route('admin.create-desa') }}'"
-                    class="bg-blue-900 text-white px-4 py-2 mb-3 rounded w-[200px] ">Tambah Desa</button>
-                <br>
-                <button onclick="location.href='{{ route('admin.create-umkm') }}'"
-                    class="bg-blue-900 text-white px-4 py-2 mb-3 rounded w-[200px] ">Tambah Daftar UMKM</button>
-                <br>
-            </div>
-                   `,
-                cancelButtonText: 'Batal'
-            });
-        });
+        // Function to open modal and set links with kecamatan id
+        function openAddModal(kecamatanId) {
+            document.getElementById('addModal').classList.remove('hidden');
 
-        // Memunculkan pop-up untuk edit dan delete-button
+            // Set href dynamically based on kecamatanId
+            document.getElementById('addPotensiLink').href = `/admin/persebaran/potensi/create/kecamatan/${kecamatanId}`;
+            document.getElementById('addUmkmLink').href = `/admin/persebaran/umkm/create/kecamatan/${kecamatanId}`;
+        }
+
+        // Function to close modal
+        function closeAddModal() {
+            document.getElementById('addModal').classList.add('hidden');
+        }
+
+
+        // Fungsi untuk menampilkan modal Kecamatan
+        function openAddKecamatanModal() {
+            document.getElementById('addKecamatanModal').classList.remove('hidden');
+        }
+
+        // Fungsi untuk menutup modal kecamatan
+        function closeAddKecamatanModal() {
+            document.getElementById('addKecamatanModal').classList.add('hidden');
+        }
+
+        // Fungsi untuk membuka modal edit kecamatan dan mengisi nilai awal
+        function openEditKecamatanModal(id, namaKecamatan) {
+            // Atur action form edit ke route Laravel dengan ID kecamatan
+            const form = document.getElementById('editKecamatanForm');
+            form.action = `/admin/persebaran/kecamatan/${id}/update`;
+
+            // Isi input dengan nama kecamatan yang akan diedit
+            document.getElementById('editKecamatanName').value = namaKecamatan;
+
+            // Tampilkan modal
+            document.getElementById('editKecamatanModal').classList.remove('hidden');
+        }
+
+        // Fungsi untuk menutup modal edit kecamatan
+        function closeEditKecamatanModal() {
+            document.getElementById('editKecamatanModal').classList.add('hidden');
+        }
+
+
+        // Fungsi untuk memunculkan pop-up konfirmasi dengan SweetAlert pada tombol hapus
         document.querySelectorAll('.delete-button').forEach(button => {
-            button.addEventListener('click', function() {
-                const form = this.closest('form'); // Temukan formulir terdekat dari tombol
+            button.addEventListener('click', function(e) {
+                e.preventDefault(); // Cegah submit form langsung
+
+                const form = this.closest('form'); // Temukan form terdekat
                 const persebaranId = this.getAttribute('data-id');
-                event.preventDefault(); // Cegah tindakan default
 
                 Swal.fire({
                     title: 'Apakah Anda yakin ingin menghapus?',
-                    text: "Anda tidak akan dapat mengembalikan artikel ini!",
+                    text: "Anda tidak akan dapat mengembalikan data ini!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -225,7 +381,7 @@
                     cancelButtonText: 'Batalkan'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        form.submit(); // Kirim formulir penghapusan
+                        form.submit(); // Kirim formulir jika konfirmasi diterima
                     }
                 });
             });

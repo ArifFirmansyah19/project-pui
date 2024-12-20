@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\kontak;
+use App\Models\Kontak;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Article;
@@ -35,11 +35,64 @@ class ArticleController extends Controller
         ]);
     }
 
-    // untuk admin
     public function index_admin()
     {
-        $articles = Article::orderBy('created_at', 'desc')->paginate(10);
+        $articles = Article::withCount([
+            'comments as totalMainComments' => fn($query) => $query->whereNull('parent_id'),
+            'comments as totalReplies' => fn($query) => $query->whereNotNull('parent_id'),
+            'comments as totalComments'
+        ])->paginate(5);
         return view('admin.sumberdaya.artikel.artikelAdmin', compact('articles'));
+    }
+
+
+    public function getComments($articleId)
+    {
+        $comments = CommentArticle::where('article_id', $articleId)->get();
+        return response()->json($comments);
+    }
+
+    public function showComments($articleId)
+    {
+        $comments = CommentArticle::where('article_id', $articleId)->get();
+        return response()->json($comments);
+    }
+
+    public function store_comment_artikel(Request $request)
+    {
+        // Validasi input
+        $validatedData = $request->validate([
+            'article_id' => 'required|exists:articles,id',
+            'parent_id' => 'nullable|exists:comment_articles,id',
+            'isi_komentar' => 'required|string|max:4000',
+            'nama' => 'nullable|string|max:255',
+        ]);
+
+        // Menentukan apakah pengguna login
+        if (Auth::check()) {
+            $is_admin = true;
+            $nama = 'Admin';
+        } else {
+            $is_admin = false;
+            $nama = $validatedData['nama'];
+        }
+
+        // Membuat komentar baru
+        $comment = new CommentArticle();
+        $comment->article_id = $validatedData['article_id'];
+        $comment->isi_komentar = $validatedData['isi_komentar'];
+        $comment->parent_id = $validatedData['parent_id'] ?? null; // null jika komentar utama
+        $comment->nama = $nama;
+        $comment->is_admin = $is_admin; // simpan nilai is_admin
+
+        // Menyimpan komentar
+        $comment->save();
+
+        // Mengembalikan respons JSON
+        return response()->json([
+            'message' => 'Komentar berhasil dikirim',
+            'comment' => $comment
+        ]);
     }
 
     public function create_artikel()
@@ -49,8 +102,6 @@ class ArticleController extends Controller
 
     public function store_artikel(Request $request)
     {
-        // dd($request->all());
-        // Validasi request
         $validatedData = $this->validateArticle($request);
 
         // Mengolah abstract dan gambar dalam summernote
@@ -87,7 +138,6 @@ class ArticleController extends Controller
 
         // Menyimpan gambar artikel jika ada
         if ($request->hasFile('foto_artikel')) {
-            // Simpan foto_artikel baru
             $filePath = $request->file('foto_artikel')->store('fotoArtikel', 'public');
             $article->foto_artikel = $filePath;
             $article->save();
@@ -106,7 +156,6 @@ class ArticleController extends Controller
     {
         $article = Article::findOrFail($id);
 
-        // Mengolah abstract lama untuk mendapatkan gambar
         $oldDom = new \DOMDocument();
         libxml_use_internal_errors(true);
         $oldDom->loadHTML($article->abstract, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
@@ -124,16 +173,10 @@ class ArticleController extends Controller
 
     public function update_artikel(Request $request, $id)
     {
-        // Validasi request
         $validatedData = $this->validateArticle($request);
-
-        // Temukan artikel
         $article = Article::findOrFail($id);
 
-        // Path penyimpanan gambar
         $storagePath = storage_path('app/public/fotoArtikel');
-
-        // Mengolah abstract lama dalam summernote
         $oldDom = new \DOMDocument();
         libxml_use_internal_errors(true);
         $oldDom->loadHTML($article->abstract, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
@@ -260,150 +303,53 @@ class ArticleController extends Controller
         return redirect(route('admin.artikel'))->with('success', 'Data artikel berhasil dihapus');
     }
 
-
     public function show()
     {
         $article = Article::orderBy('created_at', 'desc')->paginate(10);
         return view('user.sumberdaya.artikel.artikelUser', compact('article'));
     }
 
-    public function detail_artikel_admin($id)
+    public function destroy_comment_artikel($articleId, $commentId)
     {
-        session()->forget('success');
-        $article = Article::findOrFail($id);
+        $commentArticle = CommentArticle::where('id', $commentId)
+            ->where('article_id', $articleId)
+            ->first();
 
-        // Mengambil komentar utama untuk artikel dengan jumlah balasan
-        $commentArticles = CommentArticle::where('article_id', $id)
-            ->whereNull('parent_id') // Hanya komentar utama yang tidak memiliki parent
-            ->withCount('replies') // Menghitung jumlah balasan untuk setiap komentar
-            ->orderBy('created_at', 'desc') // Mengurutkan komentar utama berdasarkan tanggal terbaru
-            ->paginate(10); // Menggunakan pagination untuk membatasi jumlah komentar yang ditampilkan
-
-        // Memuat balasan untuk setiap komentar utama
-        $commentArticles->load([
-            'replies' => function ($query) {
-                $query->orderBy('created_at', 'desc'); // Mengurutkan balasan berdasarkan tanggal terbaru
-            },
-            'replies.replies' => function ($query) {
-                $query->orderBy('created_at', 'desc'); // Mengurutkan balasan nested berdasarkan tanggal terbaru
-            }
-        ]);
-
-        return view('admin.sumberdaya.artikel.detailArtikel', compact('article', 'commentArticles'));
-    }
-
-
-    public function store_comment_artikel(Request $request)
-    {
-        // Validasi input dari form
-        $request->validate([
-            'article_id' => 'required|exists:articles,id',
-            'parent_id' => 'nullable|exists:comment_articles,id',
-            'isi_komentar' => 'required|string|max:4000',
-            'nama' => 'nullable|string|max:255' // Nama pengguna jika bukan admin
-        ]);
-
-        $is_admin = false;
-
-        // Periksa apakah pengguna adalah admin atau bukan
-        if (Auth::check() && Auth::user()->isAdmin()) {
-            $is_admin = true;
+        if (!$commentArticle) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Komentar tidak ditemukan.'
+            ], 404);
         }
 
-        // Membuat nilai nama berdasarkan apakah admin atau bukan
-        $nama = $is_admin ? 'Admin' : $request->nama;
-
-        // Simpan komentar baru ke database
-        CommentArticle::create([
-            'article_id' => $request->article_id,
-            'parent_id' => $request->parent_id,
-            'nama' => $nama,
-            'isi_komentar' => $request->isi_komentar,
-            'is_admin' => $is_admin,
-        ]);
-
-        // Redirect kembali ke halaman sebelumnya dengan pesan sukses
-        return back()->with('success', 'Komentar berhasil ditambahkan');
-    }
-
-
-
-    public function destroy_comment_artikel($id)
-    {
-        // Temukan komentar utama
-        $commentArticle = CommentArticle::findOrFail($id);
-
-        if (Auth::check() && Auth::user()->isAdmin()) {
-            $commentArticle->replies()->delete();
-            $commentArticle->delete();
-
-            return back()->with('success', 'Komentar dan balasan berhasil dihapus.');
-        } else {
-            return back()->with('error', 'Anda tidak memiliki izin untuk menghapus komentar ini.');
+        // Pastikan pengguna memiliki izin
+        if (!Auth::check() || !Auth::user()->isAdmin()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki izin untuk menghapus komentar ini.'
+            ], 403);
         }
-    }
 
+        // Hapus komentar
+        $commentArticle->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Komentar berhasil dihapus.'
+        ], 200);
+    }
 
     // untuk pengguna
     public function index()
     {
         $kontak = Kontak::first();
         $kontakExists = Kontak::exists();
-        $articles = Article::orderBy('created_at', 'desc')->paginate(5);
+        $articles = Article::withCount([
+            'comments as totalMainComments' => fn($query) => $query->whereNull('parent_id'),
+            'comments as totalReplies' => fn($query) => $query->whereNotNull('parent_id')
+        ])->paginate(5);
 
-        // Menghitung total komentar utama dan balasan untuk setiap artikel
-        $articlesWithComments = $articles->map(function ($article) {
-            // Menghitung jumlah komentar utama
-            $totalMainComments = CommentArticle::where('article_id', $article->id)
-                ->whereNull('parent_id')
-                ->count();
 
-            // Menghitung jumlah balasan
-            $totalReplies = CommentArticle::where('article_id', $article->id)
-                ->whereNotNull('parent_id')
-                ->count();
-
-            // Menjumlahkan komentar utama dan balasan
-            $article->totalComments = $totalMainComments + $totalReplies;
-
-            return $article;
-        });
-
-        return view('user.sumberdaya.artikel.artikelUser', compact('kontak', 'kontakExists', 'articles', 'articlesWithComments'));
-    }
-
-    public function detail_article($id)
-    {
-        $kontak = Kontak::first();
-        $kontakExists = Kontak::exists();
-
-        $article = Article::findOrFail($id);
-
-        // Mengambil komentar utama untuk artikel dan balasan nested
-        $commentArticles = CommentArticle::where('article_id', $id)
-            ->whereNull('parent_id') // Hanya komentar utama yang tidak memiliki parent
-            ->with([
-                'replies' => function ($query) {
-                    $query->orderBy('created_at', 'desc'); // Mengurutkan balasan berdasarkan tanggal terbaru
-                }
-            ])
-            ->orderBy('created_at', 'desc') // Mengurutkan komentar utama berdasarkan tanggal terbaru
-            ->get();
-
-        // Mengambil balasan nested untuk setiap balasan
-        foreach ($commentArticles as $comment) {
-            $comment->load([
-                'replies.replies' => function ($query) {
-                    $query->orderBy('created_at', 'desc'); // Mengurutkan balasan nested berdasarkan tanggal terbaru
-                }
-            ]);
-        }
-
-        // Menghitung jumlah balasan total untuk setiap komentar
-        foreach ($commentArticles as $commentArticle) {
-            $commentArticle->total_replies = $commentArticle->countAllReplies();
-        }
-
-        return view('user.sumberdaya.artikel.detailartikel', compact('kontak', 'kontakExists', 'article', 'commentArticles',));
+        return view('user.sumberdaya.artikel.artikelUser', compact('kontak', 'kontakExists', 'articles'));
     }
 }

@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\jabatan;
-use App\Models\divisi;
+use App\Models\Divisi;
 
 
-class tim extends Model
+class Tim extends Model
 {
     use HasFactory;
 
@@ -19,17 +19,12 @@ class tim extends Model
         'nama',
         'foto',
         'divisi_id',
-        'jabatan_id',
+        'jabatan',
         'bidang_keahlian'
     ];
 
-    public function jabatan()
-    {
-        return $this->belongsTo(jabatan::class);
-    }
-
     public function divisi()
     {
-        return $this->belongsTo(divisi::class);
+        return $this->belongsTo(Divisi::class);
     }
 }

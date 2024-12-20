@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
   AdminController,
+  // ForgotPasswordController,
   ArticleController,
   DashboardController,
   KegiatanController,
@@ -16,6 +17,7 @@ use App\Http\Controllers\{
   TimController,
   HKIController,
 };
+use App\Http\Controllers\Auth\ForgotPasswordController;
 
 
 
@@ -28,10 +30,20 @@ Route::get('/', [DashboardController::class, 'indexWeb'])->name('dashboard-websi
 Route::middleware('guest')->group(function () {
   Route::get('/login', [LoginController::class, 'index'])->name('login');
   Route::post('/login', [LoginController::class, 'authenticate']);
-  Route::get('/forgot-password', [LoginController::class, 'forgot_password'])->name('forgot-password');
-  Route::post('/forgot-password-act', [LoginController::class, 'forgot_password_act'])->name('forgot-password-act');
-  Route::get('/validasi-forgot-password/{token}', [LoginController::class, 'validasi_forgot_password'])->name('validasi-forgot-password');
-  Route::post('/validasi-forgot-password-act', [LoginController::class, 'validasi_forgot_password_act'])->name('validasi-forgot-password-act');
+  // Route::get('/forgot-password', [LoginController::class, 'forgot_password'])->name('forgot-password');
+  // Route::post('/forgot-password-act', [LoginController::class, 'forgot_password_act'])->name('forgot-password-act');
+  // Route::get('/validasi-forgot-password/{token}', [LoginController::class, 'validasi_forgot_password'])->name('validasi-forgot-password');
+  // Route::post('/validasi-forgot-password-act', [LoginController::class, 'validasi_forgot_password_act'])->name('validasi-forgot-password-act');
+
+  // Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+  // Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+  // Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+  // Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
+
+  Route::get('password/forgot', [ForgotPasswordController::class, 'showForgotForm'])->name('password.request');
+  Route::post('password/email', [ForgotPasswordController::class, 'sendResetLink'])->name('password.email');
+  Route::get('password/reset/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+  Route::post('password/reset', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
 });
 
 // Logout
@@ -45,42 +57,46 @@ Route::middleware('guest')->prefix('profil')->group(function () {
 });
 
 // Tim
-Route::middleware('guest')->prefix('tim')->group(function () {
+Route::middleware('guest')->prefix('profil/tim')->group(function () {
   Route::get('/', [TimController::class, 'tim'])->name('tim');
   Route::get('/detail-tim/{id}', [TimController::class, 'detail_tim'])->name('tim-detail');
 });
 
 // Artikel
-Route::middleware('guest')->prefix('artikel')->group(function () {
+Route::middleware('guest')->prefix('sumberdaya/artikel')->group(function () {
   Route::get('/', [ArticleController::class, 'index'])->name('artikel');
-  Route::get('/detail-artikel/{id}', [ArticleController::class, 'detail_article'])->name('artikel-detail');
-  Route::post('/komentar-artikel/store', [ArticleController::class, 'store_comment_artikel'])->name('store.komentar-artikel');
+  Route::get('/{articleId}/comments', [ArticleController::class, 'showComments'])->name('user-comments');
 });
 
+Route::post('/komentar-artikel/store', [ArticleController::class, 'store_comment_artikel'])->name('store.komentar-artikel');
+
 // HKI
-Route::middleware('guest')->prefix('HKI')->group(function () {
+Route::middleware('guest')->prefix('sumberdaya/HKI')->group(function () {
   Route::get('/', [HKIController::class, 'index_HKI'])->name('HKI');
   Route::get('/detail-HKI/{id}', [HKIController::class, 'detail_HKI'])->name('HKI-detail');
 });
 
 // Kegiatan
-Route::prefix('kegiatan')->group(function () {
+Route::prefix('sumberdaya/kegiatan')->group(function () {
   Route::get('/', [KegiatanController::class, 'index'])->name('kegiatan');
   Route::get('/detail-kegiatan/{id}', [KegiatanController::class, 'kegiatan_detail'])->name('detail-kegiatan');
   Route::post('/komentar-kegiatan/store', [KegiatanController::class, 'store_comment_kegiatan'])->name('store.komentar-kegiatan');
 });
 
 // Persebaran UMKM
-Route::middleware('guest')->prefix('persebaran')->group(function () {
+Route::middleware('guest')->prefix('sumberdaya/persebaran')->group(function () {
   Route::get('/', [SumberDayaController::class, 'peta_persebaran'])->name('peta-persebaran');
-  Route::get('/detail-umkm/{id}', [SumberDayaController::class, 'detail_umkm'])->name('detail-umkm');
-  Route::get('/detail-desa/{id}', [SumberDayaController::class, 'detail_potensi_desa'])->name('detail-potensi-desa');
+  Route::get('/detail-umkm/{umkm_id}/kecamatan/{kecamatan_id}/detail', [SumberDayaController::class, 'detail_umkm'])->name('detail-umkm');
+  Route::get('/detail-kecamatan/{kecamatan_id}/potensi/{potensi_id}/detail', [SumberDayaController::class, 'detail_potensi_kecamatan'])->name('detail-potensi-kecamatan');
 });
+
+
 
 // Museum
 Route::prefix('museum')->group(function () {
   Route::get('/', [MuseumController::class, 'index'])->name('museum');
   Route::get('/allJenisKeragaman/{jenis_keragaman}', [MuseumController::class, 'all_jenis_keragaman'])->name('all-jenis-keragaman');
+  Route::get('/detailGeopark', [MuseumController::class, 'detail_geopark'])->name('detail-geopark');
   Route::get('/detailDataKeragaman/{id}', [MuseumController::class, 'detail_data_keragaman'])->name('detail-data-keragaman');
 });
 
@@ -93,11 +109,8 @@ Route::get('/kontak', [KontakController::class, 'index'])->name('kontak');
 // Admin Dashboard and Profile Routes
 Route::prefix('dashboard')->name('dashboard.')->middleware('auth', 'web')->group(function () {
   Route::get('/', [DashboardController::class, 'index_admin'])->name('admin');
-  Route::get('/profil-admin', [AdminController::class, 'profile_admin'])->name('profiladmin');
   Route::get('/edit-profil-admin', [AdminController::class, 'edit_profile_admin'])->name('editprofil');
   Route::post('/update-profil-admin', [AdminController::class, 'update_profile_admin'])->name('updateprofil');
-  Route::get('/edit-password-admin', [AdminController::class, 'edit_password_admin'])->name('editpassword');
-  Route::post('/update-password-admin', [AdminController::class, 'update_password_admin'])->name('updatepassword');
 });
 
 // Admin Sejarah and Visi Misi Routes
@@ -131,6 +144,7 @@ Route::prefix('admin/struktur-organisasi')->name('admin.')->middleware('auth', '
 // Admin Tim Routes
 Route::prefix('admin/tim')->name('admin.')->middleware('auth', 'web')->group(function () {
   Route::get('/', [TimController::class, 'index_admin'])->name('tim');
+  Route::get('/detail-tim/{id}', [TimController::class, 'detailtim_admin'])->name('detail-tim-admin');
   Route::get('/create', [TimController::class, 'create_tim'])->name('create-tim');
   Route::post('/store', [TimController::class, 'store_tim'])->name('store-tim');
   Route::get('/edit/{id}', [TimController::class, 'edit_tim'])->name('edit-tim');
@@ -140,30 +154,30 @@ Route::prefix('admin/tim')->name('admin.')->middleware('auth', 'web')->group(fun
 
 // Admin Divisi Routes
 Route::prefix('admin/divisi')->name('admin.')->middleware('auth', 'web')->group(function () {
-  Route::get('/create', [TimController::class, 'create_divisi'])->name('create-divisi');
   Route::post('/store', [TimController::class, 'store_divisi'])->name('store-divisi');
-  Route::post('/destroy/{id}', [TimController::class, 'destroy_divisi'])->name('destroy-divisi');
-});
-
-// Admin Jabatan Routes
-Route::prefix('admin/jabatan')->name('admin.')->middleware('auth', 'web')->group(function () {
-  Route::get('/create', [TimController::class, 'create_jabatan'])->name('create-jabatan');
-  Route::post('/store', [TimController::class, 'store_jabatan'])->name('store-jabatan');
-  Route::post('/destroy/{id}', [TimController::class, 'destroy_jabatan'])->name('destroy-jabatan');
 });
 
 // Admin Artikel Routes
 Route::prefix('admin/artikel')->name('admin.')->middleware('auth', 'web')->group(function () {
+
   Route::get('/', [ArticleController::class, 'index_admin'])->name('artikel');
   Route::get('/create', [ArticleController::class, 'create_artikel'])->name('create-artikel');
   Route::post('/store', [ArticleController::class, 'store_artikel'])->name('store-artikel');
-  Route::get('/detail/{id}', [ArticleController::class, 'detail_artikel_admin'])->name('detail-artikel');
-  Route::post('/komentar/store', [ArticleController::class, 'store_comment_artikel'])->name('store.komentar-artikel');
-  Route::post('/komentar/destroy/{id}', [ArticleController::class, 'destroy_comment_artikel'])->name('destroy.komentar-artikel');
+  // Route::get('/detail/{id}', [ArticleController::class, 'detail_artikel_admin'])->name('detail-artikel');
+
+
+  Route::get('/{articleId}/comments', [ArticleController::class, 'getComments'])->name('admin-comments');
+  Route::delete('/{articleId}/destroy/komentar/{commentId}', [ArticleController::class, 'destroy_comment_artikel'])->name('komentar.destroy');
+
   Route::get('/edit/{id}', [ArticleController::class, 'edit_artikel'])->name('edit-artikel');
   Route::post('/update/{id}', [ArticleController::class, 'update_artikel'])->name('update-artikel');
-  Route::post('/destroy/{id}', [ArticleController::class, 'destroy_artikel'])->name('destroy-artikel');
+  Route::post('/{id}/delete', [ArticleController::class, 'destroy_artikel'])->name('destroy-artikel');
 });
+
+Route::post('/komentar/store', [ArticleController::class, 'store_comment_artikel'])->name('store.komentar-artikel');
+
+
+
 
 // Admin HKI Routes
 Route::prefix('admin/HKI')->name('admin.')->middleware('auth', 'web')->group(function () {
@@ -186,6 +200,7 @@ Route::prefix('admin/kegiatan')->name('admin.')->middleware('auth', 'web')->grou
   Route::get('/edit/{id}', [KegiatanController::class, 'edit_kegiatan'])->name('edit-kegiatan');
   Route::post('/update/{id}', [KegiatanController::class, 'update_kegiatan'])->name('update-kegiatan');
   Route::post('/destroy/{id}', [KegiatanController::class, 'destroy_kegiatan'])->name('destroy-kegiatan');
+  Route::get('/{kegiatanId}/comments', [KegiatanController::class, 'getComments'])->name('admin-comments');
 });
 
 // Admin - Persebaran UMKM
@@ -193,22 +208,30 @@ Route::prefix('admin/persebaran')->middleware('auth', 'web')->group(function () 
   Route::get('/', [PersebaranUmkmController::class, 'index_admin'])->name('admin.persebaran');
 
   // Desa dan Potensinya
-  Route::prefix('desa')->group(function () {
-    Route::get('create', [PersebaranUmkmController::class, 'create_desa_potensi'])->name('admin.create-desa');
-    Route::post('store', [PersebaranUmkmController::class, 'store_desa_potensi'])->name('admin.store-desa');
-    Route::get('detailDesa/{id}', [PersebaranUmkmController::class, 'detail_desa_admin'])->name('admin.detail-desa');
-    Route::get('edit/{id}', [PersebaranUmkmController::class, 'edit_desa_potensi'])->name('admin.edit-desa');
-    Route::post('update/{id}', [PersebaranUmkmController::class, 'update_desa_potensi'])->name('admin.update-desa');
+  Route::prefix('kecamatan')->group(function () {
+    Route::post('store', [PersebaranUmkmController::class, 'store_kecamatan'])->name('admin.store-kecamatan');
+    Route::post('/{id}/update', [PersebaranUmkmController::class, 'update_kecamatan'])->name('admin.update-kecamatan');
+    Route::post('/{id}/delete', [PersebaranUmkmController::class, 'delete_kecamatan'])->name('admin.delete-kecamatan');
   });
+
+  Route::prefix('potensi')->group(function () {
+    Route::get('create/kecamatan/{kecamatanId}', [PersebaranUmkmController::class, 'create_potensi'])->name('admin.create-potensi');
+    Route::post('store', [PersebaranUmkmController::class, 'store_potensi'])->name('admin.store-potensi');
+    Route::get('kecamatan/{kecamatan_id}/potensi/{potensi_id}/detail', [PersebaranUmkmController::class, 'detail_potensi_admin'])->name('admin.detail-potensi');
+    Route::get('edit/kecamatan/{kecamatan_id}/{potensi_id}', [PersebaranUmkmController::class, 'edit_potensi'])->name('admin.edit-potensi');
+    Route::post('update/kecamatan/{kecamatan_id}/{potensi_id}', [PersebaranUmkmController::class, 'update_potensi'])->name('admin.update-potensi');
+    Route::post('kecamatan/{kecamatan_id}/potensi/{potensi_id}/delete', [PersebaranUmkmController::class, 'delete_potensi'])->name('admin.delete-potensi');
+  });
+
 
   // UMKM dan Produknya
   Route::prefix('umkm')->group(function () {
-    Route::get('create', [PersebaranUmkmController::class, 'create_umkm'])->name('admin.create-umkm');
+    Route::get('create/kecamatan/{kecamatanId}', [PersebaranUmkmController::class, 'create_umkm'])->name('admin.create-umkm');
     Route::post('store', [PersebaranUmkmController::class, 'store_umkm'])->name('admin.store-umkm');
-    Route::get('detailUMKM/{id}', [PersebaranUmkmController::class, 'detail_umkm_admin'])->name('admin.detail-umkm');
-    Route::get('edit/{id}', [PersebaranUmkmController::class, 'edit_umkm'])->name('admin.edit-umkm');
-    Route::post('update/{id}', [PersebaranUmkmController::class, 'update_umkm'])->name('admin.update-umkm');
-    Route::post('destroy/{id}', [PersebaranUmkmController::class, 'destroy_umkm'])->name('admin.destroy-umkm');
+    Route::get('/{umkm_id}/kecamatan/{kecamatan_id}/detail', [PersebaranUmkmController::class, 'detail_umkm_admin'])->name('admin.detail-umkm');
+    Route::get('edit/kecamatan/{kecamatan_id}/{umkm_id}', [PersebaranUmkmController::class, 'edit_umkm'])->name('admin.edit-umkm');
+    Route::post('update/kecamatan/{kecamatan_id}/{umkm_id}', [PersebaranUmkmController::class, 'update_umkm'])->name('admin.update-umkm');
+    Route::post('destroy/kecamatan/{kecamatan_id}/{umkm_id}', [PersebaranUmkmController::class, 'destroy_umkm'])->name('admin.destroy-umkm');
   });
 });
 
@@ -221,8 +244,13 @@ Route::prefix('admin/museum')->name('admin.')->middleware('auth', 'web')->group(
   Route::get('/create_dataKeragaman', [MuseumController::class, 'create_data_keragaman'])->name('createDK');
   Route::post('/store_dataKeragaman', [MuseumController::class, 'store_data_keragaman'])->name('storeDK');
   Route::get('/edit_dataKeragaman/{id}', [MuseumController::class, 'edit_data_keragaman'])->name('editDK');
+  Route::get('/edit_dataMuseum/{id}', [MuseumController::class, 'edit_museum_geopark'])->name('editMG');
   Route::post('/update_dataKeragaman/{id}', [MuseumController::class, 'update_data_keragaman'])->name('updateDK');
+  Route::post('/update_dataMuseum/{id}', [MuseumController::class, 'update_museum_geopark'])->name('updateMG');
   Route::post('/destroy_dataKeragaman/{id}', [MuseumController::class, 'destroy_data_keragaman'])->name('destroyDK');
+
+  Route::get('/editKontakMuseum/{id}', [MuseumController::class, 'edit_kontak_museum'])->name('editKM');
+  Route::post('/updateKontakMuseum/{id}', [MuseumController::class, 'update_kontak_museum'])->name('updateKM');
 });
 
 // Admin - Kontak

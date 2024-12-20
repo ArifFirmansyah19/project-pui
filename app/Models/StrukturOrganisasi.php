@@ -9,7 +9,9 @@ class StrukturOrganisasi extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'judul',
         'foto_struktur_organisasi',
+        'isi_konten',
     ];
 
     // Accessor for formatted created_at

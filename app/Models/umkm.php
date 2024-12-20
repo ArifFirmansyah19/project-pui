@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\desaPotensi;
-use App\Models\produkUmkm;
+// use App\Models\desaPotensi;
+use App\Models\ProdukUmkm;
+use App\Models\Kecamatan;
 use Illuminate\Support\Facades\File;
 
 
-class umkm extends Model
+class Umkm extends Model
 {
     use HasFactory;
 
@@ -22,22 +23,22 @@ class umkm extends Model
         'alamat_umkm',
         'latitude',
         'longitude',
-        'foto_umkm',
+        // 'foto_umkm',
         'deskripsi_umkm',
         'kontak',
         'whatsapp',
         'email',
         'instagram',
-        'desa_potensi_id',
+        'kecamatan_id',
     ];
 
-    public function desaPotensi()
+    public function potensiKecamatan()
     {
-        return $this->belongsTo(desaPotensi::class);
+        return $this->belongsTo(Kecamatan::class);
     }
 
     public function produkUmkm()
     {
-        return $this->hasMany(produkUmkm::class);
+        return $this->hasMany(ProdukUmkm::class);
     }
 }

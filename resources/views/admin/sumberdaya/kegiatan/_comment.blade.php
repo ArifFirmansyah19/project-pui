@@ -1,7 +1,7 @@
 <div class="comment">
     <!-- Informasi Pengguna -->
     <div class="flex items-center">
-        <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-500">
+        <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-indigo-500">
             <span class="font-bold">{{ strtoupper(substr($comment->nama, 0, 1)) }}</span>
         </div>
         <div class="ml-4">
@@ -23,7 +23,7 @@
                 <!-- Tombol Balas Komentar dan Hapus Komentar -->
                 <div class="flex items-center mt-2 space-x-2">
                     <a href="javascript:void(0);" onclick="toggleReplyForm({{ $comment->id }});"
-                        class="text-blue-500">Balas Komentar</a>
+                        class="text-blue-500">Balas</a>
 
                     <!-- Logika tombol hapus -->
                     @if (Auth::check() && Auth::user()->isAdmin())
@@ -31,7 +31,8 @@
                             action="{{ route('admin.destroy.komentar-kegiatan', $comment->id) }}">
                             @csrf
                             <button type="button" data-id="{{ $comment->id }}" class="delete-button mx-2">
-                                <i class="fa-solid fa-trash text-red-600 hover:text-gray-900"></i>
+                                {{-- <i class="fa-solid fa-trash text-red-600 hover:text-gray-900"></i> --}}
+                                <p class="text-red-500">Hapus</p>
                             </button>
                         </form>
                     @endif
@@ -47,7 +48,7 @@
         <input type="hidden" name="kegiatan_id" value="{{ $comment->kegiatan_id }}">
         <input type="hidden" name="parent_id" value="{{ $comment->id }}">
         <textarea name="isi_komentar" class="border rounded w-full py-2 px-3" placeholder="Your Reply"></textarea>
-        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Reply</button>
+        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Balas</button>
     </form>
 
     <!-- Tampilkan balasan (jika ada) -->

@@ -7,9 +7,9 @@
             <!-- Konten 1 -->
             <div class="team-section">
                 <div class="max-w-full p-3">
-                    <h1 class="text-4xl font-bold text-indigo-900 mt-20 mb-4">Team PUI GEMAR</h1>
+                    <h1 class="text-4xl font-bold text-indigo-900">Team</h1>
                     @foreach ($groupedTims as $divisiName => $dataTimPui)
-                        <h2 class="text-2xl font-bold text-indigo-900 mt-10 mb-5 ml-4">{{ $divisiName }}</h2>
+                        <h2 class="text-2xl font-bold text-indigo-900 mt-16 mb-5 ml-4">{{ $divisiName }}</h2>
 
                         <!-- Team member -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10 ml-4">
@@ -33,7 +33,7 @@
                                         <div class="p-6">
                                             <h3 class="text-2xl font-semibold text-gray-800 mb-2">{{ $tim->nama }}
                                             </h3>
-                                            <p class="text-gray-600">{{ $tim->jabatan->nama_jabatan }}</p>
+                                            <p class="text-gray-600">{{ $tim->bidang_keahlian }}</p>
                                         </div>
                                     </a>
                                 </div>

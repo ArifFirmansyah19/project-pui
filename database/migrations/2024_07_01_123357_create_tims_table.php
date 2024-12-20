@@ -15,11 +15,12 @@ return new class extends Migration
     {
         Schema::create('tims', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
-            $table->string('foto')->nullable();
+            $table->string('nama', 100);
+            $table->string('foto', 100)->nullable();
             $table->foreignId('divisi_id')->constrained('divisis')->onDelete('cascade');
-            $table->foreignId('jabatan_id')->constrained('jabatans')->onDelete('cascade');
-            $table->string('bidang_keahlian');
+            $table->string('jabatan', 100);
+            // $table->foreignId('jabatan_id')->constrained('jabatans')->onDelete('cascade');
+            $table->string('bidang_keahlian', 100);
             $table->timestamps();
         });
     }

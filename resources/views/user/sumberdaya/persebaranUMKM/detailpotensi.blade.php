@@ -2,13 +2,13 @@
 @section('title', 'Detail Potensi Desa PUI GEMAR')
 
 @section('content')
-    <div class="container mx-auto px-12 py-4 mt-10 mb-10">
+    <div class="container mx-auto px-12 mb-10">
         <!-- Nama Desa dan Penjelasan Singkat -->
         <h1 class="text-3xl font-bold text-indigo-900 mb-4 pt-5 mt-10">
-            {{ $desa->nama_desa }}
+            {{ $potensi->nama_potensi }}
         </h1>
         <p class="text-indigo-900 mb-8 text-justify">
-            {{ $desa->deskripsi_desa }}
+            {{ $potensi->deskripsi_potensi }}
         </p>
 
         <!-- Galeri -->
@@ -18,17 +18,18 @@
             </h3>
             <!-- Galeri Grid -->
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                @foreach ($desa->potensiDesa as $potensi)
+                @foreach ($potensi->fotoPotensi as $item)
                     <figure class="relative">
-                        <img src="{{ asset('storage/' . $potensi->foto_potensi) }}" alt="{{ $potensi->nama_potensi }}"
+                        <img src="{{ asset('storage/' . $item->foto_potensi) }}" alt="" height="150px" width="150px"
                             class="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-75 transition"
-                            onclick="openModal('{{ asset('storage/' . $potensi->foto_potensi) }}', '{{ $potensi->deskripsi_potensi }}')" />
+                            onclick="openModal('{{ asset('storage/' . $item->foto_potensi) }}', '{{ $item->deskripsi_foto }}')" />
                         <figcaption
                             class="absolute bottom-0 left-0 w-full bg-gray-800 bg-opacity-60 text-white text-center p-2 rounded-b-lg">
-                            Potensi {{ $potensi->nama_potensi }}
+                            {{ $item->deskripsi_foto }}
                         </figcaption>
                     </figure>
                 @endforeach
+
             </div>
         </div>
     </div>

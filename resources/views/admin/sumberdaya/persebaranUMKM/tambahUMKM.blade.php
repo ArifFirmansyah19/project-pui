@@ -1,204 +1,182 @@
 @extends('layouts.app-admin')
 @section('title', 'Halaman Tambah UMKM Admin')
 @section('content-admin')
-    <main class="flex-1 bg-gray-100 p-4 sm:p-6 overflow-y-auto">
+    <!-- Content -->
+    <main class="flex-1 overflow-y-auto">
         <div id="content" class="transition-transform duration-500 ease-in-out">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Formulir UMKM</h2>
-            <div id="map"></div>
-        </div>
-
-        <form action="{{ route('admin.store-umkm') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
-            @csrf
-            <!-- Nama UMKM -->
-            <div>
-                <label for="nama_umkm" class="block text-sm font-medium text-gray-700">Nama UMKM</label>
-                <input type="text" id="nama_umkm" name="nama_umkm" placeholder="Masukkan nama UMKM" required
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                @error('nama_umkm')
-                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Desa Potensi Id -->
-            <div>
-                <label for="desa_potensi_id" class="block text-sm font-medium text-gray-700">Desa UMKM</label>
-                <select id="desa_potensi_id" name="desa_potensi_id" required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                    <option value="">Pilih Desa</option>
-                    @foreach ($desas as $desa)
-                        <option value="{{ $desa->id }}">{{ $desa->nama_desa }}</option>
-                    @endforeach
-                </select>
-                @error('desa_potensi_id')
-                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Nama Pemilik -->
-            <div>
-                <label for="nama_pemilik" class="block text-sm font-medium text-gray-700">Nama Pemilik UMKM</label>
-                <input type="text" id="nama_pemilik" name="nama_pemilik" placeholder="Masukkan nama Pemilik" required
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                @error('nama_pemilik')
-                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Alamat UMKM -->
-            <div>
-                <label for="alamat_umkm" class="block text-sm font-medium text-gray-700">Alamat UMKM</label>
-                <input type="text" id="alamat_umkm" name="alamat_umkm" placeholder="Masukkan alamat UMKM" required
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                @error('alamat_umkm')
-                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Latitude -->
-            <div>
-                <label for="latitude" class="block text-sm font-medium text-gray-700">Latitude</label>
-                <input type="text" id="latitude" name="latitude" placeholder="Latitude" readonly
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-            </div>
-
-            <!-- Longitude -->
-            <div>
-                <label for="longitude" class="block text-sm font-medium text-gray-700">Longitude</label>
-                <input type="text" id="longitude" name="longitude" placeholder="Longitude" readonly
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-            </div>
-
-            <!-- Foto UMKM -->
-            <div>
-                <label for="foto_umkm" class="block text-sm font-medium text-gray-700">Foto UMKM</label>
-                <input type="file" id="foto_umkm" name="foto_umkm"
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                <p class="text-xs text-gray-500 mt-1">Format yang didukung: JPG, PNG. Ukuran file maksimal: 2MB.</p>
-                @error('foto_umkm')
-                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Deskripsi UMKM -->
-            <div>
-                <label for="deskripsi_umkm" class="block text-sm font-medium text-gray-700">Deskripsi UMKM</label>
-                <input type="text" id="deskripsi_umkm" name="deskripsi_umkm" placeholder="Masukkan detail UMKM" required
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                @error('deskripsi_umkm')
-                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Kontak UMKM -->
-            <div>
-                <label for="kontak" class="block text-sm font-medium text-gray-700">Nomor Telepon UMKM</label>
-                <input type="text" id="kontak" name="kontak" placeholder="Masukkan kontak telepon UMKM" required
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                @error('kontak')
-                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- WA UMKM -->
-            <div>
-                <label for="whatsapp" class="block text-sm font-medium text-gray-700">Kontak WhatsApp UMKM</label>
-                <p class="text-xs text-gray-500 mt-1">Petunjuk Pengisian: cukup masukkan angka tanpa mengikutsertakan 0/+.
+            <!--konten detail artikel -->
+            <div class="max-w-full p-6 bg-white shadow-md rounded-lg">
+                <h1 class="text-4xl font-bold text-indigo-900 mt-2">
+                    Tambah UMKM
+                </h1>
+                <div id="map" class="h-96 p-2 z-0 mt-10"></div>
+                <p class="text-sm text-indigo-900">
+                    *ketuk di peta untuk memasukkan langitude, latitude, dan
+                    alamat secara otomatis
                 </p>
-                <input type="text" id="whatsapp" name="whatsapp" placeholder="Contoh: 6282250649883" required
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                @error('whatsapp')
-                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                @enderror
-            </div>
+                <div class="form-container mt-10">
 
-            <!-- Email UMKM -->
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Email UMKM</label>
-                <p class="text-xs text-gray-500 mt-1">Petunjuk Pengisian: Masukkan format email dengan benar.</p>
-                <input type="email" id="email" name="email" placeholder="Masukkan email UMKM" required
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                @error('email')
-                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                @enderror
-            </div>
+                    <form action="{{ route('admin.store-umkm') }}" method="POST" enctype="multipart/form-data"
+                        class="bg-gray-100 p-6 rounded-lg shadow-lg mb-4">
+                        @csrf
 
-            <!-- Instagram UMKM -->
-            <div>
-                <label for="instagram" class="block text-sm font-medium text-gray-700">Instagram UMKM</label>
-                <p class="text-xs text-gray-500 mt-1">Petunjuk Pengisian: Masukkan link Instagram usaha di inputan berikut
-                </p>
-                <input type="url" id="instagram" name="instagram" placeholder="Masukkan Instagram UMKM" required
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                @error('instagram')
-                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                @enderror
-            </div>
+                        <h4 class="text-2xl font-bold text-indigo-900 mb-4">
+                            Marker
+                        </h4>
 
-            <!-- Produk UMKM -->
-            <!-- Input Produk -->
-            <div id="produk-container">
-                <label for="produk-umkm" class="block text-sm font-medium text-gray-700">Produk UMKM</label>
-                <div class="produk-item bg-grey-600 shadow-md rounded-lg p-6">
-                    <div>
-                        <label for="produk_umkm[0][nama_produk]" class="block text-sm font-medium text-gray-700">Nama
-                            Produk</label>
-                        <input type="text" name="produk_umkm[0][nama_produk]" id="nama_produk"
-                            placeholder="Masukkan Nama Produk" required
-                            class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <div>
-                        <label for="produk_umkm[0][deskripsi_produk]"
-                            class="block text-sm font-medium text-gray-700">Deskripsi
-                            Produk</label>
-                        <input type="text" name="produk_umkm[0][deskripsi_produk]" id="deskripsi_produk"
-                            placeholder="Masukkan Deskripsi Produk" required
-                            class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <div>
-                        <label for="produk_umkm[0][foto_produk]" class="block text-sm font-medium text-gray-700">Foto
-                            Produk</label>
-                        <input type="file" id="foto_produk" name="produk_umkm[0][foto_produk]" accept="image/*"
-                            class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                        <p class="text-xs text-gray-500 mt-1">
-                            Format yang didukung: JPG, PNG Ukuran file maksimal: 2MB.
-                        </p>
-                    </div>
-                    <div>
-                        <label for="produk_umkm[0][harga_terendah]" class="block text-sm font-medium text-gray-700">Harga
-                            Terendah</label>
-                        <input type="number" name="produk_umkm[0][harga_terendah]" id="harga_terendah" step="0,01"
-                            min="0" placeholder="Masukkan Harga Terendah Produk" required
-                            class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <div>
-                        <label for="produk_umkm[0][harga_tertinggi]" class="block text-sm font-medium text-gray-700">Harga
-                            Tertinggi</label>
-                        <input type="number" name="produk_umkm[0][harga_tertinggi]" id="harga_tertinggi" step="0,01"
-                            min="0" placeholder="Masukkan Harga Tertinggi Produk" required
-                            class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
+                        <!--mengambil data kecamatan_id -->
+                        <input type="hidden" id="kecamatan_id" name="kecamatan_id" value="{{ $kecamatan->id }}" />
 
-                    <button type="button" class="add-produk bg-blue-500 text-white px-4 py-2 rounded-md mt-4">
-                        Tambah Produk
-                    </button>
-                    <button type="button" class="remove-produk bg-red-500 text-white px-4 py-2 rounded-md mt-4">
-                        Hapus Produk
-                    </button>
+                        <!--lat-->
+                        <div class="mb-4 ml-4">
+                            <label for="latitude" class="block text-gray-700 text-lg font-semibold mb-2">Latitude</label>
+                            <!--readonly untuk tidak dapat mauskkan data manual-->
+                            <input type="text" id="latitude" name="latitude"
+                                placeholder="klik lokasi pada peta untuk melihat latitude dari titik lokasi" required
+                                readonly
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        </div>
+                        <!--lang-->
+                        <div class="mb-4 ml-4">
+                            <label for="longitude" class="block text-gray-700 text-lg font-semibold mb-2">Longitude</label>
+                            <input type="text" id="longitude" name="longitude"
+                                placeholder="klik lokasi pada peta untuk melihat longitude dari titik lokasi" required
+                                readonly
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        </div>
+                        <div class="bg-gray-100 p-6 rounded-lg shadow-lg mb-4">
+                            <h4 class="text-2xl font-bold text-indigo-900 mb-4 mt-2">
+                                UMKM
+                            </h4>
+                            <div class="mb-4 ml-4">
+                                <label for="nama_umkm" class="block text-gray-700 text-lg font-semibold mb-2">Nama
+                                    UMKM</label>
+                                <input type="text" id="nama_umkm" name="nama_umkm" placeholder="Masukkan Nama UMKM"
+                                    required
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                            </div>
+
+                            <!--Deskripsi Singkat UMKM-->
+                            <div class="mb-4 ml-4">
+                                <label for="deskripsi_umkm" class="block text-gray-700 text-lg font-semibold mb-2">Deskripsi
+                                    UMKM</label>
+                                <!-- Summernote Editor -->
+                                <textarea name="deskripsi_umkm" id="deskripsi_umkm" class="summernote"
+                                    class="bg-white border border-gray-300 rounded-lg p-4 ml-4"></textarea>
+
+                            </div>
+                        </div>
+
+                        <!-- Form untuk Tambah Produk -->
+                        <div class="bg-gray-100 rounded-lg shadow-lg p-6 mb-8" id="form-tambah-produk">
+                            <h4 class="text-2xl font-bold text-indigo-900 mb-4 mt-2">
+                                Tambah Produk
+                            </h4>
+                            <div id="produk-container">
+                                <!-- Produk pertama -->
+                                <div class="produk-item mb-6 ml-4">
+                                    <h5 class="text-lg font-semibold mb-2">Produk 1</h5>
+                                    <div class="grid grid-cols-2 sm:grid-cols-2 gap-6">
+                                        <div class="mb-4">
+                                            <label for="produk_umkm[0][nama_produk]"
+                                                class="block text-sm font-medium text-gray-700">Nama Produk</label>
+                                            <input type="text" name="produk_umkm[0][nama_produk]" id="nama-produk-0"
+                                                class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                                placeholder="Nama produk..." required />
+                                        </div>
+                                        <div class="mb-4 ml-3">
+                                            <label for="produk_umkm[0][harga_terendah]"
+                                                class="block text-sm font-medium text-gray-700">Harga Terendah</label>
+                                            <input type="number" name="produk_umkm[0][harga_terendah]"
+                                                id="harga-terendah-0"
+                                                class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                                placeholder="Harga terendah..." required />
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="produk_umkm[0][harga_tertinggi]"
+                                                class="block text-sm font-medium text-gray-700">Harga Tertinggi</label>
+                                            <input type="number" name="produk_umkm[0][harga_tertinggi]"
+                                                id="harga-tertinggi-0"
+                                                class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                                placeholder="Harga tertinggi..." required />
+                                        </div>
+                                        <div class="mb-4 col-span-2 ml-3">
+                                            <label for="produk_umkm[0][deskripsi_produk]"
+                                                class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                                            <textarea name="produk_umkm[0][deskripsi_produk]" id="deskripsi-produk-0"
+                                                class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Deskripsi produk..." required></textarea>
+                                        </div>
+                                        <div class="mb-4 col-span-2">
+                                            <label for="produk_umkm[0][foto_produk]"
+                                                class="block text-sm font-medium text-gray-700">Gambar Produk</label>
+                                            <input type="file" name="produk_umkm[0][foto_produk]" id="gambar-produk-0"
+                                                class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                                accept="image/*" required />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" id="tambah-produk" class="bg-green-600 text-white px-4 py-2 rounded-md">
+                                Tambah Produk Lain
+                            </button>
+                        </div>
+
+
+                        <div class="bg-gray-100 p-6 rounded-lg shadow-lg">
+                            <h2 class="text-2xl font-semibold text-indigo-900 mb-6 mt-2">
+                                Tambah Kontak UMKM
+                            </h2>
+                            <div class="mb-4">
+                                <label for="nama_pemilik" class="block text-sm font-medium text-gray-700">Nama Pemilik
+                                    UMKM</label>
+                                <input type="text" id="nama_pemilik" name="nama_pemilik"
+                                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                    placeholder="Masukkan nama_pemilik kontak" required />
+                            </div>
+                            <div class="mb-4">
+                                <label for="kontak" class="block text-sm font-medium text-gray-700">Telepon</label>
+                                <input type="text" id="kontak" name="kontak"
+                                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                    placeholder="Masukkan nomor kontak" required />
+                            </div>
+                            <div class="mb-4">
+                                <label for="whatsapp" class="block text-sm font-medium text-gray-700">Whatsapp</label>
+                                <input type="text" id="whatsapp" name="whatsapp"
+                                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                    placeholder="Masukkan nomor Whatsapp" required />
+                            </div>
+                            <div class="mb-4">
+                                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                                <input type="email" id="email" name="email"
+                                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                    placeholder="Masukkan email" required />
+                            </div>
+                            <div class="mb-4">
+                                <label for="instagram" class="block text-sm font-medium text-gray-700">Instagram</label>
+                                <input type="text" id="instagram" name="instagram"
+                                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                    placeholder="Masukkan akun Instagram" />
+                            </div>
+                            <div class="mb-4">
+                                <label for="alamat_umkm" class="block text-sm font-medium text-gray-700">Alamat</label>
+                                <input type="text" id="alamat_umkm" name="alamat_umkm"
+                                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                    placeholder="Masukkan alamat" required />
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end mt-6">
+                            <button type="submit"
+                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Tambah
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
-
-
-
-            <!-- Tombol Submit -->
-            <div class="flex justify-end">
-                <button type="submit"
-                    class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700">
-                    Simpan
-                </button>
-            </div>
-        </form>
         </div>
     </main>
+
 
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -250,70 +228,58 @@
 
             // Tambahkan marker pada lokasi yang diklik
             marker = L.marker([lat, lng]).addTo(map);
+            // Panggil fungsi untuk mendapatkan alamat
+            getAddress(lat, lng);
         });
+        // Fungsi untuk mendapatkan alamat berdasarkan lat & lng menggunakan Nominatim
+        function getAddress(lat, lng) {
+            var url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    var address = data.display_name || "Alamat tidak ditemukan";
+                    document.getElementById("alamat_umkm").value = address;
+                })
+                .catch(error => console.error('Error:', error));
+        }
     </script>
 
     <script>
         let produkIndex = 1;
+        document.getElementById("tambah-produk").addEventListener("click", function() {
+            const produkContainer = document.getElementById("produk-container");
 
+            const produkItem = document.createElement("div");
+            produkItem.classList.add("produk-item", "mb-6", "ml-4");
+            produkItem.innerHTML = `
+        <h5 class="text-lg font-semibold mb-2">Produk ${produkIndex + 1}</h5>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div class="mb-4">
+            <label for="produk_umkm[${produkIndex}][nama_produk]" class="block text-sm font-medium text-gray-700">Nama Produk</label>
+            <input type="text" name="produk_umkm[${produkIndex}][nama_produk]" id="nama-produk-${produkIndex}" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Nama produk..." required />
+          </div>
+          <div class="mb-4 ml-3">
+            <label for="produk_umkm[${produkIndex}][harga_terendah]" class="block text-sm font-medium text-gray-700">Harga Terendah</label>
+            <input type="number" name="produk_umkm[${produkIndex}][harga_terendah]" id="harga-terendah-${produkIndex}" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Harga terendah..." required />
+          </div>
+          <div class="mb-4">
+            <label for="produk_umkm[${produkIndex}][harga_tertinggi]" class="block text-sm font-medium text-gray-700">Harga Tertinggi</label>
+            <input type="number" name="produk_umkm[${produkIndex}][harga_tertinggi]" id="harga-tertinggi-${produkIndex}" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Harga tertinggi..." required />
+          </div>
+          <div class="mb-4 col-span-2 ml-3">
+            <label for="produk_umkm[${produkIndex}][deskripsi_produk]" class="block text-sm font-medium text-gray-700">Deskripsi</label>
+            <textarea name="produk_umkm[${produkIndex}][deskripsi_produk]" id="deskripsi-produk-${produkIndex}" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Deskripsi produk..." required></textarea>
+          </div>
+          <div class="mb-4 col-span-2">
+            <label for="produk_umkm[${produkIndex}][foto_produk]" class="block text-sm font-medium text-gray-700">Gambar Produk</label>
+            <input type="file" name="produk_umkm[${produkIndex}][foto_produk]" id="gambar-produk-${produkIndex}" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" accept="image/*" required />
+          </div>
+        </div>
+      `;
 
-        document.getElementById('produk-container').addEventListener('click', function(e) {
-            if (e.target.classList.contains('add-produk')) {
-                const container = document.getElementById('produk-container');
-                const newProduk = `
-                <div class="produk-item bg-grey-600 shadow-md rounded-lg p-6">
-                    <div>
-                        <label for="produk_umkm[${produkIndex}][nama_produk]" class="block text-sm font-medium text-gray-700">Nama
-                            Produk</label>
-                        <input type="text" name="produk_umkm[${produkIndex}][nama_produk]" id="nama_produk"
-                            placeholder="Masukkan Nama Produk" required
-                            class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <div>
-                        <label for="produk_umkm[${produkIndex}][deskripsi_produk]"
-                            class="block text-sm font-medium text-gray-700">Deskripsi
-                            Produk</label>
-                        <input type="text" name="produk_umkm[${produkIndex}][deskripsi_produk]" id="deskripsi_produk"
-                            placeholder="Masukkan Deskripsi Produk" required
-                            class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <div>
-                        <label for="produk_umkm[${produkIndex}][foto_produk]" class="block text-sm font-medium text-gray-700">Foto
-                            Produk</label>
-                        <input type="file" id="foto_produk" name="produk_umkm[${produkIndex}][foto_produk]" accept="image/*"
-                            class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                        <p class="text-xs text-gray-500 mt-1">
-                            Format yang didukung: JPG, PNG Ukuran file maksimal: 2MB.
-                        </p>
-                    </div>
-                    <div>
-                        <label for="produk_umkm[${produkIndex}][harga_terendah]"
-                            class="block text-sm font-medium text-gray-700">Harga Terendah</label>
-                        <input type="number" name="produk_umkm[${produkIndex}][harga_terendah]" id="harga_terendah" step="0,01" min="0"
-                            placeholder="Masukkan Harga Terendah Produk" required
-                            class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                    </div> 
-                    <div>
-                        <label for="produk_umkm[${produkIndex}][harga_tertinggi]"
-                            class="block text-sm font-medium text-gray-700">Harga tertinggi</label>
-                        <input type="number" name="produk_umkm[${produkIndex}][harga_tertinggi]" id="harga_tertinggi" step="0,01" min="0"
-                            placeholder="Masukkan Harga Tertinggi Produk" required
-                            class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>                   
-                    <button type="button" class="add-produk bg-blue-500 text-white px-4 py-2 rounded-md mt-4">
-                        Tambah Produk
-                    </button>
-                    <button type="button" class="remove-produk bg-red-500 text-white px-4 py-2 rounded-md mt-4">
-                        Hapus Produk
-                    </button>
-                </div>
-        `;
-                container.insertAdjacentHTML('beforeend', newProduk);
-                produkIndex++;
-            } else if (e.target.classList.contains('remove-produk')) {
-                const produkItem = e.target.closest('.produk-item');
-                produkItem.remove();
-            }
+            produkContainer.appendChild(produkItem);
+            produkIndex++;
         });
     </script>
 

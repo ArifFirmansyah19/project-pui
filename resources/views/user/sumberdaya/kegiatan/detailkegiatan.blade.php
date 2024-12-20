@@ -4,7 +4,7 @@
 @section('content')
     <div class="flex flex-col md:flex-row w-full">
         <div class="bg-white mt-10 shadow-md rounded-lg p-4 md:w-2/3">
-            <h1 class="text-4xl font-bold text-indigo-900 mt-24 mb-15">Kegiatan</h1>
+            <h1 class="text-4xl font-bold text-indigo-900 mb-15">Kegiatan</h1>
 
             <!-- Kegiatan 1 -->
             <div class="p-5 mb-8 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
@@ -12,8 +12,19 @@
                     {{ $kegiatan->nama_kegiatan }}
                 </h2>
                 <p class="text-sm text-gray-500 mb-2">{{ $kegiatan->formatted_created_at }}</p>
-                <img src="{{ asset('storage/' . $kegiatan->foto_kegiatan) }}"
-                    alt="gambar kegiatan {{ $kegiatan->nama_kegiatan }}" class="mb-2 rounded-lg h-96 w-full object-cover" />
+                @if (Str::endsWith($kegiatan->foto_kegiatan, ['jpg', 'jpeg', 'png', 'webp']))
+                    <!-- Menampilkan Gambar -->
+                    <img src="{{ asset('storage/' . $kegiatan->foto_kegiatan) }}"
+                        alt="Gambar Kegiatan {{ $kegiatan->nama_kegiatan }}"
+                        class="mb-2 rounded-lg h-96 w-full object-cover" />
+                @elseif (Str::endsWith($kegiatan->foto_kegiatan, ['mp4', 'avi', 'mov']))
+                    <!-- Menampilkan Video -->
+                    <video controls autoplay muted loop class="mb-2 rounded-lg h-96 w-full object-cover">
+                        <source src="{{ asset('storage/' . $kegiatan->foto_kegiatan) }}"
+                            type="video/{{ pathinfo($kegiatan->foto_kegiatan, PATHINFO_EXTENSION) }}">
+                        Browser Anda tidak mendukung pemutar video.
+                    </video>
+                @endif
                 <p class="text-gray-800 leading-relaxed">
                     {!! $kegiatan->deskripsi_kegiatan !!}
                 </p>
@@ -29,13 +40,12 @@
                         @csrf
                         <input type="hidden" name="kegiatan_id" value="{{ $kegiatan->id }}">
                         <div class="mb-2">
-                            <label for="nama" class="block text-sm font-medium text-gray-700">Nama</label>
                             <input type="text" name="nama" class="w-full p-2 mb-2 border border-gray-300 rounded-lg"
-                                placeholder="Masukkan namamu">
+                                placeholder="Nama Anda">
                         </div>
                         <div class="mb-2">
-                            <label for="isi_komentar" class="block text-sm font-medium text-gray-700">Isi Komentar</label>
-                            <textarea name="isi_komentar" class="w-full p-2 mb-2 border border-gray-300 rounded-lg" placeholder="Isi Komentar"></textarea>
+                            <textarea name="isi_komentar" class="w-full p-2 mb-2 border border-gray-300 rounded-lg"
+                                placeholder="Tulis Komentar Anda..."></textarea>
                         </div>
                         <button type="submit"
                             class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">Kirim</button>
@@ -46,8 +56,8 @@
                 <div class="container mx-auto" id="comments-list">
                     <h2 class="text-2xl font-bold mb-4">Daftar Komentar</h2>
 
-                    {{-- munculin komentar kegiatan --}}
-                    @foreach ($commentkegiatans as $commentKegiatan)
+                    <!-- munculin komentar kegiatan -->
+                    @foreach ($commentKegiatans as $commentKegiatan)
                         @include('user.sumberdaya.kegiatan._comment', [
                             'commentKegiatan' => $commentKegiatan,
                         ])

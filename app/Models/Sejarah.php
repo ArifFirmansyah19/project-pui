@@ -11,6 +11,8 @@ class Sejarah extends Model
     protected $table = "sejarahs";
     protected $primaryKey = "id";
     protected $fillable = [
+        'judul',
+        'foto_konten_sejarah',
         'isi_sejarah',
     ];
 }

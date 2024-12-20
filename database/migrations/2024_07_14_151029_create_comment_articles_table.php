@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('article_id');
             $table->unsignedBigInteger('parent_id')->nullable();
-            $table->string('nama');
+            $table->string('nama', 50);
             $table->text('isi_komentar');
             $table->boolean('is_admin')->default(false);
             $table->foreign('article_id')->references('id')->on('articles')->onDelete('cascade');

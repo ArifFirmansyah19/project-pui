@@ -1,288 +1,294 @@
 @extends('layouts.app-admin')
-@section('title', 'halaman Edit UMKM PUI GEMAR')
+@section('title', 'Halaman Edit UMKM Admin')
 @section('content-admin')
-
-    <main class="flex-1 bg-gray-100 p-4 sm:p-6 overflow-y-auto">
+    <!-- Content -->
+    <main class="flex-1 overflow-y-auto">
         <div id="content" class="transition-transform duration-500 ease-in-out">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">
-                Halaman Edit UMKM PUI GEMAR
-            </h2>
-
-            <div id="map"></div>
-
-        </div>
-        <form id="updateForm" action="{{ route('admin.update-umkm', $umkm->id) }}" method="POST" enctype="multipart/form-data"
-            class="space-y-4">
-            @csrf
-            <!-- Nama -->
-            <div>
-                <label for="nama_umkm" class="block text-sm font-medium text-gray-700">Nama UMKM</label>
-                <input type="text" id="nama_umkm" name="nama_umkm" placeholder="Masukkan nama UMKM" required
-                    value="{{ old('nama_umkm', $umkm->nama_umkm) }}"
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-            </div>
-
-            <!-- Nama Pemilik -->
-            <div>
-                <label for="nama_pemilik" class="block text-sm font-medium text-gray-700">Nama Pemilik
-                    UMKM</label>
-                <input type="text" id="nama_pemilik" name="nama_pemilik" placeholder="Masukkan nama Pemilik" required
-                    value="{{ old('nama_pemilik', $umkm->nama_pemilik) }}"
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-            </div>
-
-            {{-- alamat UMKM --}}
-            <div>
-                <label for="alamat_umkm" class="block text-sm font-medium text-gray-700">Alamat UMKM</label>
-                <input type="text" id="alamat_umkm" name="alamat_umkm" placeholder="Masukkan alamat UMKM" required
-                    value="{{ old('alamat_umkm', $umkm->alamat_umkm) }}"
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-            </div>
-
-            <!-- latitude -->
-            <div>
-                <label for="latitude" class="block text-sm font-medium text-gray-700">latitude</label>
-                <input type="text" id="latitude" name="latitude" placeholder="latitude" readonly
-                    value="{{ old('latitude', $umkm->latitude) }}"
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-            </div>
-
-            <!-- longitude -->
-            <div>
-                <label for="longitude" class="block text-sm font-medium text-gray-700">longitude</label>
-                <input type="text" id="longitude" name="longitude" placeholder="longitude" readonly
-                    value="{{ old('longitude', $umkm->longitude) }}"
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-            </div>
-
-            <!-- foto tempat UMKM -->
-            <div>
-                @if ($umkm->foto_umkm)
-                    <label for="foto_umkm" class="block text-sm font-medium text-gray-700">foto UMKM Lama</label>
-                    <input type="hidden" name="foto_lama" value="{{ $umkm->foto_umkm }}">
-                    <div class="foto_lama">
-                        <img src="{{ asset('storage/' . $umkm->foto_umkm) }}" height="150px" width="150px"
-                            alt="foto {{ $umkm->nama_umkm }}">
-                    </div>
-                @endif
-                <label for="foto_umkm" class="block text-sm font-medium text-gray-700">Input Foto UMKM Baru
-                    (Opsional)</label>
-                <input type="file" id="foto_umkm" name="foto_umkm" {{-- accept="image/*" --}}
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                <p class="text-xs text-gray-500 mt-1">
-                    Format yang didukung: JPG, PNG Ukuran file maksimal: 2MB.
+            <!--konten detail artikel -->
+            <div class="max-w-full p-6 bg-white shadow-md rounded-lg">
+                <h1 class="text-4xl font-bold text-indigo-900 mt-2">
+                    Edit UMKM
+                </h1>
+                <div id="map" class="h-96 p-2 z-0 mt-10"></div>
+                <p class="text-sm text-indigo-900">
+                    *ketuk di peta untuk memasukkan langitude, latitude, dan
+                    alamat secara otomatis
                 </p>
+                <div class="form-container mt-10">
 
-            </div>
+                    <form id="updateForm"
+                        action="{{ route('admin.update-umkm', ['kecamatan_id' => $kecamatan->id, 'umkm_id' => $umkm->id]) }}"
+                        method="POST" enctype="multipart/form-data" class="bg-gray-100 p-6 rounded-lg shadow-lg mb-4">
+                        @csrf
 
-            {{-- deskripsi UMKM --}}
-            <div>
-                <label for="deskripsi_umkm" class="block text-sm font-medium text-gray-700">Deskripsi UMKM</label>
-                <input type="text" id="deskripsi_umkm" name="deskripsi_umkm" placeholder="Masukkan detail UMKM" required
-                    value="{{ old('deskripsi_umkm', $umkm->deskripsi_umkm) }}"
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-            </div>
+                        <h4 class="text-2xl font-bold text-indigo-900 mb-4">
+                            Marker
+                        </h4>
 
-            {{-- kontak UMKM --}}
-            <div>
-                <label for="kontak" class="block text-sm font-medium text-gray-700">KONTAK UMKM</label>
-                <input type="text" id="kontak" name="kontak" placeholder="Masukkan kontak UMKM" required
-                    value="{{ old('kontak', $umkm->kontak) }}"
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-            </div>
+                        <!--mengambil data kecamatan_id -->
+                        <input type="hidden" id="kecamatan_id" name="kecamatan_id" value="{{ $kecamatan->id }}" />
 
-            <!-- WA UMKM -->
-            <div>
-                <label for="whatsapp" class="block text-sm font-medium text-gray-700">Kontak WhatsApp UMKM</label>
-                <p class="text-xs text-gray-500 mt-1">Petunjuk Pengisian: cukup masukkan angka tanpa mengikutsertakan 0/+.
-                </p>
-                <input type="text" id="whatsapp" name="whatsapp" placeholder="Contoh: 6282250649883" required
-                    value="{{ old('whatsapp', $umkm->whatsapp) }}"
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-            </div>
-
-            <!-- Email UMKM -->
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Email UMKM</label>
-                <p class="text-xs text-gray-500 mt-1">Petunjuk Pengisian: Masukkan format email dengan benar.</p>
-                <input type="email" id="email" name="email" placeholder="Masukkan email UMKM" required
-                    value="{{ old('email', $umkm->email) }}"
-                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-            </div>
-
-            <!-- Instagram UMKM -->
-            <div>
-                <label for="instagram" class="block text-sm font-medium text-gray-700">Instagram UMKM</label>
-                <p class="text-xs text-gray-500 mt-1">Petunjuk Pengisian: Masukkan link Instagram usaha di inputan berikut
-                </p>
-                <input type="url" id="instagram" name="instagram" placeholder="Masukkan Instagram UMKM" required
-                    value="{{ old('instagram', $umkm->instagram) }}"class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-            </div>
-
-            <!-- Desa Potensi Id -->
-            <label for="desa_potensi_id" class="block text-sm font-medium text-gray-700">
-                Desa
-            </label>
-            <select id="desa_potensi_id" name="desa_potensi_id" required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                @foreach ($desas as $desa)
-                    <option value="{{ $desa->id }}" {{ $desa->id == $umkm->desa_potensi_id ? 'selected' : '' }}>
-                        {{ $desa->nama_desa }}</option>
-                @endforeach
-            </select>
-
-            <!-- Input Produk -->
-            <div id="produk-container">
-                <label for="produk-umkm" class="block text-sm font-medium text-gray-700">Produk UMKM</label>
-                @if ($umkm->produkUmkm->isEmpty())
-                    <p>Produk UMKM kosong.</p>
-                @else
-                    @foreach ($umkm->produkUmkm as $index => $produk)
-                        <div class="produk-item bg-grey-600 shadow-md rounded-lg p-6" data-index="${produkIndex}">
-                            <div>
-                                <label for="produk_umkm[{{ $index }}][nama_produk]"
-                                    class="block text-sm font-medium text-gray-700">Nama
-                                    Produk</label>
-                                <input type="text" name="produk_umkm[{{ $index }}][nama_produk]"
-                                    id="nama_produk" value="{{ $produk->nama_produk }}"
-                                    placeholder="Masukkan Nama Produk" required
-                                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                            </div>
-                            <div>
-                                <label for="produk_umkm[{{ $index }}][deskripsi_produk]"
-                                    class="block text-sm font-medium text-gray-700">Deskripsi
-                                    Produk</label>
-                                <input type="text" name="produk_umkm[{{ $index }}][deskripsi_produk]"
-                                    id="deskripsi_produk" value="{{ $produk->deskripsi_produk }}"
-                                    placeholder="Masukkan Deskripsi Produk" required
-                                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                            </div>
-                            <div>
-                                <label for="produk_umkm[{{ $index }}][foto_produk]"
-                                    class="block text-sm font-medium text-gray-700">Foto
-                                    Produk</label>
-                                @if ($produk->foto_produk)
-                                    <input type="hidden" name="produk_umkm[{{ $index }}][old_foto_produk]"
-                                        value="{{ $produk->foto_produk }}">
-                                    <img src="{{ asset('storage/' . $produk->foto_produk) }}"
-                                        alt="Foto Produk {{ $produk->nama_produk }}" class="mt-2"
-                                        style="width: 100px; height: 100px;">
-                                @endif
-                                <input type="file" id="foto_produk"
-                                    name="produk_umkm[{{ $index }}][foto_produk]" accept="image/*"
-                                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                                <p class="text-xs text-gray-500 mt-1">
-                                    Format yang didukung: JPG, PNG Ukuran file maksimal: 2MB.
-                                </p>
-                            </div>
-
-                            <div>
-                                <label for="produk_umkm[{{ $index }}][harga_terendah]"
-                                    class="block text-sm font-medium text-gray-700">Harga
-                                    Terendah</label>
-                                <input type="number" name="produk_umkm[{{ $index }}][harga_terendah]"
-                                    id="harga_terendah" value="{{ $produk->harga_terendah }}" step="0,01"
-                                    min="0" placeholder="Masukkan Harga Terendah Produk" required
-                                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                            </div>
-                            <div>
-                                <label for="produk_umkm[{{ $index }}][harga_tertinggi]"
-                                    class="block text-sm font-medium text-gray-700">Harga
-                                    Tertinggi</label>
-                                <input type="number" name="produk_umkm[{{ $index }}][harga_tertinggi]"
-                                    id="harga_tertinggi" step="0,01" min="0"
-                                    placeholder="Masukkan Harga Tertinggi Produk" required
-                                    value="{{ $produk->harga_tertinggi }}"
-                                    class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                            </div>
-                            <button type="button" class="remove-produk bg-red-500 text-white px-4 py-2 rounded-md mt-4"
-                                data-index="${produkIndex}">
-                                Hapus Produk
-                            </button>
+                        <!--lat-->
+                        <div class="mb-4 ml-4">
+                            <label for="latitude" class="block text-gray-700 text-lg font-semibold mb-2">Latitude</label>
+                            <!--readonly untuk tidak dapat mauskkan data manual-->
+                            <input type="text" id="latitude" name="latitude"
+                                placeholder="klik lokasi pada peta untuk melihat latitude dari titik lokasi" required
+                                readonly value="{{ old('latitude', $umkm->latitude) }}"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                         </div>
-                        <br>
-                    @endforeach
-                @endif
-            </div>
+                        <!--lang-->
+                        <div class="mb-4 ml-4">
+                            <label for="longitude" class="block text-gray-700 text-lg font-semibold mb-2">Longitude</label>
+                            <input type="text" id="longitude" name="longitude"
+                                placeholder="klik lokasi pada peta untuk melihat longitude dari titik lokasi" required
+                                readonly value="{{ old('latitude', $umkm->longitude) }}"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        </div>
+                        <div class="bg-gray-100 p-6 rounded-lg shadow-lg mb-4">
+                            <h4 class="text-2xl font-bold text-indigo-900 mb-4 mt-2">
+                                UMKM
+                            </h4>
+                            <div class="mb-4 ml-4">
+                                <label for="nama_umkm" class="block text-gray-700 text-lg font-semibold mb-2">Nama
+                                    UMKM</label>
+                                <input type="text" id="nama_umkm" name="nama_umkm" placeholder="Masukkan Nama UMKM"
+                                    required value="{{ old('nama_umkm', $umkm->nama_umkm) }}"
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                            </div>
 
-            <button type="button" id="add-produk" class="bg-blue-500 text-white px-4 py-2 rounded-md mt-4">
-                Tambah Produk
-            </button>
+                            <!--Deskripsi Singkat UMKM-->
+                            <div class="mb-4 ml-4">
+                                <label for="deskripsi_umkm" class="block text-gray-700 text-lg font-semibold mb-2">Deskripsi
+                                    UMKM</label>
+                                <!-- Summernote Editor -->
+                                <textarea name="deskripsi_umkm" id="deskripsi_umkm" class="summernote"
+                                    class="bg-white border border-gray-300 rounded-lg p-4 ml-4">{!! $umkm->deskripsi_umkm !!}</textarea>
+                            </div>
+                        </div>
 
-            <!-- Tombol Submit -->
-            <div class="flex justify-end">
-                <button type="button" id="updateButton"
-                    class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700">
-                    UPDATE
-                </button>
+                        <!-- Form untuk Tambah Produk -->
+                        <div class="bg-gray-100 rounded-lg shadow-lg p-6 mb-8" id="form-tambah-produk">
+                            <h4 class="text-2xl font-bold text-indigo-900 mb-4 mt-2">
+                                Tambah Produk
+                            </h4>
+                            <div id="produk-container">
+                                @if ($umkm->produkUmkm->isEmpty())
+                                    <p>Produk UMKM kosong.</p>
+                                @else
+                                    <!-- Produk pertama -->
+                                    <div class="produk-item mb-6 ml-4">
+                                        @foreach ($umkm->produkUmkm as $index => $produk)
+                                            <h5 class="text-lg font-semibold mb-2">Produk {{ $index + 1 }}</h5>
+                                            <div class="grid grid-cols-2 sm:grid-cols-2 gap-6">
+                                                <div class="mb-4">
+                                                    <label for="produk_umkm[{{ $index }}][nama_produk]"
+                                                        class="block text-sm font-medium text-gray-700">Nama Produk</label>
+                                                    <input type="text"
+                                                        name="produk_umkm[{{ $index }}][nama_produk]"
+                                                        id="nama-produk-0"
+                                                        class="mt-1 w-full p-2 border border-gray-300 rounded-md"
+                                                        value="{{ $produk->nama_produk }}" placeholder="Nama produk..."
+                                                        required />
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label for="produk_umkm[{{ $index }}][harga_terendah]"
+                                                        class="block text-sm font-medium text-gray-700">Harga
+                                                        Terendah</label>
+                                                    <input type="number"
+                                                        name="produk_umkm[{{ $index }}][harga_terendah]"
+                                                        id="harga-terendah-0"
+                                                        class="mt-1 w-full p-2 border border-gray-300 rounded-md"
+                                                        value="{{ $produk->harga_terendah }}"
+                                                        placeholder="Harga terendah..." required />
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label for="produk_umkm[{{ $index }}][harga_tertinggi]"
+                                                        class="block text-sm font-medium text-gray-700">Harga
+                                                        Tertinggi</label>
+                                                    <input type="number"
+                                                        name="produk_umkm[{{ $index }}][harga_tertinggi]"
+                                                        id="harga-tertinggi-0"
+                                                        class="mt-1 w-full p-2 border border-gray-300 rounded-md"
+                                                        value="{{ $produk->harga_tertinggi }}"
+                                                        placeholder="Harga tertinggi..." required />
+                                                </div>
+                                                <div class="mb-4 col-span-2">
+                                                    <label for="produk_umkm[{{ $index }}][deskripsi_produk]"
+                                                        class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                                                    <textarea name="produk_umkm[{{ $index }}][deskripsi_produk]" id="deskripsi-produk-0"
+                                                        class="mt-1 w-full p-2 border border-gray-300 rounded-md" placeholder="Deskripsi produk..." required>{!! $produk->deskripsi_produk !!}</textarea>
+                                                </div>
+                                                <div class="mb-4 col-span-2">
+                                                    <label for="produk_umkm[{{ $index }}][foto_produk]"
+                                                        class="block text-sm font-medium text-gray-700">Gambar
+                                                        Produk</label>
+                                                    @if ($produk->foto_produk)
+                                                        <input type="hidden"
+                                                            name="produk_umkm[{{ $index }}][old_foto_produk]"
+                                                            value="{{ $produk->foto_produk }}">
+                                                        <img src="{{ asset('storage/' . $produk->foto_produk) }}"
+                                                            alt="Foto Produk {{ $produk->nama_produk }}"
+                                                            class="mt-2 w-24 h-24 object-cover">
+                                                    @endif
+                                                    <input type="file" id="foto_produk"
+                                                        name="produk_umkm[{{ $index }}][foto_produk]"
+                                                        accept="image/*"
+                                                        class="mt-1 w-full p-2 border border-gray-300 rounded-md"
+                                                        accept="image/*" required />
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+
+                                @endif
+                            </div>
+                        </div>
+                        <button type="button" id="tambah-produk" class="bg-green-600 text-white px-4 py-2 rounded-md">
+                            Tambah Produk Lain
+                        </button>
+                </div>
+
+
+                <div class="bg-gray-100 p-6 rounded-lg shadow-lg">
+                    <h2 class="text-2xl font-semibold text-indigo-900 mb-6 mt-2">
+                        Tambah Kontak UMKM
+                    </h2>
+                    <div class="mb-4">
+                        <label for="nama_pemilik" class="block text-sm font-medium text-gray-700">Nama Pemilik
+                            UMKM</label>
+                        <input type="text" id="nama_pemilik" name="nama_pemilik"
+                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                            value="{{ old('nama_pemilik', $umkm->nama_pemilik) }}"
+                            placeholder="Masukkan nama_pemilik kontak" required />
+                    </div>
+                    <div class="mb-4">
+                        <label for="kontak" class="block text-sm font-medium text-gray-700">Telepon</label>
+                        <input type="text" id="kontak" name="kontak"
+                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                            value="{{ old('kontak', $umkm->kontak) }}" placeholder="Masukkan nomor kontak" required />
+                    </div>
+                    <div class="mb-4">
+                        <label for="whatsapp" class="block text-sm font-medium text-gray-700">Whatsapp</label>
+                        <input type="text" id="whatsapp" name="whatsapp"
+                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                            value="{{ old('whatsapp', $umkm->whatsapp) }}" placeholder="Masukkan nomor Whatsapp"
+                            required />
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" id="email" name="email"
+                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                            value="{{ old('email', $umkm->email) }}" placeholder="Masukkan email" required />
+                    </div>
+                    <div class="mb-4">
+                        <label for="instagram" class="block text-sm font-medium text-gray-700">Instagram</label>
+                        <input type="text" id="instagram" name="instagram"
+                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                            value="{{ old('instagram', $umkm->instagram) }}" placeholder="Masukkan akun Instagram" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="alamat_umkm" class="block text-sm font-medium text-gray-700">Alamat</label>
+                        <input type="text" id="alamat_umkm" name="alamat_umkm"
+                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                            value="{{ old('alamat_umkm', $umkm->alamat_umkm) }}" placeholder="Masukkan alamat"
+                            required />
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-6">
+                    <button type="submit" id="updateButton"
+                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Tambah
+                    </button>
+                </div>
+                </form>
             </div>
-        </form>
+        </div>
         </div>
     </main>
 
 
+
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var map = L.map('map').setView([-2.1, 102.3], 11);
+        var map = L.map('map').setView([-2.1, 102.3], 11);
 
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 50,
+        }).addTo(map);
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                maxZoom: 50,
-            }).addTo(map);
+        // Load GeoJSON data
+        fetch('/geojson/geopark_merangin.json') // Ganti dengan path file GeoJSON yang Anda simpan
+            .then(response => response.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    style: function(feature) {
+                        return {
+                            color: 'blue',
+                            fillColor: '#f03',
+                            fillOpacity: 0.1
+                        };
+                    },
 
+                }).addTo(map);
+            });
 
-            // Load GeoJSON data
-            fetch('/geojson/geopark_merangin.json') // Ganti dengan path file GeoJSON yang Anda simpan
+        // Buat ikon khusus
+        var customIcon = L.icon({
+            iconUrl: 'path/to/your/icon.png', // Ganti dengan path ikon Anda
+            iconSize: [32, 32], // Ukuran ikon
+            iconAnchor: [16, 32], // Titik anchor (bagian bawah tengah ikon)
+            popupAnchor: [0, -32] // Titik anchor popup
+        });
+
+        // Tentukan lokasi awal marker dari data latitude dan longitude yang tersimpan
+        var initialLat = {{ $umkm->latitude }};
+        var initialLng = {{ $umkm->longitude }};
+
+        // Tambahkan marker awal berdasarkan koordinat yang tersimpan dan set view peta ke lokasi marker
+        let marker = L.marker([initialLat, initialLng], {
+            draggable: true,
+            // icon: customIcon
+        }).addTo(map);
+
+        map.setView([initialLat, initialLng], 14); // Fokuskan peta pada lokasi marker awal
+
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lng;
+
+            // Hapus marker sebelumnya jika ada
+            if (marker) {
+                map.removeLayer(marker);
+            }
+
+            // Tambahkan marker pada lokasi yang diklik
+            marker = L.marker([lat, lng]).addTo(map);
+            // Panggil fungsi untuk mendapatkan alamat
+            getAddress(lat, lng);
+        });
+        // Fungsi untuk mendapatkan alamat berdasarkan lat & lng menggunakan Nominatim
+        function getAddress(lat, lng) {
+            var url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
+
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    L.geoJSON(data, {
-                        style: function(feature) {
-                            return {
-                                color: 'blue',
-                                fillColor: '#f03',
-                                fillOpacity: 0.1
-                            };
-                        },
-
-                    }).addTo(map);
-
-                });
-
-            // Buat ikon khusus
-            var customIcon = L.icon({
-                iconUrl: 'path/to/your/icon.png', // Ganti dengan path ikon Anda
-                iconSize: [32, 32], // Ukuran ikon
-                iconAnchor: [16, 32], // Titik anchor (bagian bawah tengah ikon)
-                popupAnchor: [0, -32] // Titik anchor popup
-            });
-
-            // var marker yang berisi lokasi lama UMKM;
-            let marker = L.marker([{{ $umkm->latitude }}, {{ $umkm->longitude }}], {
-                draggable: true
-            }).addTo(map);
-
-
-            map.on('click', function(e) {
-                var lat = e.latlng.lat;
-                var lng = e.latlng.lng;
-
-                document.getElementById('latitude').value = lat;
-                document.getElementById('longitude').value = lng;
-
-                // Hapus marker sebelumnya jika ada
-                if (marker) {
-                    map.removeLayer(marker);
-                }
-
-                // Tambahkan marker pada lokasi yang diklik (pembaruan lokasi)
-                marker = L.marker([lat, lng]).addTo(map);
-            });
-        });
+                    var address = data.display_name || "Alamat tidak ditemukan";
+                    document.getElementById("alamat_umkm").value = address;
+                })
+                .catch(error => console.error('Error:', error));
+        }
     </script>
+
     <script>
-        document.getElementById('updateButton').addEventListener('click', function() {
+        document.getElementById('updateButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Mencegah pengiriman form secara otomatis
             Swal.fire({
                 title: 'Apakah Anda yakin?',
                 text: 'Pastikan data yang diinput sudah benar!',
@@ -298,61 +304,43 @@
             });
         });
     </script>
-    <script>
-        let produkIndex = {{ count($umkm->produkUmkm) }}; // Starting index based on existing products
 
-        document.getElementById('add-produk').addEventListener('click', function() {
-            const container = document.getElementById('produk-container');
-            const newProduct = `
-                <div class="produk-item bg-grey-600 shadow-md rounded-lg p-6" data-index="${produkIndex}">
-                    <div>
-                        <label for="produk_umkm[${produkIndex}][nama_produk]" class="block text-sm font-medium text-gray-700">Nama Produk</label>
-                        <input type="text" name="produk_umkm[${produkIndex}][nama_produk]" id="nama_produk_${produkIndex}"
-                            placeholder="Masukkan Nama Produk" required
-                            class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <div>
-                        <label for="produk_umkm[${produkIndex}][deskripsi_produk]" class="block text-sm font-medium text-gray-700">Deskripsi Produk</label>
-                        <input type="text" name="produk_umkm[${produkIndex}][deskripsi_produk]" id="deskripsi_produk_${produkIndex}"
-                            placeholder="Masukkan Deskripsi Produk" required
-                            class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <div>
-                        <label for="produk_umkm[${produkIndex}][foto_produk]" class="block text-sm font-medium text-gray-700">Foto Produk</label>
-                        <input type="file" id="foto_produk_${produkIndex}" name="produk_umkm[${produkIndex}][foto_produk]" accept="image/*"
-                            class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500" />
-                        <p class="text-xs text-gray-500 mt-1">Format yang didukung: JPG, PNG Ukuran file maksimal: 2MB.</p>
-                    </div>
-                    <div>
-                        <label for="produk_umkm[${produkIndex}][harga_terendah]"
-                            class="block text-sm font-medium text-gray-700">Harga
-                            Terendah</label>
-                        <input type="number" name="produk_umkm[${produkIndex}][harga_terendah]"
-                            id="harga_terendah_${produkIndex}" step="0,01"
-                            min="0" placeholder="Masukkan Harga Terendah Produk" required
-                            class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <div>
-                        <label for="produk_umkm[${produkIndex}][harga_tertinggi]"
-                            class="block text-sm font-medium text-gray-700">Harga
-                            Tertinggi</label>
-                        <input type="number" name="produk_umkm[${produkIndex}][harga_tertinggi]"
-                            id="harga_tertinggi_${produkIndex}" step="0,01" min="0"
-                            placeholder="Masukkan Harga Tertinggi Produk" required
-                            class="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <button type="button" class="remove-produk bg-red-500 text-white px-4 py-2 rounded-md mt-4 data-index="${produkIndex}"">Hapus Produk</button>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', newProduct);
+    <script>
+        let produkIndex = {{ $umkm->produkUmkm->count() }};;
+        document.getElementById("tambah-produk").addEventListener("click", function() {
+            const produkContainer = document.getElementById("produk-container");
+
+            const produkItem = document.createElement("div");
+            produkItem.classList.add("produk-item", "mb-6", "ml-4");
+            produkItem.innerHTML = `
+        <h5 class="text-lg font-semibold mb-2">Produk ${produkIndex + 1}</h5>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div class="mb-4">
+            <label for="produk_umkm[${produkIndex}][nama_produk]" class="block text-sm font-medium text-gray-700">Nama Produk</label>
+            <input type="text" name="produk_umkm[${produkIndex}][nama_produk]" id="nama-produk-${produkIndex}" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Nama produk..." required />
+          </div>
+          <div class="mb-4 ml-3">
+            <label for="produk_umkm[${produkIndex}][harga_terendah]" class="block text-sm font-medium text-gray-700">Harga Terendah</label>
+            <input type="number" name="produk_umkm[${produkIndex}][harga_terendah]" id="harga-terendah-${produkIndex}" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Harga terendah..." required />
+          </div>
+          <div class="mb-4">
+            <label for="produk_umkm[${produkIndex}][harga_tertinggi]" class="block text-sm font-medium text-gray-700">Harga Tertinggi</label>
+            <input type="number" name="produk_umkm[${produkIndex}][harga_tertinggi]" id="harga-tertinggi-${produkIndex}" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Harga tertinggi..." required />
+          </div>
+          <div class="mb-4 col-span-2 ml-3">
+            <label for="produk_umkm[${produkIndex}][deskripsi_produk]" class="block text-sm font-medium text-gray-700">Deskripsi</label>
+            <textarea name="produk_umkm[${produkIndex}][deskripsi_produk]" id="deskripsi-produk-${produkIndex}" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Deskripsi produk..." required></textarea>
+          </div>
+          <div class="mb-4 col-span-2">
+            <label for="produk_umkm[${produkIndex}][foto_produk]" class="block text-sm font-medium text-gray-700">Gambar Produk</label>
+            <input type="file" name="produk_umkm[${produkIndex}][foto_produk]" id="gambar-produk-${produkIndex}" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" accept="image/*" required />
+          </div>
+        </div>
+      `;
+
+            produkContainer.appendChild(produkItem);
             produkIndex++;
         });
-
-        document.getElementById('produk-container').addEventListener('click', function(e) {
-            if (e.target.classList.contains('remove-produk')) {
-                const produkItem = e.target.closest('.produk-item');
-                produkItem.remove();
-            }
-        });
     </script>
+
 @endsection

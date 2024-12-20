@@ -2,36 +2,48 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FotoPotensi;
 use Illuminate\Http\Request;
-use App\Models\umkm;
-use App\Models\desaPotensi;
+use App\Models\Umkm;
+// use App\Models\kecamatanPotensi;
 use App\Models\PotensiDesa;
-use App\Models\produkUmkm;
+use App\Models\ProdukUmkm;
+use App\Models\Kecamatan;
 
 class PersebaranUmkmController extends Controller
 {
 
-    protected function validateDesa(Request $request)
+    protected function validatePotensi(Request $request)
     {
         return $request->validate([
-            'nama_desa' => 'required|string|max:255',
-            'deskripsi_desa' => 'required|string|max:255',
+            // 'nama_kecamatan' => 'required|string|max:100',
+            'kecamatan_id' => 'required|exists:kecamatans,id',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
-            'potensi_desa.*.nama_potensi' => 'required|string|max:255',
-            'potensi_desa.*.foto_potensi' => 'nullable|file|mimes:jpg,png|max:2048',
-            'potensi_desa.*.deskripsi_potensi' => 'required|string|max:255',
+            'alamat' => 'required|string|max:255',
+            'nama_potensi' => 'required|string|max:255',
+            'deskripsi_potensi' => 'required|string',
+            'alamat' => 'required|string|max:255',
+            'foto_potensis' => 'required|array', // Menambahkan validasi untuk memastikan foto_potensis adalah array
+            'foto_potensis.*.foto_potensi' => 'nullable|file|mimes:jpg,png|max:2048',
+            'foto_potensis.*.deskripsi_foto' => 'required|string|max:255',
         ], [
-            'nama_desa.required' => 'Nama desa wajib diisi.',
-            'deskripsi_desa.required' => 'Deskripsi desa wajib diisi.',
-            'latitude.required' => 'Latitude wajib diisi. Klik lokasi desa pada peta',
-            'longitude.required' => 'Longitude wajib diisi. Klik lokasi desa pada peta',
-            'potensi_desa.*.nama_potensi.required' => 'Nama potensi wajib diisi.',
-            'potensi_desa.*.foto_potensi.mimes' => 'Foto potensi harus dalam format JPG atau PNG.',
-            'potensi_desa.*.foto_potensi.max' => 'Ukuran file foto potensi tidak boleh lebih dari 2MB.',
-            'potensi_desa.*.deskripsi_potensi.required' => 'Deskripsi potensi wajib diisi.',
+            // 'nama_desas.required' => 'Nama desas wajib diisi.',
+            'kecamatan_id.required' => 'ID kecamatan wajib diisi.',
+            'latitude.required' => 'Latitude wajib diisi.',
+            'longitude.required' => 'Longitude wajib diisi.',
+            'alamat.required' => 'Alamat wajib diisi.',
+            'nama_potensi.required' => 'Nama potensi wajib diisi.',
+            'deskripsi_potensi.required' => 'Deskripsi potensi wajib diisi.',
+            'alamat.required' => 'Alamat potensi wajib diisi.',
+            'foto_potensis.required' => 'Data potensi wajib diisi.',
+            'foto_potensis.array' => 'Data potensi harus berupa array.',
+            'foto_potensis.*.foto_potensi.mimes' => 'Foto potensi harus dalam format JPG atau PNG.',
+            'foto_potensis.*.foto_potensi.max' => 'Ukuran file foto potensi tidak boleh lebih dari 2MB.',
+            'foto_potensis.*.deskripsi_foto.required' => 'Deskripsi potensi wajib diisi.',
         ]);
     }
+
 
     protected function validateUmkm(Request $request)
     {
@@ -41,13 +53,13 @@ class PersebaranUmkmController extends Controller
             'alamat_umkm' => 'required|string|max:255',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
-            'foto_umkm' => 'nullable|file|mimes:jpg,png|max:2048',
+            // 'foto_umkm' => 'nullable|file|mimes:jpg,png|max:2048',
             'deskripsi_umkm' => 'required|string',
             'kontak' => 'required|string|max:20',
             'whatsapp' => 'nullable|string|max:15',
             'email' => 'nullable|email|max:255',
             'instagram' => 'nullable|string|max:255',
-            'desa_potensi_id' => 'required|exists:desa_potensis,id',
+            'kecamatan_id' => 'required|exists:kecamatans,id',
             'produk_umkm.*.nama_produk' => 'required|string|max:255',
             'produk_umkm.*.deskripsi_produk' => 'required|string',
             'produk_umkm.*.foto_produk' => 'nullable|file|mimes:jpg,png|max:2048',
@@ -67,15 +79,15 @@ class PersebaranUmkmController extends Controller
             'alamat_umkm.required' => 'Alamat UMKM wajib diisi.',
             'latitude.required' => 'Latitude wajib diisi.',
             'longitude.required' => 'Longitude wajib diisi.',
-            'foto_umkm.mimes' => 'Foto UMKM harus dalam format JPG atau PNG.',
-            'foto_umkm.max' => 'Ukuran file foto UMKM tidak boleh lebih dari 2MB.',
+            // 'foto_umkm.mimes' => 'Foto UMKM harus dalam format JPG atau PNG.',
+            // 'foto_umkm.max' => 'Ukuran file foto UMKM tidak boleh lebih dari 2MB.',
             'deskripsi_umkm.required' => 'Deskripsi UMKM wajib diisi.',
             'kontak.required' => 'Kontak UMKM wajib diisi.',
             'kontak.max' => 'Kontak UMKM tidak boleh lebih dari 20 karakter.',
             'whatsapp.max' => 'Nomor WhatsApp tidak boleh lebih dari 15 karakter.',
             'email.email' => 'Format email tidak valid.',
-            'desa_potensi_id.required' => 'Desa potensi wajib dipilih.',
-            'desa_potensi_id.exists' => 'Desa potensi yang dipilih tidak valid.',
+            'kecamatan_id.required' => 'Desa potensi wajib dipilih.',
+            'kecamatan_id.exists' => 'Desa potensi yang dipilih tidak valid.',
             'produk_umkm.*.nama_produk.required' => 'Nama produk UMKM wajib diisi.',
             'produk_umkm.*.deskripsi_produk.required' => 'Deskripsi produk UMKM wajib diisi.',
             'produk_umkm.*.foto_produk.mimes' => 'Foto produk harus dalam format JPG atau PNG.',
@@ -92,154 +104,268 @@ class PersebaranUmkmController extends Controller
         return $file->store($folder, 'public');
     }
 
+    private function extractInstagramUsername($url)
+    {
+        // Menggunakan regex untuk mengekstrak username
+        preg_match('/instagram\.com\/([^\/?]+)/', $url, $matches);
+        return $matches[1] ?? $url; // Mengembalikan username jika ditemukan, atau URL jika tidak
+    }
+
+
     // halaman index admin persebaran UMKM
     public function index_admin()
     {
-        $umkms = umkm::all();
-        $desas = DesaPotensi::with('potensiDesa')->get();
-        return view('admin.sumberdaya.persebaranUMKM.persebaranUMKM', compact('umkms', 'desas'));
+        $umkms = Umkm::all();
+        $kecamatans = Kecamatan::with('potensiDesa')->get();
+        $potensis = PotensiDesa::all();
+        return view('admin.sumberdaya.persebaranUMKM.persebaranUMKM', compact('umkms', 'potensis', 'kecamatans'));
     }
 
-    // kelola desa dan potensi
-    public function create_desa_potensi()
-    {
-        return view('admin.sumberdaya.persebaranUMKM.tambahDesa');
-    }
-
-    public function store_desa_potensi(Request $request)
+    public function store_kecamatan(Request $request)
     {
         // Validasi request mengambil dari validateDesa
-        $validatedData = $this->validateDesa($request);
-
-        // Menyimpan data desa
-        $desa = desaPotensi::create([
-            'nama_desa' => $request->input('nama_desa'),
-            'deskripsi_desa' => $request->input('deskripsi_desa'),
-            'latitude' => $request->input('latitude'),
-            'longitude' => $request->input('longitude'),
+        $request->validate([
+            'nama_kecamatan' => 'required|string|max:100',
         ]);
 
-        // Menyimpan potensi desa
-        foreach ($request->input('potensi_desa', []) as $key => $potensi_desa) {
-            $potensiItem = new PotensiDesa();
-            $potensiItem->desa_potensi_id = $desa->id;
-            $potensiItem->nama_potensi = $potensi_desa['nama_potensi'] ?? '';
-            $potensiItem->deskripsi_potensi = $potensi_desa['deskripsi_potensi'] ?? '';
+        dd($request->all());
+
+        Kecamatan::create([
+            'nama_kecamatan' => $request->nama_kecamatan,
+        ]);
+
+        return redirect()->back()->with('success', 'Kecamatan berhasil ditambahkan.');
+    }
+
+    public function update_kecamatan(Request $request, $id)
+    {
+        $request->validate([
+            'nama_kecamatan' => 'required|string|max:100',
+        ]);
+
+        $kecamatan = Kecamatan::findOrFail($id);
+        $kecamatan->update([
+            'nama_kecamatan' => $request->nama_kecamatan,
+        ]);
+
+        return redirect()->back()->with('success', 'Kecamatan berhasil diperbarui.');
+    }
+
+
+    public function delete_kecamatan($id)
+    {
+        $kecamatan = Kecamatan::findOrFail($id);
+        $kecamatan->delete();
+
+        return redirect()->back()->with('success', 'Kecamatan dan semua potensi terkait berhasil dihapus');
+    }
+
+
+
+    public function create_potensi($kecamatan_id)
+    {
+        $kecamatan = Kecamatan::find($kecamatan_id);
+        return view('admin.sumberdaya.persebaranUMKM.tambahPotensi', compact('kecamatan'));
+    }
+
+    public function store_potensi(Request $request)
+    {
+        // Validasi request mengambil dari validateDesa
+        $validatedData = $this->validatePotensi($request);
+
+        // Menyimpan data kecamatan
+        $potensi = PotensiDesa::create([
+            'nama_potensi' => $request->input('nama_potensi'),
+            'longitude' => $request->input('longitude'),
+            'latitude' => $request->input('latitude'),
+            'deskripsi_potensi' => $request->input('deskripsi_potensi'),
+            'alamat' => $request->input('alamat'),
+            'kecamatan_id' => $request->input('kecamatan_id'),
+        ]);
+
+        // Menyimpan potensi kecamatan
+        foreach ($request->input('foto_potensis', []) as $key => $foto_potensis) {
+            $potensiItem = new FotoPotensi();
+            $potensiItem->potensi_desas_id = $potensi->id;
+            // $potensiItem->nama_potensi = $foto_potensis['nama_potensi'] ?? '';
+            $potensiItem->deskripsi_foto = $foto_potensis['deskripsi_foto'] ?? '';
 
             // Menyimpan gambar jika ada
-            if ($request->hasFile('potensi_desa.' . $key . '.foto_potensi')) {
-                $filePath = $this->savePhoto($request->file('potensi_desa.' . $key . '.foto_potensi'), 'fotoPotensiDesa');
+            if ($request->hasFile('foto_potensis.' . $key . '.foto_potensi')) {
+                $filePath = $this->savePhoto($request->file('foto_potensis.' . $key . '.foto_potensi'), 'fotoPotensi');
                 $potensiItem->foto_potensi = $filePath;
             }
             $potensiItem->save();
         }
+
         // Menyimpan pesan sukses atau kesalahan di session flash
         if ($request->session()->has('errors')) {
             return redirect()->back()->withErrors($validatedData)->withInput();
         } else {
-            return redirect()->route('admin.persebaran')->with('success', 'Data desa dan potensi berhasil disimpan');
+            return redirect()->route('admin.persebaran')->with('success', 'Data potensi desa di dalam kecamatan berhasil disimpan');
         }
     }
 
-    public function detail_desa_admin($id)
+    public function detail_potensi_admin($kecamatan_id, $potensi_id)
     {
-        $desa = desaPotensi::with('potensiDesa')->findOrFail($id);
-        return view('admin.sumberdaya.persebaranUMKM.detailDesa', compact('desa'));
+        // Temukan kecamatan berdasarkan ID
+        $kecamatan = Kecamatan::with(['potensiDesa' => function ($query) use ($potensi_id) {
+            $query->where('id', $potensi_id); // Memfilter hanya berdasarkan id potensi yang diminta
+        }])->findOrFail($kecamatan_id);
+
+
+        // Temukan potensi desa berdasarkan ID
+        $potensi = PotensiDesa::where('id', $potensi_id)
+            ->where('kecamatan_id', $kecamatan_id)
+            ->firstOrFail();
+
+        return view('admin.sumberdaya.persebaranUMKM.detailPotensi', compact('kecamatan', 'potensi', 'potensi_id'));
     }
 
-    public function edit_desa_potensi($id)
-    {
-        // Mengambil data desa berdasarkan ID
-        $desa = DesaPotensi::findOrFail($id);
-        // Mengambil data potensi desa yang terkait dengan desa tersebut
-        $potensiDesas = PotensiDesa::where('desa_potensi_id', $desa->id)->get();
 
-        // Mengolah deskripsi lama untuk mendapatkan gambar
+    public function edit_potensi($kecamatan_id, $potensi_id)
+    {
+        // Mengambil data PotensiDesa berdasarkan potensi_id
+        $potensi = PotensiDesa::findOrFail($potensi_id);
+
+        // Mengambil semua foto potensi yang terkait dengan potensi desa tersebut
+        $fotoPotensis = FotoPotensi::where('potensi_desas_id', $potensi->id)->get();
+
+        // Mengolah foto lama untuk mendapatkan path file
         $oldFotos = [];
-        foreach ($potensiDesas as $potensi) {
-            if ($potensi->foto_potensi) {
-                $oldFotos[$potensi->id] = 'fotoPotensiDesa/' . basename($potensi->foto_potensi);
+        foreach ($fotoPotensis as $fotoPotensi) {
+            if ($fotoPotensi->foto_potensi) {
+                $oldFotos[$fotoPotensi->id] = 'fotoPotensi/' . basename($fotoPotensi->foto_potensi);
             }
         }
-        session()->forget('success');
-        return view('admin.sumberdaya.persebaranUMKM.editDesa', compact('desa', 'potensiDesas', 'oldFotos'));
+
+        // Mengambil data kecamatan berdasarkan kecamatan_id jika diperlukan
+        $kecamatan = Kecamatan::findOrFail($kecamatan_id);
+
+        // Mengirim data ke view
+        return view('admin.sumberdaya.persebaranUMKM.editPotensi', compact('potensi', 'fotoPotensis', 'oldFotos', 'kecamatan'));
     }
 
-    public function update_desa_potensi(Request $request, $id)
-    {
-        // Validasi request mengambil dari validateDesa
-        $validatedData = $this->validateDesa($request);
 
-        // Update data desa
-        $desa = DesaPotensi::findOrFail($id);
-        $desa->update([
-            'nama_desa' => $request->input('nama_desa'),
-            'deskripsi_desa' => $request->input('deskripsi_desa'),
-            'latitude' => $request->input('latitude'),
+    public function update_potensi(Request $request, $kecamatan_id, $potensi_id)
+    {
+        $validatedData = $this->validatePotensi($request);
+        $potensi = PotensiDesa::findOrFail($potensi_id);
+
+        // Update data potensi desa
+        $potensi->update([
+            'nama_potensi' => $request->input('nama_potensi'),
             'longitude' => $request->input('longitude'),
+            'latitude' => $request->input('latitude'),
+            'deskripsi_potensi' => $request->input('deskripsi_potensi'),
+            'alamat' => $request->input('alamat'),
         ]);
 
-        // Ambil semua ID potensi desa yang ada di database untuk desa ini
-        $existingPotensiIds = $desa->potensiDesa->pluck('id')->toArray();
+        // Ambil semua ID foto potensi yang ada di database untuk potensi ini
+        $existingFotoPotensiIds = $potensi->fotoPotensi->pluck('id')->toArray();
 
-        // Proses data potensi desa
-        $inputPotensiIds = []; // Array untuk menyimpan ID dari potensi yang diinputkan
+        // Proses data foto potensi
+        $inputFotoPotensiIds = []; // Array untuk menyimpan ID dari foto potensi yang diinputkan
 
-        foreach ($request->input('potensi_desa', []) as $key => $potensi_desa) {
-            if (isset($potensi_desa['id'])) {
+        foreach ($request->input('foto_potensis', []) as $key => $foto_potensis) {
+            if (isset($foto_potensis['id'])) {
                 // Jika ID ada, lakukan update
-                $potensiItem = PotensiDesa::find($potensi_desa['id']);
-                $inputPotensiIds[] = $potensi_desa['id']; // Tambahkan ke array inputPotensiIds
+                $fotoPotensiItem = FotoPotensi::find($foto_potensis['id']);
+                $inputFotoPotensiIds[] = $foto_potensis['id']; // Tambahkan ke array inputPotensiIds
             } else {
                 // Jika tidak ada ID, tambahkan data baru
-                $potensiItem = new PotensiDesa();
-                $potensiItem->desa_potensi_id = $desa->id;
+                $fotoPotensiItem = new FotoPotensi();
+                $fotoPotensiItem->potensi_desas_id = $potensi->id;
             }
-            $potensiItem->nama_potensi = $potensi_desa['nama_potensi'] ?? '';
-            $potensiItem->deskripsi_potensi = $potensi_desa['deskripsi_potensi'] ?? '';
+
+            $fotoPotensiItem->deskripsi_foto = $foto_potensis['deskripsi_foto'] ?? '';
 
             // Cek jika ada file foto potensi yang diupload
-            if ($request->hasFile('potensi_desa.' . $key . '.foto_potensi')) {
-                $filePath = $this->savePhoto($request->file('potensi_desa.' . $key . '.foto_potensi'), 'fotoPotensiDesa');
+            if ($request->hasFile('foto_potensis.' . $key . '.foto_potensi')) {
+                $filePath = $this->savePhoto($request->file('foto_potensis.' . $key . '.foto_potensi'), 'fotoPotensi');
 
                 // Cek jika ada old_foto_potensi
-                if (!empty($potensi_desa['old_foto_potensi'])) {
-                    // Ambil nama foto lama dari form tanpa prefix 'fotoPotensiDesa/'
-                    $oldFotoName = basename($potensi_desa['old_foto_potensi']);
+                if (!empty($foto_potensis['old_foto_potensi'])) {
+                    // Ambil nama foto lama dari form tanpa prefix 'fotoPotensi/'
+                    $oldFotoName = basename($foto_potensis['old_foto_potensi']);
 
-                    // Hapus foto lama dari direktori public/fotoPotensiDesa jika nama foto lama ada
-                    if (\Storage::exists('public/fotoPotensiDesa/' . $oldFotoName)) {
-                        \Storage::delete('public/fotoPotensiDesa/' . $oldFotoName);
+                    // Hapus foto lama dari direktori public/fotoPotensi jika nama foto lama ada
+                    if (\Storage::exists('public/fotoPotensi/' . $oldFotoName)) {
+                        \Storage::delete('public/fotoPotensi/' . $oldFotoName);
                     }
                 }
 
                 // Update foto potensi dengan file path baru
-                $potensiItem->foto_potensi = $filePath;
+                $fotoPotensiItem->foto_potensi = $filePath;
             } else {
                 // Jika tidak ada foto baru, periksa old_foto_potensi
-                $potensiItem->foto_potensi = $potensi_desa['old_foto_potensi'] ?? $potensiItem->foto_potensi;
+                $fotoPotensiItem->foto_potensi = $foto_potensis['old_foto_potensi'] ?? $fotoPotensiItem->foto_potensi;
             }
-            $potensiItem->save();
+            $fotoPotensiItem->save();
         }
 
-        // Hapus potensi desa yang tidak ada dalam inputan (telah dihapus oleh pengguna)
-        $potensiToDelete = array_diff($existingPotensiIds, $inputPotensiIds);
-        PotensiDesa::whereIn('id', $potensiToDelete)->delete();
+        // Hapus foto potensi yang tidak ada dalam inputan (telah dihapus oleh pengguna)
+        $fotoPotensiToDelete = array_diff($existingFotoPotensiIds, $inputFotoPotensiIds);
+        FotoPotensi::whereIn('id', $fotoPotensiToDelete)->delete();
 
-        // Menyimpan pesan sukses atau kesalahan di session flash
         if ($request->session()->has('errors')) {
             return redirect()->back()->withErrors($validatedData)->withInput();
         } else {
-            return redirect()->route('admin.persebaran')->with('success', 'Data desa dan potensi berhasil diperbarui');
+            // Redirect dengan menggunakan potensi_id
+            return redirect()->route('admin.persebaran', $potensi->id)
+                ->with('success', 'Data potensi desa berhasil diperbarui');
         }
     }
 
+    public function delete_potensi($kecamatan_id, $potensi_id)
+    {
+        // Mengambil data potensi desa beserta foto-foto terkait berdasarkan ID potensi dan kecamatan
+        $potensi = PotensiDesa::with('fotoPotensi')
+            ->where('id', $potensi_id)
+            ->where('kecamatan_id', $kecamatan_id)
+            ->firstOrFail();
+
+        // Hapus foto potensi dari storage jika ada, dan hapus data foto dari tabel FotoPotensi
+        foreach ($potensi->fotoPotensi as $item) {
+            if ($item->foto_potensi && \Storage::exists('public/' . $item->foto_potensi)) {
+                \Storage::delete('public/' . $item->foto_potensi);
+            }
+            $item->delete();
+        }
+        $potensi->delete();
+        return redirect()->route('admin.persebaran')->with('success', 'Potensi berhasil dihapus.');
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // kelola UMKM
-    public function create_umkm()
+    public function create_umkm($kecamatan_id)
     {
-        $desas = desaPotensi::all();
-        return view('admin.sumberdaya.persebaranUMKM.tambahUMKM', compact('desas'));
+        $kecamatan = Kecamatan::find($kecamatan_id);
+        return view('admin.sumberdaya.persebaranUMKM.tambahUMKM', compact('kecamatan'));
     }
 
     public function store_umkm(Request $request)
@@ -259,13 +385,9 @@ class PersebaranUmkmController extends Controller
             'whatsapp' => $request->input('whatsapp'),
             'email' => $request->input('email'),
             'instagram' => $request->input('instagram'),
-            'desa_potensi_id' => $request->input('desa_potensi_id'),
+            'kecamatan_id' => $request->input('kecamatan_id'),
         ]);
 
-        if ($request->hasFile('foto_umkm')) {
-            $umkm->foto_umkm = $this->savePhoto($request->file('foto_umkm'), 'fotoUmkm');
-            $umkm->save();
-        }
         // Simpan produk terkait UMKM
         foreach ($request->input('produk_umkm', []) as $key => $produk_umkm) {
             $produkItem = new produkUmkm();
@@ -291,10 +413,16 @@ class PersebaranUmkmController extends Controller
         }
     }
 
-    public function edit_umkm($id)
+    public function edit_umkm($kecamatan_id, $umkm_id)
     {
-        // Mengambil data UMKM berdasarkan ID
-        $umkm = Umkm::with('produkUmkm')->findOrFail($id);
+        // Menghapus session sukses sebelumnya
+        session()->forget('success');
+
+        // Mengambil data UMKM berdasarkan umkm_id
+        $umkm = Umkm::with('produkUmkm')->findOrFail($umkm_id);
+
+        // Mengambil data kecamatan berdasarkan kecamatan_id
+        $kecamatan = Kecamatan::findOrFail($kecamatan_id);
 
         // Mengolah deskripsi lama untuk mendapatkan foto produk
         $oldFotos = [];
@@ -303,31 +431,20 @@ class PersebaranUmkmController extends Controller
                 $oldFotos[$produk->id] = 'fotoProdukUMKM/' . basename($produk->foto_produk);
             }
         }
-        $desas = DesaPotensi::all();
-        session()->forget('success');
-        return view('admin.sumberdaya.persebaranUMKM.editUmkm', compact('umkm', 'desas', 'oldFotos'));
+
+        // Mengirim data ke view
+        return view('admin.sumberdaya.persebaranUMKM.editUmkm', compact('umkm', 'kecamatan', 'oldFotos'));
     }
 
-    public function update_umkm(Request $request, $id)
+    public function update_umkm(Request $request, $kecamatan_id, $umkm_id)
     {
         // Validasi request dari validateUmkm
         $validatedData = $this->validateUmkm($request);
 
+        // Mengambil data UMKM berdasarkan umkm_id
+        $umkm = Umkm::findOrFail($umkm_id);
+
         // Update data UMKM
-        $umkm = Umkm::findOrFail($id);
-
-        // Tangani upload foto UMKM
-        if ($request->hasFile('foto_umkm')) {
-            // Hapus foto lama jika ada
-            if ($umkm->foto_umkm && \Storage::exists('public/' . $umkm->foto_umkm)) {
-                \Storage::delete('public/' . $umkm->foto_umkm);
-            }
-
-            $filePath = $this->savePhoto($request->file('foto_umkm'), 'fotoUmkm');
-            $umkm->foto_umkm = $filePath;
-        }
-
-        // Update data UMKM (termasuk foto jika ada perubahan)
         $umkm->update([
             'nama_umkm' => $request->input('nama_umkm'),
             'nama_pemilik' => $request->input('nama_pemilik'),
@@ -339,7 +456,7 @@ class PersebaranUmkmController extends Controller
             'whatsapp' => $request->input('whatsapp'),
             'email' => $request->input('email'),
             'instagram' => $request->input('instagram'),
-            'desa_potensi_id' => $request->input('desa_potensi_id'),
+            'kecamatan_id' => $kecamatan_id,
         ]);
 
         // Ambil ID produk yang ada di database untuk UMKM ini
@@ -350,12 +467,11 @@ class PersebaranUmkmController extends Controller
         foreach ($request->input('produk_umkm', []) as $key => $produkData) {
             if (isset($produkData['id'])) {
                 // Update produk yang sudah ada
-                $produkItem = ProdukUMKM::findOrFail($produkData['id']);
-                $inputProductIds[] = $produkData['id']; // Tambahkan ID ke array inputProductIds
-
+                $produkItem = ProdukUmkm::findOrFail($produkData['id']);
+                $inputProductIds[] = $produkData['id'];
             } else {
                 // Jika tidak ada ID, tambahkan data baru
-                $produkItem = new ProdukUMKM();
+                $produkItem = new produkUmkm();
                 $produkItem->umkm_id = $umkm->id;
             }
 
@@ -382,29 +498,49 @@ class PersebaranUmkmController extends Controller
             }
             $produkItem->save();
         }
+
         // Hapus produk yang tidak ada di inputan
         $productsToDelete = array_diff($existingProductIds, $inputProductIds);
-        ProdukUMKM::whereIn('id', $productsToDelete)->delete();
+        ProdukUmkm::whereIn('id', $productsToDelete)->delete();
 
-        // Menyimpan pesan sukses atau kesalahan di session flash
+        // Redirect dengan pesan sukses atau kesalahan
         if ($request->session()->has('errors')) {
             return redirect()->back()->withErrors($validatedData)->withInput();
         } else {
-            return redirect(route('admin.persebaran'))->with('success', 'Update data UMKM berhasil disimpan');
+            return redirect()->route('admin.persebaran', $umkm->id)->with('success', 'Update data UMKM berhasil disimpan');
         }
     }
 
 
-    public function detail_umkm_admin($id)
+
+    public function detail_umkm_admin($kecamatan_id, $umkm_id)
     {
-        $umkm = umkm::with('produkUmkm', 'desaPotensi')->findOrFail($id);
-        return view('admin.sumberdaya.persebaranUMKM.detailPersebaran', compact('umkm'));
+        // Temukan kecamatan berdasarkan ID dan muat data UMKM terkait
+        $kecamatan = Kecamatan::with(['umkm' => function ($query) use ($umkm_id) {
+            $query->where('id', $umkm_id); // Memfilter berdasarkan id UMKM yang diminta
+        }])->findOrFail($kecamatan_id);
+
+        // Temukan UMKM berdasarkan ID dan kecamatan
+        $umkm = Umkm::where('id', $umkm_id)
+            ->where('kecamatan_id', $kecamatan_id)
+            ->with('produkUmkm') // Muat data produk terkait UMKM
+            ->firstOrFail();
+
+        $instagramUrl = $umkm->instagram;
+        $username = $this->extractInstagramUsername($instagramUrl);
+
+        return view('admin.sumberdaya.persebaranUMKM.detailUmkm', compact('kecamatan', 'umkm', 'umkm_id', 'username'));
     }
 
 
-    public function destroy_umkm($id)
+
+    public function destroy_umkm($kecamatan_id, $umkm_id)
     {
-        $umkm = Umkm::with('produkUmkm')->findOrFail($id);
+        // Mengambil data UMKM beserta produk-produknya berdasarkan ID UMKM dan kecamatan
+        $umkm = Umkm::with('produkUmkm')
+            ->where('id', $umkm_id)
+            ->where('kecamatan_id', $kecamatan_id)
+            ->firstOrFail();
 
         // Hapus foto UMKM dari storage jika ada
         if ($umkm->foto_umkm && \Storage::exists('public/' . $umkm->foto_umkm)) {
@@ -419,7 +555,11 @@ class PersebaranUmkmController extends Controller
             }
             $produk->delete();
         }
+
+        // Hapus data UMKM dari tabel Umkm
         $umkm->delete();
-        return redirect()->route('admin.persebaran')->with('success', 'Data UMKM dan produk terkait berhasil dihapus');
+
+        // Redirect dengan pesan sukses
+        return redirect()->route('admin.persebaran')->with('success', 'Data UMKM dan produk terkait berhasil dihapus.');
     }
 }

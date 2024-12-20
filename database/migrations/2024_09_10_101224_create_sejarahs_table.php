@@ -15,7 +15,9 @@ return new class extends Migration
     {
         Schema::create('sejarahs', function (Blueprint $table) {
             $table->id();
-            $table->longText('isi_sejarah');
+            $table->string('judul', 50);
+            $table->string('foto_konten_sejarah', 100)->nullable();
+            $table->mediumText('isi_sejarah');
             $table->timestamps();
         });
     }

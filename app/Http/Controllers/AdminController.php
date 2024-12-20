@@ -8,11 +8,6 @@ use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller
 {
-    // Menampilkan halaman profil admin
-    public function profile_admin()
-    {
-        return view('admin.edit-admin.profil_admin');
-    }
 
     // Menampilkan halaman edit profil admin
     public function edit_profile_admin()
@@ -35,11 +30,18 @@ class AdminController extends Controller
             ],
             'name' => ['required', 'string', 'min:3', 'max:50', 'alpha_num'],
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'password_lama' => ['required_with:password'],
+            'password' => ['nullable', 'min:6', 'confirmed'],
         ], [
             'email.regex' => 'Alamat email harus diakhiri dengan .com, .net, .org, .edu, .gov, .mil, atau .int',
         ]);
-
         $user = auth()->user();
+        // Validasi password lama
+        if ($request->filled('password') && !Hash::check($request->password_lama, $user->password)) {
+            throw ValidationException::withMessages([
+                'password_lama' => 'Password yang Anda masukkan tidak cocok',
+            ]);
+        }
 
         if ($request->hasFile('foto')) {
             // Hapus foto lama jika ada
@@ -47,42 +49,21 @@ class AdminController extends Controller
                 \Storage::delete('public/' . $user->foto);
             }
 
-            // Simpan foto baru
             $filePath = $request->file('foto')->store('users', 'public');
             $user->foto = $filePath;
         }
 
-        // Update nama dan email
+        // Update data profil
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
-            'foto' => $user->foto, // update foto jika ada perubahan
+            'foto' => $user->foto,
         ]);
 
-        return redirect()->route('dashboard.admin')->with('success', 'Profil admin berhasil diubah');
-    }
-
-    // Menampilkan halaman edit password admin
-    public function edit_password_admin()
-    {
-        return view('admin.edit-admin.edit_password');
-    }
-
-    // Memperbarui password admin
-    public function update_password_admin(Request $request)
-    {
-        $request->validate([
-            'password_lama' => ['required'],
-            'password' => ['required', 'min:6', 'confirmed'],
-        ]);
-
-        if (Hash::check($request->password_lama, auth()->user()->password)) {
-            auth()->user()->update(['password' => Hash::make($request->password)]);
-            return redirect()->route('dashboard.admin')->with('success', 'Password Anda berhasil diubah');
+        // Update password hanya jika password baru diisi
+        if ($request->filled('password')) {
+            $user->update(['password' => Hash::make($request->password)]);
         }
-
-        throw ValidationException::withMessages([
-            'password_lama' => 'Password yang Anda masukkan tidak cocok',
-        ]);
+        return redirect()->route('dashboard.admin')->with('success', 'Profil Admin Berhasil Diperbarui');
     }
 }
