@@ -36,12 +36,6 @@ class TimController extends Controller
     public function index_admin()
     {
         $divisis = Divisi::all();
-        // $jabatans = jabatan::with('divisi')->orderBy('created_at', 'asc')->select('id', 'nama_jabatan', 'divisi_id', 'deskripsi_jabatan')
-        //     ->groupBy('nama_jabatan', 'id', 'divisi_id', 'deskripsi_jabatan')
-        //     ->get();
-        // $jabatans = jabatan::with('divisi')->orderBy('created_at', 'asc')->select('id', 'nama_jabatan', 'divisi_id')
-        //     ->groupBy('nama_jabatan', 'id', 'divisi_id')
-        //     ->get();
         $dataTimPui = Tim::with('divisi')->orderBy('divisi_id')->get();
 
         // Mengelompokkan data tim berdasarkan nama divisi
@@ -142,7 +136,6 @@ class TimController extends Controller
         $request->validate([
             'nama_divisi' => 'required|string|max:255',
         ]);
-
         Divisi::create([
             'nama_divisi' => $request->nama_divisi,
         ]);
@@ -157,19 +150,17 @@ class TimController extends Controller
     {
         $kontak = Kontak::first();
         $kontakExists = Kontak::exists();
-        $divisis = Divisi::all();
-        // $jabatans = jabatan::select('nama_jabatan')->distinct()->get();
         $dataTimPui = Tim::with('divisi')->get();
         $groupedTims = $dataTimPui->groupBy(function ($dataTim) {
             return $dataTim->divisi->nama_divisi;
         });
-
         $articles = Article::withCount([
             'comments as totalMainComments' => fn($query) => $query->whereNull('parent_id'),
             'comments as totalReplies' => fn($query) => $query->whereNotNull('parent_id')
-        ])->paginate(10);
-
-        return view('user/profil.team', compact('kontak', 'kontakExists', 'divisis', 'articles', 'groupedTims'));
+        ])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+        return view('user/profil.team', compact('kontak', 'kontakExists', 'articles', 'groupedTims'));
     }
 
     public function detail_tim($id)
@@ -177,28 +168,20 @@ class TimController extends Controller
         $kontak = Kontak::first();
         $kontakExists = Kontak::exists();
         $divisis = Divisi::all();
-        // $jabatans = jabatan::select('nama_jabatan')->distinct()->get();
         $tim = Tim::with(['divisi'])->where('id', $id)->firstOrFail();
         $articles = Article::orderBy('created_at', 'desc')->paginate(2);
-
-        // Menghitung total komentar utama dan balasan untuk setiap artikel
         $articlesWithComments = $articles->map(function ($article) {
-            // Menghitung jumlah komentar utama
             $totalMainComments = CommentArticle::where('article_id', $article->id)
                 ->whereNull('parent_id')
                 ->count();
 
-            // Menghitung jumlah balasan
             $totalReplies = CommentArticle::where('article_id', $article->id)
                 ->whereNotNull('parent_id')
                 ->count();
 
-            // Menjumlahkan komentar utama dan balasan
             $article->totalComments = $totalMainComments + $totalReplies;
-
             return $article;
         });
-
         return view('user.profil.detailteam', compact('kontak', 'kontakExists', 'divisis', 'tim', 'articles', 'articlesWithComments'));
     }
 }

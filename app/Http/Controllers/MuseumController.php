@@ -71,7 +71,6 @@ class MuseumController extends Controller
     {
         $dataGeopark = MuseumGeopark::first();
         $kontakMuseum = KontakMuseum::first();
-        // $dataGeopark = MuseumGeopark::findOrFail($id);
         $selectedJenis = $request->input('jenis_keragaman');
         $jenisKeragamans = JenisKeragaman::all();
         $dataKeragamans = $selectedJenis == 'all' || !$selectedJenis
@@ -88,12 +87,12 @@ class MuseumController extends Controller
         return view('admin.museum.tambahJenisKeragaman');
     }
 
-    public function store_jenis_keragaman(Request $request)
-    {
-        $jenisKeragamans = JenisKeragaman::create($request->all());
-        $jenisKeragamans->save();
-        return redirect(route('admin.museum'))->with('success', 'jenis keragaman berhasil di simpan');
-    }
+    // public function store_jenis_keragaman(Request $request)
+    // {
+    //     $jenisKeragamans = JenisKeragaman::create($request->all());
+    //     $jenisKeragamans->save();
+    //     return redirect(route('admin.museum'))->with('success', 'jenis keragaman berhasil di simpan');
+    // }
 
     public function destroy_jenis_keragaman($id)
     {
@@ -136,7 +135,8 @@ class MuseumController extends Controller
         if ($request->session()->has('errors')) {
             return redirect()->back()->withErrors($validatedData)->withInput();
         } else {
-            return redirect()->route('admin.museum')->with('success', 'Data keragaman museum PUI GEMAR berhasil disimpan.');
+            return redirect()->route('admin.museum', ['jenis_keragaman' => $request->jenis_keragaman])
+                ->with('success', 'Data berhasil ditambahkan.');
         }
     }
 
@@ -144,7 +144,19 @@ class MuseumController extends Controller
     {
         $dataGeopark = museumGeopark::findOrFail($id);
         session()->forget('success');
-        return view('admin.museum.editMuseum', compact('dataGeopark'));
+
+        $oldDom = new \DOMDocument();
+        libxml_use_internal_errors(true);
+        $oldDom->loadHTML($dataGeopark->deskripsi, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
+        libxml_clear_errors();
+        $oldImages = [];
+        foreach ($oldDom->getElementsByTagName('img') as $img) {
+            $src = $img->getAttribute('src');
+            if (!preg_match('/data:image/', $src)) {
+                $oldImages[] = basename(parse_url($src, PHP_URL_PATH));
+            }
+        }
+        return view('admin.museum.editMuseum', compact('dataGeopark', 'oldImages'));
     }
 
     public function edit_data_keragaman($id)
@@ -152,12 +164,84 @@ class MuseumController extends Controller
         $dataKeragaman = DataKeragaman::with('jenisKeragaman')->findOrFail($id);
         $jenisKeragamans = JenisKeragaman::all();
         session()->forget('success');
+
         return view('admin.museum.editDataKeragaman', compact('dataKeragaman', 'jenisKeragamans'));
     }
 
     public function update_museum_geopark(Request $request, $id)
     {
-        $dataGeopark = museumGeopark::findOrFail($id);
+        $dataGeopark = MuseumGeopark::findOrFail($id);
+
+
+        $storagePath = storage_path('app/public/fotoMuseumGeopark');
+
+        // Mengambil daftar gambar lama dari deskripsi yang tersimpan di database
+        $oldDom = new \DOMDocument();
+        libxml_use_internal_errors(true);
+        $oldDom->loadHTML($dataGeopark->deskripsi, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
+        libxml_clear_errors();
+        $oldImages = [];
+        foreach ($oldDom->getElementsByTagName('img') as $img) {
+            $src = $img->getAttribute('src');
+            if (!preg_match('/data:image/', $src)) {
+                $oldImages[] = basename(parse_url($src, PHP_URL_PATH));
+            }
+        }
+
+        // Mengambil daftar gambar lama yang dikirim dari input hidden
+        $oldImagesFromRequest = $request->input('old_images', []);
+        if (!is_array($oldImagesFromRequest)) {
+            $oldImagesFromRequest = [];
+        }
+        $oldImages = array_merge($oldImages, $oldImagesFromRequest);
+
+        // Mengolah deskripsi baru untuk gambar baru
+        $newDom = new \DOMDocument();
+        libxml_use_internal_errors(true);
+        $newDom->loadHTML($request->deskripsi, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NOIMPLIED);
+        libxml_clear_errors();
+        $newImages = [];
+        foreach ($newDom->getElementsByTagName('img') as $img) {
+            $src = $img->getAttribute('src');
+            if (preg_match('/data:image/', $src)) {
+                // Jika ini adalah gambar baru (base64)
+                preg_match('/data:image\/(?<mime>.*?)\;/', $src, $groups);
+                $mimetype = $groups['mime'];
+                $fileNameContentRand = substr(md5(uniqid()), 0, 6) . '_' . time();
+                $filePath = "$fileNameContentRand.$mimetype";
+
+                // Simpan gambar baru
+                $image = \Image::make($src)->encode($mimetype, 100)->save("$storagePath/$filePath");
+                $new_src = asset('storage/fotoMuseumGeopark/' . $filePath);
+                $img->removeAttribute('src');
+                $img->setAttribute('src', $new_src);
+                $img->setAttribute('class', 'img-responsive');
+                $newImages[] = basename(parse_url($new_src, PHP_URL_PATH));
+
+                // Hapus gambar lama dengan nama yang sama (jika ada)
+                $oldImageName = basename(parse_url($src, PHP_URL_PATH));
+                if (in_array($oldImageName, $oldImages)) {
+                    $filePathToDelete = $storagePath . '/' . $oldImageName;
+                    if (file_exists($filePathToDelete)) {
+                        \Storage::delete('public/fotoMuseumGeopark/' . $oldImageName);
+                    }
+                }
+            } else {
+                // Memasukkan gambar yang sudah ada ke dalam newImages
+                $newImages[] = basename(parse_url($src, PHP_URL_PATH));
+            }
+        }
+
+        // Menyaring gambar lama untuk dihapus
+        $imagesToDelete = array_diff($oldImages, $newImages);
+
+        foreach ($imagesToDelete as $image) {
+            $filePath = $storagePath . '/' . $image;
+            if (file_exists($filePath)) {
+                \Storage::delete('public/fotoMuseumGeopark/' . $image);
+            }
+        }
+
         if ($request->hasFile('foto')) {
             // Hapus gambar lama dari storage jika ada
             if ($dataGeopark->foto && \Storage::exists('public/' . $dataGeopark->foto)) {
@@ -172,12 +256,11 @@ class MuseumController extends Controller
         $dataGeopark->update([
             'judul' => $request->input('judul'),
             'thumbnail' => $request->input('thumbnail'),
-            'deskripsi' => $request->input('deskripsi'),
+            'deskripsi' => $newDom->saveHTML(),
         ]);
-        return redirect()->route('admin.museum')->with('success', 'Data Museum Geopark Berhasil diperbarui.');
 
         session()->forget('success');
-        return redirect()->route('admin.museum', compact('dataGeopark'))->with('success', 'data Museum Geopark berhasil diperbarui');
+        return redirect()->route('admin.museum', compact('dataGeopark'))->with('success', 'Data Museum Geopark berhasil diperbarui');
     }
 
 

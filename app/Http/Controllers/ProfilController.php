@@ -326,7 +326,6 @@ class ProfilController extends Controller
                 $oldImages[] = basename(parse_url($src, PHP_URL_PATH));
             }
         }
-
         // Mengambil daftar gambar lama yang dikirim dari input hidden
         $oldImagesFromRequest = $request->input('old_images', []);
         if (!is_array($oldImagesFromRequest)) {
@@ -395,7 +394,6 @@ class ProfilController extends Controller
         // Update path gambar di database
         $strukturOrganisasi->update([
             'judul' => $request->input('judul'),
-            // 'foto_struktur_organisasi' => $filePath,
             'isi_konten' => $newDom->saveHTML(),
         ]);
 
@@ -417,7 +415,9 @@ class ProfilController extends Controller
         $articles = Article::withCount([
             'comments as totalMainComments' => fn($query) => $query->whereNull('parent_id'),
             'comments as totalReplies' => fn($query) => $query->whereNotNull('parent_id')
-        ])->paginate(5);
+        ])
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
 
         return view('user/profil.sejarah', compact('kontak', 'kontakExists', 'articles', 'sejarahExists', 'sejarah'));
     }
@@ -431,7 +431,9 @@ class ProfilController extends Controller
         $articles = Article::withCount([
             'comments as totalMainComments' => fn($query) => $query->whereNull('parent_id'),
             'comments as totalReplies' => fn($query) => $query->whereNotNull('parent_id')
-        ])->paginate(3);
+        ])
+            ->orderBy('created_at', 'desc')
+            ->paginate(3);
 
         return view('user/profil.visi_misi', compact('kontak', 'kontakExists', 'visiMisiExists', 'visionMission', 'articles'));
     }
@@ -446,7 +448,9 @@ class ProfilController extends Controller
         $articles = Article::withCount([
             'comments as totalMainComments' => fn($query) => $query->whereNull('parent_id'),
             'comments as totalReplies' => fn($query) => $query->whereNotNull('parent_id')
-        ])->paginate(5);
+        ])
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
 
         return view('user/profil.strukturorganisasi', compact('kontak', 'kontakExists', 'gambarStrukturOrganisasiExists', 'strukturOrganisasi', 'divisis', 'articles'));
     }

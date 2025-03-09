@@ -12,7 +12,6 @@ use App\Http\Controllers\{
   MuseumController,
   PersebaranUmkmController,
   ProfilController,
-  // SearchController,
   SumberDayaController,
   TimController,
   HKIController,
@@ -20,9 +19,7 @@ use App\Http\Controllers\{
 use App\Http\Controllers\Auth\ForgotPasswordController;
 
 
-
 // =====> Route Pengguna Website PUI GEMAR
-
 // Dashboard
 Route::get('/', [DashboardController::class, 'indexWeb'])->name('dashboard-website')->middleware('guest');
 
@@ -30,20 +27,6 @@ Route::get('/', [DashboardController::class, 'indexWeb'])->name('dashboard-websi
 Route::middleware('guest')->group(function () {
   Route::get('/login', [LoginController::class, 'index'])->name('login');
   Route::post('/login', [LoginController::class, 'authenticate']);
-  // Route::get('/forgot-password', [LoginController::class, 'forgot_password'])->name('forgot-password');
-  // Route::post('/forgot-password-act', [LoginController::class, 'forgot_password_act'])->name('forgot-password-act');
-  // Route::get('/validasi-forgot-password/{token}', [LoginController::class, 'validasi_forgot_password'])->name('validasi-forgot-password');
-  // Route::post('/validasi-forgot-password-act', [LoginController::class, 'validasi_forgot_password_act'])->name('validasi-forgot-password-act');
-
-  // Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
-  // Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
-  // Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
-  // Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
-
-  Route::get('password/forgot', [ForgotPasswordController::class, 'showForgotForm'])->name('password.request');
-  Route::post('password/email', [ForgotPasswordController::class, 'sendResetLink'])->name('password.email');
-  Route::get('password/reset/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
-  Route::post('password/reset', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
 });
 
 // Logout
@@ -163,7 +146,6 @@ Route::prefix('admin/artikel')->name('admin.')->middleware('auth', 'web')->group
   Route::get('/', [ArticleController::class, 'index_admin'])->name('artikel');
   Route::get('/create', [ArticleController::class, 'create_artikel'])->name('create-artikel');
   Route::post('/store', [ArticleController::class, 'store_artikel'])->name('store-artikel');
-  // Route::get('/detail/{id}', [ArticleController::class, 'detail_artikel_admin'])->name('detail-artikel');
 
 
   Route::get('/{articleId}/comments', [ArticleController::class, 'getComments'])->name('admin-comments');
@@ -175,8 +157,6 @@ Route::prefix('admin/artikel')->name('admin.')->middleware('auth', 'web')->group
 });
 
 Route::post('/komentar/store', [ArticleController::class, 'store_comment_artikel'])->name('store.komentar-artikel');
-
-
 
 
 // Admin HKI Routes

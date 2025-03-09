@@ -41,7 +41,10 @@ class ArticleController extends Controller
             'comments as totalMainComments' => fn($query) => $query->whereNull('parent_id'),
             'comments as totalReplies' => fn($query) => $query->whereNotNull('parent_id'),
             'comments as totalComments'
-        ])->paginate(5);
+        ])
+            ->orderBy('created_at', 'desc') // Mengurutkan berdasarkan tanggal pembuatan secara menurun
+            ->paginate(5);
+
         return view('admin.sumberdaya.artikel.artikelAdmin', compact('articles'));
     }
 
@@ -60,7 +63,6 @@ class ArticleController extends Controller
 
     public function store_comment_artikel(Request $request)
     {
-        // Validasi input
         $validatedData = $request->validate([
             'article_id' => 'required|exists:articles,id',
             'parent_id' => 'nullable|exists:comment_articles,id',
@@ -68,7 +70,6 @@ class ArticleController extends Controller
             'nama' => 'nullable|string|max:255',
         ]);
 
-        // Menentukan apakah pengguna login
         if (Auth::check()) {
             $is_admin = true;
             $nama = 'Admin';
@@ -77,18 +78,14 @@ class ArticleController extends Controller
             $nama = $validatedData['nama'];
         }
 
-        // Membuat komentar baru
         $comment = new CommentArticle();
         $comment->article_id = $validatedData['article_id'];
         $comment->isi_komentar = $validatedData['isi_komentar'];
-        $comment->parent_id = $validatedData['parent_id'] ?? null; // null jika komentar utama
+        $comment->parent_id = $validatedData['parent_id'] ?? null;
         $comment->nama = $nama;
-        $comment->is_admin = $is_admin; // simpan nilai is_admin
+        $comment->is_admin = $is_admin;
 
-        // Menyimpan komentar
         $comment->save();
-
-        // Mengembalikan respons JSON
         return response()->json([
             'message' => 'Komentar berhasil dikirim',
             'comment' => $comment
@@ -347,7 +344,9 @@ class ArticleController extends Controller
         $articles = Article::withCount([
             'comments as totalMainComments' => fn($query) => $query->whereNull('parent_id'),
             'comments as totalReplies' => fn($query) => $query->whereNotNull('parent_id')
-        ])->paginate(5);
+        ])
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
 
 
         return view('user.sumberdaya.artikel.artikelUser', compact('kontak', 'kontakExists', 'articles'));

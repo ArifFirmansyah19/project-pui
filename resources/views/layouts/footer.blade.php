@@ -1,43 +1,39 @@
 <footer class="bg-indigo-900 py-2" id="contact">
     <section class="w-full max-w-6xl mx-auto py-8">
-        {{-- <div class="flex flex-col md:flex-row md:justify-between"> --}}
-        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-1 gap-4">
             <!-- Kontak -->
-            @if (!$kontakExists)
-                <div class="bg-transparent p-2 rounded-lg text-center md:text-left md:mb-0">
-                    <h3 class="text-lg md:text-xl font-bold text-justify text-white mb-3">Kontak</h3>
-                    <p class="text-sm md:text-base text-justify text-white mb-3">
-                        Alamat:
+            <div class="bg-transparent p-2 rounded-lg text-left md:text-center">
+                @if (!$kontakExists)
+                    <h3 class="text-lg md:text-xl font-bold text-white mb-3">Kontak</h3>
+                    <p class="text-sm md:text-base text-white mb-3">
+                        Alamat: Jl. Jambi – Muara Bulian No.KM. 15, Mendalo Darat, Kec.
+                        Jambi Luar Kota, Kabupaten Muaro Jambi, Jambi
                     </p>
-                    <p class="text-sm md:text-base text-justify text-white mb-3">
-                        Telepon:
+                    <p class="text-sm md:text-base text-white mb-3">
+                        Telepon: -
                     </p>
-                    <p class="text-sm md:text-base text-justify text-white mb-3">
-                        Email:
+                    <p class="text-sm md:text-base text-white mb-3">
+                        Email: -
                     </p>
-                </div>
-            @else
-                <div class="bg-transparent p-2 rounded-lg text-center md:text-left md:mb-0">
-                    <h3 class="text-lg md:text-xl font-bold text-justify text-white mb-3">Kontak</h3>
-                    <p class="text-sm md:text-base text-justify text-white mb-3">
+                @else
+                    <h3 class="text-lg md:text-xl font-bold text-white mb-3">Kontak</h3>
+                    <p class="text-sm md:text-base text-white mb-3">
                         Alamat: {{ $kontak->alamat }}
                     </p>
-                    <p class="text-sm md:text-base text-justify text-white mb-3">
+                    <p class="text-sm md:text-base text-white mb-3">
                         Telepon: {{ $kontak->telepon }}
                     </p>
-                    <p class="text-sm md:text-base text-justify text-white mb-3">
+                    <p class="text-sm md:text-base text-white mb-3">
                         Email: <a href="mailto:{{ $kontak->email }}">{{ $kontak->email }}</a>
                     </p>
-                </div>
-            @endif
+                @endif
+            </div>
 
             <!-- Media Sosial -->
-            <div class="bg-transparent p-2 rounded-lg text-center md:text-left">
-                <h3 class="text-lg md:text-xl font-bold text-justify text-white mb-3">
-                    Follow Us
-                </h3>
-                @if (!$kontakExists)
-                    <div class="flex flex-wrap justify-right md:justify-start gap-4">
+            <div class="bg-transparent p-6 rounded-lg text-left md:text-center">
+                <h3 class="text-lg md:text-xl font-bold text-white mb-3">Follow Us</h3>
+                <div class="flex flex-wrap justify-start md:justify-center gap-4">
+                    @if (!$kontakExists)
                         <!-- Facebook -->
                         <a href="#" class="text-white hover:text-indigo-600 flex items-center space-x-2">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-6 h-6 md:w-8 md:h-8">
@@ -50,7 +46,7 @@
                         <a href="#" class="text-white hover:text-indigo-600 flex items-center space-x-2">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-6 h-6 md:w-8 md:h-8">
                                 <path fill="currentColor"
-                                    d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9 26.2 26.2 58 34.4 93.9 36.2 37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" />
+                                    d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9 26.2 26.2 58 34.4 93.9 36.2 37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9-34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7 2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6z" />
                             </svg>
                             <span class="text-xs md:text-sm">puigemarinstagram</span>
                         </a>
@@ -70,9 +66,7 @@
                             </svg>
                             <span class="text-xs md:text-sm">puigemartiktok</span>
                         </a>
-                    </div>
-                @else
-                    <div class="flex flex-wrap justify-right md:justify-start gap-4">
+                    @else
                         <!-- Facebook -->
                         <a href="{{ $kontak->facebook }}"
                             class="text-white hover:text-indigo-600 flex items-center space-x-2">
@@ -87,7 +81,7 @@
                             class="text-white hover:text-indigo-600 flex items-center space-x-2">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-6 h-6 md:w-8 md:h-8">
                                 <path fill="currentColor"
-                                    d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9 26.2 26.2 58 34.4 93.9 36.2 37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" />
+                                    d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9 26.2 26.2 58 34.4 93.9 36.2 37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9-34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7 2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6z" />
                             </svg>
                             <span class="text-xs md:text-sm">puigemarinstagram</span>
                         </a>
@@ -109,14 +103,14 @@
                             </svg>
                             <span class="text-xs md:text-sm">puigemartiktok</span>
                         </a>
-                    </div>
-                @endif
+                    @endif
+                </div>
             </div>
         </div>
     </section>
     <section class="w-full bg-gray-300 py-4 text-center">
         <p class="text-indigo-900 text-sm">
-            &copy; 2024 PUI GEMAR |All Rights Reserved
+            &copy; 2024 PUI GEMAR | All Rights Reserved
         </p>
     </section>
 </footer>

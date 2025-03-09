@@ -93,6 +93,7 @@
             const closeModalButton = document.getElementById('closeModal');
             const commentForm = document.getElementById('commentForm');
             const articleIdInput = document.getElementById('article_id');
+            let currentCommentPage = 1;
 
             // Fungsi untuk menangani tombol delete
             function attachDeleteHandlers() {
@@ -287,28 +288,23 @@
                 }
             });
 
-            // Menangani tombol untuk membuka modal
-            document.querySelectorAll('.commentBtn').forEach(button => {
-                button.addEventListener('click', async function() {
-                    const articleId = this.getAttribute('data-article-id');
-                    articleIdInput.value = articleId;
+            // Fungsi untuk memuat komentar
+            async function loadComments(articleId, page = 1) {
+                try {
+                    const response = await fetch(`artikel/${articleId}/comments?page=${page}`);
+                    if (!response.ok) {
+                        throw new Error('Gagal memuat komentar');
+                    }
 
-                    try {
-                        // Fetch komentar untuk artikel tertentu
-                        const response = await fetch(`artikel/${articleId}/comments`);
-                        if (!response.ok) {
-                            throw new Error('Gagal memuat komentar');
-                        }
-
-                        // Dapatkan data JSON
-                        const comments = await response.json();
+                    const comments = await response.json();
+                    if (page === 1) {
                         commentContainer.innerHTML = '';
+                    }
 
-                        // Render setiap komentar
-                        comments.forEach(comment => {
-                            const commentElement = document.createElement('div');
-                            commentElement.classList.add('comment');
-                            commentElement.innerHTML = `
+                    comments.forEach(comment => {
+                        const commentElement = document.createElement('div');
+                        commentElement.classList.add('comment');
+                        commentElement.innerHTML = `
                             <div class="comment flex flex-col border-b border-gray-300 py-2" data-comment-id="${comment.id}" data-article-id="${articleId}">
                                 <div class="flex items-start">
                                     <strong class="mr-1">${comment.nama}:</strong>
@@ -322,22 +318,42 @@
                                         Delete
                                     </button>
                                 </div>
+                                <div class="replies-container ml-4 mt-2"></div>
                             </div>
                         `;
 
-                            // Tambahkan komentar ke dalam container
-                            commentContainer.appendChild(commentElement);
-                        });
+                        commentContainer.insertAdjacentElement('afterbegin', commentElement);
+                    });
 
-                        // Tampilkan modal
-                        modal.classList.remove('hidden');
-                        attachReplyHandlers();
-                        attachDeleteHandlers();
-                    } catch (error) {
-                        commentContainer.innerHTML =
-                            '<p class="text-red-500">Gagal memuat komentar. Silakan coba lagi.</p>';
-                        console.error('Error loading comments:', error);
+                    attachReplyHandlers();
+                    attachDeleteHandlers();
+
+                    if (comments.length === 10) {
+                        const loadMoreButton = document.createElement('button');
+                        loadMoreButton.classList.add('text-blue-500', 'hover:underline', 'mt-4');
+                        loadMoreButton.textContent = 'Lihat lebih banyak komentar';
+                        loadMoreButton.addEventListener('click', function() {
+                            currentCommentPage++;
+                            loadComments(articleId, currentCommentPage);
+                            loadMoreButton.remove();
+                        });
+                        commentContainer.appendChild(loadMoreButton);
                     }
+                } catch (error) {
+                    commentContainer.innerHTML =
+                        '<p class="text-red-500">Gagal memuat komentar. Silakan coba lagi.</p>';
+                    console.error('Error loading comments:', error);
+                }
+            }
+
+            // Menangani tombol untuk membuka modal
+            document.querySelectorAll('.commentBtn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const articleId = this.getAttribute('data-article-id');
+                    articleIdInput.value = articleId;
+                    currentCommentPage = 1;
+                    loadComments(articleId);
+                    modal.classList.remove('hidden');
                 });
             });
 
@@ -347,12 +363,6 @@
             });
         });
     </script>
-
-
-
-
-
-
 
     <script>
         document.querySelectorAll('.delete-button').forEach(button => {
@@ -378,330 +388,3 @@
         });
     </script>
 @endsection
-
-
-
-{{-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const modal = document.getElementById('commentModal');
-            const commentContainer = document.getElementById('commentContainer');
-            const closeModalButton = document.getElementById('closeModal');
-            const commentForm = document.getElementById('commentForm');
-            const articleIdInput = document.getElementById('article_id');
-
-            // Tombol untuk membuka modal komentar
-            document.querySelectorAll('.commentBtn').forEach(button => {
-                button.addEventListener('click', async function() {
-                    const articleId = this.getAttribute('data-article-id');
-                    articleIdInput.value = articleId;
-
-                    try {
-                        // Fetch komentar untuk artikel tertentu
-                        const response = await fetch(`admin/artikel/${articleId}/comments`);
-                        const comments = await response
-                            .text(); // Anggap data komentar dikirim sebagai form HTML biasa
-
-                        // Render komentar ke dalam container
-                        commentContainer.innerHTML = comments;
-                        modal.classList.remove('hidden');
-                    } catch (error) {
-                        commentContainer.innerHTML =
-                            '<p class="text-red-500">Gagal memuat komentar. Silakan coba lagi.</p>';
-                        console.error('Error loading comments:', error);
-                    }
-                });
-            });
-
-
-
-
-
-            const comments = await response.json();
-                        commentContainer.innerHTML = '';
-
-                        // Render setiap komentar
-                        comments.forEach(comment => {
-                            const commentElement = document.createElement('div');
-                            commentElement.classList.add('comment');
-                            commentElement.innerHTML = `
-                                <div class="comment flex flex-col border-b border-gray-300 py-2" data-comment-id="${comment.id}" data-article-id="${articleId}">
-                                    <div class="flex items-start">
-                                        <strong class="mr-1">${comment.nama}:</strong>
-                                        <p class="text-gray-800">${comment.isi_komentar}</p>
-                                    </div>
-                                    <div class="flex space-x-2 mt-2">
-                                        <button class="text-blue-500 hover:underline reply-btn" data-comment-id="${comment.id}" data-article-id="${articleId}">
-                                            Reply
-                                        </button>
-                                        <button class="text-red-500 hover:underline delete-btn" data-comment-id="${comment.id}" data-article-id="${articleId}">
-                                            Delete
-                                        </button>
-                                    </div>
-                                </div>
-                            `;
-
-                            // Tambahkan komentar ke dalam container
-                            commentContainer.appendChild(commentElement);
-                        });
-
-            // Tombol untuk menutup modal
-            closeModalButton.addEventListener('click', function() {
-                modal.classList.add('hidden');
-            });
-
-            // Fungsi untuk merender komentar dan balasan
-            function renderComments(comments, articleId) {
-                commentContainer.innerHTML = comments.map(comment => `
-                    <div class="comment flex flex-col border-b border-gray-300 py-2" data-comment-id="${comment.id}" data-article-id="${articleId}">
-                        <div class="flex items-start">
-                            <strong class="mr-1">${comment.nama}:</strong>
-                            <p class="text-gray-800">${comment.isi_komentar}</p>
-                        </div>
-                        <div class="flex space-x-2 mt-2">
-                            <button class="text-blue-500 hover:underline reply-btn" data-comment-id="${comment.id}" data-article-id="${articleId}">
-                                Reply
-                            </button>
-                            <button class="text-red-500 hover:underline delete-btn" data-comment-id="${comment.id}" data-article-id="${articleId}">
-                                Delete
-                            </button>
-                        </div>
-                        <div class="replies-container ml-4 mt-2">
-                            ${renderReplies(comment.replies)}
-                        </div>
-                    </div>
-                `).join('');
-
-                // Menambahkan event listener untuk tombol hapus dan reply
-                attachDeleteHandlers();
-                attachReplyHandlers();
-            }
-
-            // Fungsi untuk merender balasan (nested comments)
-            function renderReplies(replies) {
-                if (!replies || replies.length === 0) return '';
-
-                return replies.map(reply => `
-                    <div class="comment flex flex-col border-b border-gray-300 py-2 ml-4" data-comment-id="${reply.id}">
-                        <div class="flex items-start">
-                            <strong class="mr-1">${reply.nama}:</strong>
-                            <p class="text-gray-800">${reply.isi_komentar}</p>
-                        </div>
-                        <div class="flex space-x-2 mt-2">
-                            <button class="text-blue-500 hover:underline reply-btn" data-comment-id="${reply.id}">
-                                Balas
-                            </button>
-                            <button class="text-red-500 hover:underline delete-btn" data-comment-id="${reply.id}">
-                                Hapus
-                            </button>
-                        </div>
-                        <div class="replies-container ml-4 mt-2">
-                            ${renderReplies(reply.replies)} <!-- Rekursi untuk balasan lebih dalam -->
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            // Fungsi untuk menambahkan event listener pada tombol hapus
-            function attachDeleteHandlers() {
-                document.querySelectorAll('.delete-btn').forEach(button => {
-                    button.addEventListener('click', async function() {
-                        const commentId = this.getAttribute('data-comment-id');
-                        const articleId = this.getAttribute('data-article-id');
-
-                        // Konfirmasi penghapusan
-                        const confirmDelete = confirm(
-                            'Apakah Anda yakin ingin menghapus komentar ini?');
-                        if (!confirmDelete) return;
-
-                        try {
-                            const response = await fetch(
-                                `/admin/artikel/${articleId}/destroy/komentar/${commentId}`, {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'X-CSRF-TOKEN': document.querySelector(
-                                            'meta[name="csrf-token"]').content
-                                    }
-                                });
-
-                            const responseData = await response.json();
-
-                            if (response.ok) {
-                                // Hapus komentar dari DOM
-                                const commentElement = document.querySelector(
-                                    `.comment[data-comment-id="${commentId}"]`);
-                                if (commentElement) {
-                                    commentElement.remove();
-                                }
-                                alert(responseData.message);
-                            } else {
-                                alert(responseData.message || 'Gagal menghapus komentar.');
-                            }
-                        } catch (error) {
-                            console.error('Error deleting comment:', error);
-                            alert('Terjadi kesalahan saat menghapus komentar.');
-                        }
-                    });
-                });
-            }
-
-            // Fungsi untuk menambahkan event listener pada tombol reply
-            function attachReplyHandlers() {
-                document.querySelectorAll('.reply-btn').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const commentId = this.getAttribute('data-comment-id');
-                        const articleId = this.getAttribute('data-article-id');
-                        const commentElement = document.querySelector(
-                            `.comment[data-comment-id="${commentId}"]`);
-
-                        // Periksa apakah form reply sudah ada
-                        let replyForm = commentElement.querySelector('.reply-form');
-                        if (replyForm) {
-                            return; // Jika form sudah ada, jangan tambahkan form lagi
-                        }
-
-                        // Buat form reply baru
-                        replyForm = document.createElement('div');
-                        replyForm.classList.add('reply-form', 'mt-4', 'bg-gray-200', 'p-4',
-                            'rounded-md', 'ml-8');
-                        replyForm.innerHTML = `
-                            <textarea class="w-full p-2 mb-2 border border-gray-300 rounded-md" rows="2" placeholder="Tulis balasan..."></textarea>
-                            <button class="submit-reply-btn text-white bg-green-600 px-4 py-2 rounded-md hover:bg-green-700">Submit</button>
-                        `;
-
-                        // Tambahkan form ke dalam replies-container
-                        const repliesContainer = commentElement.querySelector('.replies-container');
-                        repliesContainer.appendChild(replyForm);
-
-                        // Event listener untuk tombol submit balasan
-                        replyForm.querySelector('.submit-reply-btn').addEventListener('click',
-                            async function() {
-                                const replyContent = replyForm.querySelector('textarea')
-                                    .value;
-
-                                if (!replyContent) {
-                                    alert('Balasan tidak boleh kosong.');
-                                    return;
-                                }
-
-                                try {
-                                    // Kirim balasan menggunakan form standar
-                                    const formData = new FormData();
-                                    formData.append('isi_komentar', replyContent);
-                                    formData.append('article_id', articleId);
-                                    formData.append('parent_id',
-                                        commentId); // Kirim parent_id untuk balasan
-
-                                    const response = await fetch(
-                                        '{{ route('store.komentar-artikel') }}', {
-                                            method: 'POST',
-                                            headers: {
-                                                'X-CSRF-TOKEN': document.querySelector(
-                                                        'meta[name="csrf-token"]')
-                                                    .content,
-                                            },
-                                            body: formData
-                                        });
-
-                                    const responseData = await response.json();
-
-                                    if (response.ok) {
-                                        // Jika berhasil, tambahkan balasan ke DOM
-                                        const newReply = document.createElement('div');
-                                        newReply.classList.add('reply', 'ml-4', 'border-l',
-                                            'pl-4', 'mt-2');
-                                        newReply.innerHTML = `
-                                        <div class="comment flex flex-col border-b border-gray-300 py-2" data-comment-id="${responseData.comment.id}">
-                                            <div class="flex items-start">
-                                                <strong class="mr-1">${responseData.comment.nama}:</strong>
-                                                <p class="text-gray-800">${responseData.comment.isi_komentar}</p>
-                                            </div>
-                                            <div class="flex space-x-2 mt-2">
-                                                <button class="text-blue-500 hover:underline reply-btn" data-comment-id="${responseData.comment.id}" data-article-id="${articleId}">
-                                                    Reply
-                                                </button>
-                                                <button class="text-red-500 hover:underline delete-btn" data-comment-id="${responseData.comment.id}" data-article-id="${articleId}">
-                                                    Delete
-                                                </button>
-                                            </div>
-                                            <div class="replies-container ml-4 mt-2"></div>
-                                        </div>
-                                    `;
-                                        repliesContainer.appendChild(newReply);
-
-                                        // Reset form setelah balasan dikirim
-                                        replyForm.remove();
-
-                                        // Re-attach event listeners untuk balasan baru
-                                        attachReplyHandlers();
-                                        attachDeleteHandlers();
-                                    } else {
-                                        alert(responseData.message ||
-                                            'Gagal mengirim balasan.');
-                                    }
-                                } catch (error) {
-                                    console.error('Error submitting reply:', error);
-                                    alert('Terjadi kesalahan saat mengirim balasan.');
-                                }
-                            });
-                    });
-                });
-            }
-
-            // Event listener untuk pengiriman komentar baru
-            commentForm.addEventListener('submit', async function(event) {
-                event.preventDefault();
-
-                const formData = new FormData(commentForm);
-                const articleId = articleIdInput.value;
-
-                try {
-                    const response = await fetch('{{ route('store.komentar-artikel') }}', {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                .content,
-                        },
-                        body: formData
-                    });
-
-                    const responseData = await response.json();
-
-                    if (response.ok) {
-                        // Buat elemen komentar baru dan tambahkan ke DOM
-                        const newComment = `
-                            <div class="comment flex flex-col border-b border-gray-300 py-2" data-comment-id="${responseData.comment.id}" data-article-id="${articleId}">
-                                <div class="flex items-start">
-                                    <strong class="mr-1">${responseData.comment.nama}:</strong>
-                                    <p class="text-gray-800">${responseData.comment.isi_komentar}</p>
-                                </div>
-                                <div class="flex space-x-2 mt-2">
-                                    <button class="text-blue-500 hover:underline reply-btn" data-comment-id="${responseData.comment.id}" data-article-id="${articleId}">
-                                        Reply
-                                    </button>
-                                    <button class="text-red-500 hover:underline delete-btn" data-comment-id="${responseData.comment.id}" data-article-id="${articleId}">
-                                        Delete
-                                    </button>
-                                </div>
-                                <div class="replies-container ml-4 mt-2"></div>
-                            </div>
-                        `;
-
-                        // Tambahkan komentar baru di bagian atas
-                        commentContainer.insertAdjacentHTML('afterbegin', newComment);
-
-                        // Reset form
-                        commentForm.reset();
-
-                        // Re-attach event listeners untuk tombol delete dan reply
-                        attachReplyHandlers();
-                        attachDeleteHandlers();
-                    } else {
-                        alert(responseData.message || 'Gagal mengirim komentar.');
-                    }
-                } catch (error) {
-                    console.error('Error submitting comment:', error);
-                    alert('Terjadi kesalahan saat mengirim komentar.');
-                }
-            });
-        });
-    </script> --}}

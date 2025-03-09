@@ -44,7 +44,6 @@
         class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50 transition-opacity duration-300">
         <div class="modal-content bg-white p-6 rounded-lg w-1/2 mx-auto shadow-lg">
             <div class="modal-header flex justify-between items-center mb-4">
-                <h2 id="modalTitle" class="text-xl font-bold">Komentar</h2>
                 <button id="closeModal" class="text-gray-500 hover:text-gray-700 text-xl">&times;</button>
             </div>
             <div id="modalContent" class="modal-body">
@@ -59,7 +58,7 @@
                     <button type="submit"
                         class="text-white hover:bg-blue-700 px-4 py-2 mt-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
                         style="background-color: #1D4ED8 !important;">
-                        Submit
+                        Kirim
                     </button>
                 </form>
                 <div id="commentContainer" class="comments mt-4 text-sm text-gray-700 overflow-y-auto"

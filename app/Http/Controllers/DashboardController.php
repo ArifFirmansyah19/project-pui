@@ -23,7 +23,7 @@ class DashboardController extends Controller
     {
         $kontak = Kontak::first();
         $kontakExists = Kontak::exists();
-        $divisis = divisi::all();
+        $divisis = Divisi::all();
         $dataTimPui = Tim::with('divisi')->get();
         $articles = Article::latest()->limit(3)->get();
         $tims = Tim::all();
@@ -31,11 +31,24 @@ class DashboardController extends Controller
         $umkms = Umkm::all();
         $potensis = PotensiDesa::all();
 
-        $articles = Article::withCount([
+        $articlesWithComments = Article::withCount([
             'comments as totalMainComments' => fn($query) => $query->whereNull('parent_id'),
-            'comments as totalReplies' => fn($query) => $query->whereNotNull('parent_id')
-        ])->paginate(5);
+            'comments as totalReplies' => fn($query) => $query->whereNotNull('parent_id'),
+        ])
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
 
-        return view('index', compact('articles', 'potensis', 'kontak', 'kontakExists', 'divisis', 'dataTimPui', 'tims', 'kegiatans', 'umkms'));
+        return view('index', compact(
+            'articles',
+            'articlesWithComments',
+            'potensis',
+            'kontak',
+            'kontakExists',
+            'divisis',
+            'dataTimPui',
+            'tims',
+            'kegiatans',
+            'umkms'
+        ));
     }
 }

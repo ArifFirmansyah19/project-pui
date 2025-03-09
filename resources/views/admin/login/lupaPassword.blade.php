@@ -23,7 +23,8 @@
 
         <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
             <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                <form class="space-y-6" action="{{ route('forgot-password-act') }}" method="POST">
+                <form class="space-y-6" action="#" method="POST">
+                    {{-- <form class="space-y-6" action="{{ route('forgot-password-act') }}" method="POST"> --}}
                     @csrf
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700">
@@ -47,3 +48,15 @@
 </body>
 
 </html>
+<?php
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Http\Request;
+
+Route::post('/forgot-password', function (Request $request) {
+    $request->validate(['email' => 'required|email']);
+
+    $status = Password::sendResetLink($request->only('email'));
+
+    return $status === Password::RESET_LINK_SENT ? back()->with(['status' => __($status)]) : back()->withErrors(['email' => __($status)]);
+})->name('forgot-password-act');

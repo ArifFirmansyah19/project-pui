@@ -213,7 +213,7 @@
                     <p class="text-gray-800 text-lg">
                         Email:
                         <a href="mailto:{{ $kontakMuseum->email }}"
-                            class="text-indigo-600 hover:underline">{{ $kontakMuseum->email }}</a>
+                            class="text-indigo-600 hover:underline word-break">{{ $kontakMuseum->email }}</a>
                     </p>
                 </div>
 
@@ -244,7 +244,7 @@
         </div>
 
         <!-- Modal
-                                                                                            -->
+                                                                                                            -->
         <div id="imageModal3" class="fixed inset-0 z-50 items-center justify-center hidden">
             <div class="bg-white p-4 rounded-lg shadow-lg max-w-lg w-full relative">
                 <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-700" onclick="closeModal()"> &times;
@@ -268,67 +268,43 @@
 
         <script>
             function openModal3(imageSrc) {
-                // Ambil elemen modal dan gambar di dalamnya
                 const modal = document.getElementById('imageModal3');
                 const modalImage = document.getElementById('modalImage3');
-
-                // Set gambar yang dipilih ke dalam modal
                 modalImage.src = imageSrc;
-
-                // Tampilkan modal
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
             }
 
             function closeModal3() {
-                // Sembunyikan modal
                 const modal = document.getElementById('imageModal3');
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
             }
-        </script>
 
-
-
-        <script>
             function selectImage(imageUrl, name, description, location, age) {
-                // Mengganti gambar utama
                 document.getElementById("selectedImage").src = imageUrl;
                 document.getElementById("selectedImage").alt = name;
-
-                // Mengganti teks deskripsi
                 document.getElementById("selectedImageTitle").innerText = name;
                 document.getElementById("selectedImageDescription").innerText = description;
                 document.getElementById("selectedImageAlamat").innerText = location;
                 document.getElementById("selectedImageUmur").innerText = age;
             }
-        </script>
 
-
-        <script>
             function openModal(imageUrl, title, description, location, age) {
-                // Set data untuk modal
                 document.getElementById("modalImage3").src = imageUrl;
                 document.getElementById("modalTitle").innerText = title;
                 document.getElementById("modalDescription").innerText = description;
                 document.getElementById("modalLocation").innerText = location;
                 document.getElementById("modalAge").innerText = age;
-
-                // Tampilkan modal
                 document.getElementById("imageModal3").classList.remove("hidden");
                 document.getElementById("imageModal3").classList.add("flex");
             }
 
             function closeModal() {
-                // Sembunyikan modal
                 document.getElementById("imageModal3").classList.add("hidden");
                 document.getElementById("imageModal3").classList.remove("flex");
             }
-        </script>
 
-
-
-        <script>
             function toggleFlexVisibility() {
                 const element = document.getElementById("myElement");
                 if (element.classList.contains("hidden")) {
@@ -339,64 +315,45 @@
                     element.classList.add("hidden");
                 }
             }
-        </script>
 
-        <script>
-            // Ambil elemen-elemen yang diperlukan
             const carouselWrapper = document.getElementById('carouselWrapper');
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
-
-            // Ambil semua anak elemen dari carouselWrapper (gambar atau item carousel)
             const carouselItems = Array.from(carouselWrapper.children);
-
-            // Variabel untuk melacak indeks item yang aktif
             let currentIndex = 0;
 
-            // Fungsi untuk memperbarui posisi carousel
             function updateCarousel() {
-                const itemWidth = carouselItems[0].offsetWidth; // Lebar satu item
-                const newTranslateX = -currentIndex * itemWidth; // Hitung posisi baru
-
-                // Terapkan transformasi ke carouselWrapper
+                const itemWidth = carouselItems[0].offsetWidth;
+                const newTranslateX = -currentIndex * itemWidth;
                 carouselWrapper.style.transform = `translateX(${newTranslateX}px)`;
             }
 
-            // Event listener untuk tombol Previous
             prevBtn.addEventListener('click', () => {
-                currentIndex = (currentIndex > 0) ? currentIndex - 1 : carouselItems.length -
-                    1; // Loop ke item terakhir jika di awal
+                currentIndex = (currentIndex > 0) ? currentIndex - 1 : carouselItems.length - 1;
                 updateCarousel();
             });
 
-            // Event listener untuk tombol Next
             nextBtn.addEventListener('click', () => {
-                currentIndex = (currentIndex < carouselItems.length - 1) ? currentIndex + 1 :
-                    0; // Loop ke item pertama jika di akhir
+                currentIndex = (currentIndex < carouselItems.length - 1) ? currentIndex + 1 : 0;
                 updateCarousel();
             });
 
-            // Memeriksa apakah tombol navigasi perlu digeser
             function updateNavigationPosition() {
                 const screenWidth = window.innerWidth;
                 if (screenWidth <= 640) {
-                    // Geser tombol prev dan next ke atas atau ke bawah agar tidak menghalangi gambar
-                    prevBtn.style.top = '10px'; // Atur posisi tombol prev
-                    nextBtn.style.top = '10px'; // Atur posisi tombol next
+                    prevBtn.style.top = '10px';
+                    nextBtn.style.top = '10px';
                 } else {
-                    // Kembalikan tombol ke posisi semula
                     prevBtn.style.top = '50%';
                     nextBtn.style.top = '50%';
                 }
             }
 
-            // Pastikan ukuran item diupdate saat jendela di-resize
             window.addEventListener('resize', () => {
                 updateCarousel();
                 updateNavigationPosition();
             });
 
-            // Panggil fungsi untuk memastikan tombol berada di posisi yang benar saat pertama kali dimuat
             updateNavigationPosition();
         </script>
 

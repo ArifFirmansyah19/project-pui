@@ -15,7 +15,6 @@ class LoginController extends Controller
 {
     public function index(Request $request)
     {
-
         return view('admin/login.login', [
             'title' => 'Login',
             'active' => 'Login'
@@ -30,9 +29,7 @@ class LoginController extends Controller
         ]);
         $remember = $request->has('remember');
 
-        // Coba untuk melakukan otentikasi
         if (Auth::attempt($credentials, $remember)) {
-            // Jika otentikasi berhasil, regenerasi sesi dan alihkan pengguna
             $request->session()->regenerate();
             return redirect()->intended('/dashboard')->with('success', 'Login Anda berhasil!');
         }
@@ -40,7 +37,7 @@ class LoginController extends Controller
         return back()->withErrors([
             'email' => 'Email / password tidak sesuai.',
             'password' => 'Password salah.',
-        ])->withInput(); // Menyimpan input sebelumnya agar user tidak perlu mengisi ulang
+        ])->withInput();
     }
 
     public function logout(Request $request)
@@ -49,7 +46,7 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login')->with('success', 'Anda telah berhasil logout.');
+        return redirect('/')->with('success', 'Anda telah berhasil logout.');
     }
 
     public function forgot_password()

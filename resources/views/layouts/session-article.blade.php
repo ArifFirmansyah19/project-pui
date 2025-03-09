@@ -1,7 +1,5 @@
-<!-- Artikel -->
 <div class="w-full min-h-full p-8 bg-gray-600 md:w-1/3 mt">
     <h2 class="text-3xl font-semibold text-white mb-5">Article</h2>
-    <!-- Artikel -->
     @foreach ($articles as $article)
         <div class="mb-4">
             <h3 class="text-lg font-semibold text-white mb-0">
@@ -9,7 +7,7 @@
                 </a>
             </h3>
             <p class="text-sm text-gray-300 mb-2">{{ $article->formatted_created_at }}</p>
-            <p class="text-sm text-black">
+            <p class="text-sm text-white">
                 {{ implode("\n", array_slice(explode("\n", wordwrap(strip_tags($article->abstract), 150, "\n")), 0, 5)) }}
             </p>
             <a href="{{ $article->file_path }}"
@@ -25,18 +23,13 @@
         </div>
         <hr class="border-gray-800 my-1" />
     @endforeach
-    <div class="mt-auto mb-0 px-3 flex justify-start">
-        {{ $articles->links() }}
-    </div>
 </div>
 
 
-{{-- modal komentar --}}
 <div id="commentModal"
     class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50 transition-opacity duration-300">
     <div class="modal-content bg-white p-6 rounded-lg w-1/2 mx-auto shadow-lg">
         <div class="modal-header flex justify-between items-center mb-4">
-            <h2 id="modalTitle" class="text-xl font-bold">Komentar</h2>
             <button id="closeModal" class="text-gray-500 hover:text-gray-700 text-xl">&times;</button>
         </div>
         <div id="modalContent" class="modal-body">
@@ -51,7 +44,7 @@
                 <button type="submit"
                     class="text-white hover:bg-blue-700 px-4 py-2 mt-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
                     style="background-color: #1D4ED8 !important;">
-                    Submit
+                    Kirim
                 </button>
             </form>
             <div id="commentContainer" class="comments mt-4 text-sm text-gray-700 overflow-y-auto"

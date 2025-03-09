@@ -1,63 +1,3 @@
-{{-- <!--konten pertama-->
-
-
-{{-- <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-            <script>
-                // dokumentasi
-                document.addEventListener("DOMContentLoaded", function() {
-                    const slides = document.querySelectorAll(".slide");
-                    const dots = document.querySelectorAll(".dot");
-                    let currentSlide = 0;
-
-                    function showSlide(n) {
-                        slides.forEach((slide) => slide.classList.add("hidden"));
-                        dots.forEach((dot) => dot.classList.remove("bg-indigo-600"));
-                        slides[n].classList.remove("hidden");
-                        dots[n].classList.add("bg-indigo-600");
-                        currentSlide = n;
-                    }
-
-                    function nextSlide() {
-                        currentSlide = (currentSlide + 1) % slides.length;
-                        showSlide(currentSlide);
-                        setActiveDot(currentSlide);
-                    }
-
-                    setInterval(nextSlide, 4000); // Ganti slide setiap 20 detik
-
-                    dots.forEach((dot, index) => {
-                        dot.addEventListener("click", () => {
-                            showSlide(index);
-                            setActiveDot(index);
-                        });
-                    });
-
-                    function setActiveDot(index) {
-                        dots.forEach((dot) => dot.classList.remove("bg-indigo-600"));
-                        dots[index].classList.add("bg-indigo-600");
-                    }
-
-                    showSlide(0); // Tampilkan slide pertama saat halaman dimuat
-                });
-            </script> --}}
-
-
-
-
-
-
-{{-- coba modal balas --}}
-
-
-
-
-
-
-
-
-
-
-<!--konten pertama-->
 <div class="mx-auto">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full p-6 bg-cream rounded-lg">
         <!-- Teks -->
@@ -73,20 +13,7 @@
                 menyandang
                 status Geopark Nasional pada tahun 2013, dan pada 24 Mei 2023 diterima
                 menjadi UNESCO Global Geopark (UGGp) sekaligus menjadi Geopark Global
-                UNESCO yang pertama di provinsi Jambi. Geopark Merangin memiliki potensi alam berupa keragaman
-                geologi
-                yang tersebar di sepanjang Sungai Merangin. Fosil flora dan fauna di
-                kawasan ini diperkirakan berumur sekitar 250-290 juta tahun lalu yang
-                terdapat pada batuan gunung api bersisipan sedimen laut berupa batu
-                gamping dan serpih gamping. Kawasan Geopark Merangin tersebar di sepanjang aliran Sungai Batang
-                Merangin dan Sungai
-                Mengkarang. Secara geologi, Sungai Mengkarang tersusun dari batuan dari
-                Formasi Mengkarang (Pm), ranit Tantan (TJRgr), dan Formasi Kasai (QTK). Geopark memiliki peranan
-                penting untuk membuka peluang
-                penelitian, pendidikan serta pengembangan ekonomi masyarakat setempat.
-                Geopark dapat dikembangkan menjadi objek daya tarik wisata (geotourism),
-                kegiatan perdagangan barang kerajinan (geoproducts) dan makanan khas
-                daerah atau UMKM.
+                UNESCO yang pertama di provinsi Jambi.
             </p>
 
             <!-- Tautan -->
@@ -100,46 +27,6 @@
         </div>
     </div>
 </div>
-
-
-
-<!-- Konten Kegiatan Slideshow -->
-{{-- <div class="relative w-full py-8 px-4 bg-gray-100" id="carousel-container">
-    <h2 class="text-4xl font-bold text-center text-indigo-800 py-4 mb-6">
-        Kegiatan
-    </h2>
-
-    <!-- Carousel Container -->
-    <div class="relative max-w-7xl mx-auto overflow-x-auto scroll-smooth scrollbar-hide" id="carousel-wrapper"
-        style="scroll-padding-left: 2rem">
-        <!-- Wrapper for carousel items -->
-        <div class="carousel flex justify-start gap-x-4 transition-transform duration-500 ease-in-out whitespace-nowrap"
-            id="carousel">
-            <!-- Slide 1 -->
-            @foreach ($kegiatans as $key => $item)
-                <div class="slide w-1/5 flex-shrink-0 h-64 md:h-80 relative group transform transition-all duration-300 ease-in-out hover:scale-110 px-2"
-                    id="slide-{{ $loop->iteration }}">
-                    <a href="{{ route('detail-kegiatan', $item->id) }}"
-                        class="block w-full h-full relative overflow-hidden rounded-lg">
-                        <img src="{{ asset('storage/' . $item->foto_kegiatan) }}"
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            autoplay muted loop />
-                        <!-- Hover overlay with title and description -->
-                        <div
-                            class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex flex-col justify-center items-center text-center text-white transition-opacity duration-300">
-                            <h3 class="text-lg font-bold">{{ $item->nama_kegiatan }}</h3>
-                            <p class="text-sm mt-2">
-                                {!! $item->deskripsi_kegiatan !!}
-                            </p>
-                        </div>
-                    </a>
-                </div>
-            @endforeach
-            <!-- Tambahkan slide lainnya di sini -->
-        </div>
-    </div>
-</div> --}}
-
 
 <div class="relative w-full py-8 px-4 bg-gray-100" id="carousel-container">
     <h2 class="text-4xl font-bold text-center text-indigo-800 py-4 mb-6">

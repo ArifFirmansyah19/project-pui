@@ -129,6 +129,8 @@
             const closeModalButton = document.getElementById('closeModal');
             const commentForm = document.getElementById('commentForm');
             const kegiatanIdInput = document.getElementById('kegiatan_id');
+            let allComments = [];
+            let displayedCommentsCount = 10;
 
             // Tombol untuk membuka modal komentar
             document.querySelectorAll('.commentBtn').forEach(button => {
@@ -140,9 +142,14 @@
                         // Fetch komentar untuk kegiatan tertentu
                         const response = await fetch(`kegiatan/${kegiatanId}/comments`);
                         const comments = await response.json();
+                        allComments = comments;
+
+                        // Urutkan komentar dari terbaru ke terlama
+                        allComments.sort((a, b) => new Date(b.created_at) - new Date(a
+                            .created_at));
 
                         // Batasi jumlah komentar yang ditampilkan (maksimal 10 komentar)
-                        const limitedComments = comments.slice(0, 10);
+                        const limitedComments = allComments.slice(0, displayedCommentsCount);
 
                         // Render komentar ke dalam container
                         renderComments(limitedComments, kegiatanId);
@@ -163,21 +170,39 @@
             // Fungsi untuk merender komentar
             function renderComments(comments, kegiatanId) {
                 commentContainer.innerHTML = comments.map(comment => `
-            <div class="comment flex flex-col border-b border-gray-300 py-2" data-comment-id="${comment.id}" data-kegiatan-id="${kegiatanId}">
-                <div class="flex items-start">
-                    <strong class="mr-1">${comment.nama}:</strong>
-                    <p class="text-gray-800">${comment.isi_komentar}</p>
-                </div>
-                <div class="flex space-x-2 mt-2">
-                    <button class="text-red-500 hover:underline delete-btn" data-comment-id="${comment.id}" data-kegiatan-id="${kegiatanId}">
-                        Delete
-                    </button>
-                </div>
-            </div>
-        `).join('');
+                    <div class="comment flex flex-col border-b border-gray-300 py-2" data-comment-id="${comment.id}" data-kegiatan-id="${kegiatanId}">
+                        <div class="flex items-start">
+                            <strong class="mr-1">${comment.nama}:</strong>
+                            <p class="text-gray-800">${comment.isi_komentar}</p>
+                        </div>
+                        <div class="flex space-x-2 mt-2">
+                            <button class="text-red-500 hover:underline delete-btn" data-comment-id="${comment.id}" data-kegiatan-id="${kegiatanId}">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                `).join(''); // Show the latest comments at the top
+
+                if (comments.length < allComments.length) {
+                    commentContainer.innerHTML += `
+                        <button id="loadMoreComments" class="text-blue-500 hover:underline mt-2">
+                            Lihat lebih banyak komentar
+                        </button>
+                    `;
+                }
 
                 // Menambahkan event listener untuk tombol hapus
                 attachDeleteHandlers();
+
+                // Event listener untuk tombol "Lihat lebih banyak komentar"
+                const loadMoreButton = document.getElementById('loadMoreComments');
+                if (loadMoreButton) {
+                    loadMoreButton.addEventListener('click', function() {
+                        displayedCommentsCount += 5;
+                        const moreComments = allComments.slice(0, displayedCommentsCount);
+                        renderComments(moreComments, kegiatanId);
+                    });
+                }
             }
 
             // Fungsi untuk menambahkan event listener pada tombol hapus
@@ -215,22 +240,6 @@
                     });
                 });
             }
-
-
-            // commentForm.addEventListener('submit', function(event) {
-            //     event
-            //         .preventDefault(); // Menangani form dengan JavaScript, tetapi akan dikirim menggunakan standar form
-
-            //     // Menetapkan nilai kegiatan_id jika belum diatur
-            //     if (!kegiatanIdInput.value) {
-            //         kegiatanIdInput.value = 'default_kegiatan_id'; // Ganti dengan ID yang sesuai
-            //     }
-
-            //     // Mengirimkan form menggunakan submit standar
-            //     commentForm.submit(); // Form akan dikirim ke server secara standar
-            // });
-            // // Event listener untuk pengiriman komentar baru
-
 
         });
     </script>

@@ -8,7 +8,6 @@ use App\Models\Kegiatan;
 use App\Models\Article;
 use App\Models\Kontak;
 use App\Models\CommentKegiatan;
-use App\Models\CommentArticle;
 use Intervention\Image\ImageManagerStatic as Image;
 
 class KegiatanController extends Controller
@@ -369,7 +368,9 @@ class KegiatanController extends Controller
         $articles = Article::withCount([
             'comments as totalMainComments' => fn($query) => $query->whereNull('parent_id'),
             'comments as totalReplies' => fn($query) => $query->whereNotNull('parent_id')
-        ])->paginate(5);
+        ])
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
 
         return view('user.sumberdaya.kegiatan.detailKegiatan', compact('kontak', 'kontakExists', 'kegiatan', 'articles', 'commentKegiatans'));
     }

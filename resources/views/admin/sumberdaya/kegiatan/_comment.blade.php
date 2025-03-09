@@ -14,9 +14,9 @@
                 <p>{{ $comment->isi_komentar }}</p>
 
                 <!-- Tombol untuk menampilkan balasan -->
-                @if ($comment->replies->count() > 0)
+                @if ($comment->countAllReplies() > 0)
                     <button class="bg-blue-500 rounded text-white mt-2 p-1" onclick="toggleReplies({{ $comment->id }})">
-                        {{ $comment->replies->count() }} balasan
+                        {{ $comment->countAllReplies() }} balasan
                     </button>
                 @endif
 
@@ -31,7 +31,6 @@
                             action="{{ route('admin.destroy.komentar-kegiatan', $comment->id) }}">
                             @csrf
                             <button type="button" data-id="{{ $comment->id }}" class="delete-button mx-2">
-                                {{-- <i class="fa-solid fa-trash text-red-600 hover:text-gray-900"></i> --}}
                                 <p class="text-red-500">Hapus</p>
                             </button>
                         </form>

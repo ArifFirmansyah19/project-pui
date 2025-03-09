@@ -36,7 +36,6 @@ class AdminController extends Controller
             'email.regex' => 'Alamat email harus diakhiri dengan .com, .net, .org, .edu, .gov, .mil, atau .int',
         ]);
         $user = auth()->user();
-        // Validasi password lama
         if ($request->filled('password') && !Hash::check($request->password_lama, $user->password)) {
             throw ValidationException::withMessages([
                 'password_lama' => 'Password yang Anda masukkan tidak cocok',
@@ -44,7 +43,6 @@ class AdminController extends Controller
         }
 
         if ($request->hasFile('foto')) {
-            // Hapus foto lama jika ada
             if ($user->foto && \Storage::exists('public/' . $user->foto)) {
                 \Storage::delete('public/' . $user->foto);
             }
@@ -53,7 +51,6 @@ class AdminController extends Controller
             $user->foto = $filePath;
         }
 
-        // Update data profil
         $user->update([
             'name' => $request->name,
             'email' => $request->email,

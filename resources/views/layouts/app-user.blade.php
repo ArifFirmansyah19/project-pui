@@ -9,7 +9,7 @@
     @include('layouts.style-user')
 </head>
 
-<body class="min-h-screen flex flex-col font-roboto">
+<body class="min-h-screen flex flex-col font-poppins">
     <main class="flex-grow top-0">
         @include('layouts.nav-pui')
         @yield('content')
@@ -123,7 +123,7 @@
                         <div class="mb-2">
                             <input name="nama" class="w-full p-2 border border-gray-400 rounded" placeholder="Nama" />
                         </div>
-                        <button class="submit-reply-btn text-white bg-green-600 px-4 py-2 rounded-md hover:bg-green-700">Submit</button>
+                        <button class="submit-reply-btn text-white bg-green-600 px-4 py-2 rounded-md hover:bg-green-700">Kirim</button>
                     `;
 
                         // Tambahkan form ke dalam replies-container

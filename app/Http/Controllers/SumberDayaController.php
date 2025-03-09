@@ -7,7 +7,6 @@ use App\Models\Umkm;
 use App\Models\PotensiDesa;
 use App\Models\Kecamatan;
 use App\Models\Kontak;
-use App\Models\CommentArticle;
 
 class SumberDayaController extends Controller
 {
@@ -21,7 +20,9 @@ class SumberDayaController extends Controller
         $articles = Article::withCount([
             'comments as totalMainComments' => fn($query) => $query->whereNull('parent_id'),
             'comments as totalReplies' => fn($query) => $query->whereNotNull('parent_id')
-        ])->paginate(3);
+        ])
+            ->orderBy('created_at', 'desc')
+            ->paginate(3);
 
         return view('user.sumberdaya.persebaranUMKM.peta', compact('kontak', 'kontakExists', 'umkms', 'kecamatans', 'potensis', 'articles'));
     }

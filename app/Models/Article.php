@@ -30,7 +30,9 @@ class Article extends Model
     // Accessor for formatted created_at
     public function getFormattedCreatedAtAttribute()
     {
-        return Carbon::parse($this->attributes['created_at'])->format('d-m-Y');
+        return Carbon::parse($this->attributes['created_at'])
+            ->locale('id') // Setel lokalitas ke Bahasa Indonesia
+            ->translatedFormat('d F Y'); // Format dengan nama bulan yang diterjemahkan
     }
 
     public function getTotalCommentsAttribute()

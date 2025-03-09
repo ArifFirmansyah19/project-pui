@@ -1,3 +1,7 @@
+@php
+    use Illuminate\Support\Str;
+@endphp
+
 @extends('layouts.app-admin')
 @section('title', 'Halaman Edit Konten Museum Geowisata Merangin')
 @section('content-admin')
@@ -21,7 +25,9 @@
                         <!-- Data Dummy -->
                         <tr>
                             <td class="py-2 px-4">{{ $dataGeopark->judul }}</td>
-                            <td class="py-2 px-4">{!! $dataGeopark->deskripsi !!}</td>
+                            <td class="py-2 px-4">
+                                {!! Str::limit(strip_tags($dataGeopark->deskripsi), 300, '...') !!}
+                            </td>
                             <td class="py-2 px-4">
                                 <img src="{{ asset('storage/' . $dataGeopark->foto) }}"
                                     alt="Foto Keragaman {{ $dataGeopark->nama }}" class="w-20 h-20 object-cover" />

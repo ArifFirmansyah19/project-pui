@@ -153,7 +153,9 @@ class HKIController extends Controller
         $articles = Article::withCount([
             'comments as totalMainComments' => fn($query) => $query->whereNull('parent_id'),
             'comments as totalReplies' => fn($query) => $query->whereNotNull('parent_id')
-        ])->paginate(5);
+        ])
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
 
         return view('user.sumberdaya.HKI.HKIUser', compact('articles', 'HKIs', 'kontak', 'kontakExists'));
     }
